@@ -1,0 +1,53 @@
+{
+  "tag": "S_p59_wd0.3_f0.25",
+  "op": "add",
+  "p": 59,
+  "n_train": 870,
+  "n_test": 2611,
+  "n_params": 219136,
+  "model": {
+    "d_vocab": 60,
+    "d_vocab_out": 113,
+    "n_ctx": 3,
+    "d_model": 128,
+    "n_heads": 4,
+    "d_head": 32,
+    "d_mlp": 512,
+    "act": "relu",
+    "causal": true,
+    "init_std": 0.0,
+    "init_range": 0.8,
+    "seed": 0
+  },
+  "train": {
+    "steps": 20000,
+    "lr": 0.001,
+    "betas": [
+      0.9,
+      0.98
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0.3,
+    "optimizer": "adamw",
+    "warmup_steps": 10,
+    "loss_dtype": "float64",
+    "log_every": 20,
+    "n_log_checkpoints": 60,
+    "dense_from": 2000,
+    "dense_to": 18000,
+    "dense_every": 500,
+    "seed": 0
+  }
+}
+step      0 | train 4.0860/0.020 | test 4.0823/0.015 | |w| 33.1 | 0s
+step   2000 | train 0.0000/1.000 | test 46.4015/0.006 | |w| 45.2 | 112s
+step   4000 | train 0.0000/1.000 | test 44.8959/0.007 | |w| 39.3 | 234s
+step   6000 | train 0.0000/1.000 | test 44.0702/0.008 | |w| 37.4 | 355s
+step   8000 | train 0.0000/1.000 | test 43.5111/0.008 | |w| 36.5 | 475s
+step  10000 | train 0.0000/1.000 | test 43.0464/0.009 | |w| 36.0 | 594s
+step  12000 | train 0.0000/1.000 | test 42.6661/0.010 | |w| 35.6 | 715s
+step  14000 | train 0.0000/1.000 | test 42.3182/0.010 | |w| 35.3 | 840s
+step  16000 | train 0.0000/1.000 | test 41.9611/0.009 | |w| 35.1 | 965s
+step  18000 | train 0.0000/1.000 | test 41.6114/0.009 | |w| 34.9 | 1089s
+step  20000 | train 0.0000/1.000 | test 41.3558/0.009 | |w| 34.7 | 1218s
+DONE {"step": 20000, "train_loss": 0.0, "train_acc": 1.0, "test_loss": 41.35579, "test_acc": 0.00881, "weight_norm": 34.73227, "elapsed": 1217.60684}

@@ -1,0 +1,27 @@
+165 checkpoints, steps 0 .. 40000
+key frequencies from the FINAL checkpoint (step 40000):
+    rule_a_embedding_norm    [1, 8, 16, 21, 38]
+    rule_b_neuron_cluster    [1, 8, 21, 38]
+    rule_c_power_gap         [1, 8, 16, 21, 38]
+    -> used                  [1, 8, 16, 21, 38]   Jaccard 0.800 agree=False
+    NOTE: rules disagree; the union is used and this must be stated in the write-up
+  key frequencies carry 0.9821 of embedding power; Gini(W_E) 0.9225; 0.8672 of neurons above 0.85 explained
+  [1/165] step      0 test_acc 0.008 restr 4.73e+00 excl 4.735 a+b 0.0001 (2s)
+  [11/165] step     10 test_acc 0.008 restr 4.74e+00 excl 4.715 a+b 0.0001 (16s)
+  [21/165] step     25 test_acc 0.005 restr 4.74e+00 excl 4.672 a+b 0.0000 (25s)
+  [31/165] step     60 test_acc 0.004 restr 4.74e+00 excl 4.234 a+b 0.0004 (35s)
+  [41/165] step    146 test_acc 0.005 restr 4.95e+00 excl 1.079 a+b 0.0120 (44s)
+  [51/165] step    357 test_acc 0.009 restr 4.61e+00 excl 0.045 a+b 0.0212 (53s)
+  [61/165] step    869 test_acc 0.014 restr 3.73e+00 excl 0.005 a+b 0.0390 (62s)
+  [71/165] step   2118 test_acc 0.019 restr 2.50e+00 excl 0.040 a+b 0.0966 (71s)
+  [81/165] step   5000 test_acc 0.111 restr 3.79e-01 excl 5.763 a+b 0.5703 (80s)
+  [91/165] step   6739 test_acc 0.723 restr 4.34e-05 excl 20.119 a+b 0.8261 (89s)
+  [101/165] step   8500 test_acc 1.000 restr 2.77e-08 excl 7.453 a+b 0.9778 (98s)
+  [111/165] step  10500 test_acc 1.000 restr 4.11e-08 excl 6.370 a+b 0.9878 (108s)
+  [121/165] step  12500 test_acc 1.000 restr 3.70e-08 excl 6.531 a+b 0.9872 (116s)
+  [131/165] step  14500 test_acc 1.000 restr 3.60e-08 excl 6.600 a+b 0.9871 (123s)
+  [141/165] step  16500 test_acc 1.000 restr 3.59e-08 excl 6.618 a+b 0.9870 (130s)
+  [151/165] step  18750 test_acc 1.000 restr 3.62e-08 excl 6.620 a+b 0.9871 (138s)
+  [161/165] step  28014 test_acc 1.000 restr 3.74e-08 excl 6.609 a+b 0.9872 (145s)
+  [165/165] step  40000 test_acc 1.000 restr 3.83e-08 excl 6.579 a+b 0.9874 (149s)
+wrote /mnt/d/Portfolio/grokking-mechinterp/results/B_add_s0_analysis.json  (149s)

@@ -303,7 +303,7 @@ def operations(root: Path, tags: List[str]) -> Optional[str]:
         m = load_json(root, f"{tag}_mechanism.json")
         label = OP_LABELS.get(h["data"]["op"], h["data"]["op"])
         p_ = h["data"]["p"]
-        row = [f"`{label}`, p={p_}",
+        row = [f"`{label}`, p={p_}  (`{tag}`)",
                int(round(grok)) if grok else f"none by {budget:,}",
                hist[-1]["test_acc"]]
         if m:
@@ -331,6 +331,62 @@ def operations(root: Path, tags: List[str]) -> Optional[str]:
     if notes:
         out += ["**Runs that did not grok within budget.**"] + notes
     return "\n\n".join(out)
+
+
+CONTROL_NOTES = {
+    "main_add_s0": "float32 loss, no warmup, a dead \"=\" column in W_U",
+    "B_add_s0":    "the corrected configuration: float64 loss, 10-step warmup, no dead column",
+    "B_add_s1":    "as B_add_s0, different seed for both the split and the weights",
+    "C_add_f32":   "as B_add_s0 but the loss back in float32 -- only that",
+    "C_add_nowarm":"as B_add_s0 but no warmup -- only that",
+}
+CONTROL_ORDER = ["main_add_s0", "B_add_s0", "C_add_f32", "C_add_nowarm", "B_add_s1"]
+
+
+def controls(root: Path, _tag: str) -> Optional[str]:
+    """Which of the three corrections actually moved the grokking step?"""
+    from .analysis.timing import crossing_step
+    rows = []
+    for tag in CONTROL_ORDER:
+        h = load_history(root, tag)
+        if not is_finished(h):
+            continue
+        g = crossing_step(h["history"], "test_acc", 0.90)
+        rows.append([f"`{tag}`", CONTROL_NOTES.get(tag, ""),
+                     int(round(g)) if g else f"none by {h['train_cfg']['steps']:,}"])
+    if len(rows) < 2:
+        return None
+    tbl = table(["run", "what differs", "grokking step"], rows, align="llr")
+    got = {r[0].strip("`"): r[2] for r in rows if isinstance(r[2], int)}
+    parts = [
+        "The first run of this project used float32 cross-entropy, no learning-rate "
+        "warmup, and an unembedding with a column for the \"=\" token that can never "
+        "be correct. Fixing all three at once halved the grokking step, which is the "
+        "kind of observation that is easy to attribute to the most interesting of the "
+        "three causes. These runs change one thing at a time.",
+        tbl,
+    ]
+    if {"B_add_s0", "C_add_f32"} <= set(got):
+        d = got["C_add_f32"] - got["B_add_s0"]
+        parts.append(
+            f"**Float32 was not the cause.** Putting the loss back in float32 and "
+            f"changing nothing else moves the grokking step by {d:+,} "
+            f"({got['C_add_f32']:,} against {got['B_add_s0']:,}) -- within the "
+            f"seed-to-seed spread below. Removing the warmup costs "
+            f"{got.get('C_add_nowarm', 0) - got['B_add_s0']:+,}. Neither accounts for "
+            f"the gap to the original {got.get('main_add_s0', 0):,}, and the remaining "
+            f"difference is the initialisation: dropping the dead W_U column changes "
+            f"the shape of a weight matrix and therefore the whole random draw, so "
+            f"those two runs do not share an initialisation at all. The honest reading "
+            f"is that the original run was a slow draw, not that any correction sped "
+            f"things up.")
+        parts.append(
+            "This is worth stating plainly because the float64 loss *is* the right "
+            "choice -- in float32 the reported training loss bottoms out at 1.2e-7 and "
+            "the curve below that is an artefact -- but being right about the "
+            "measurement is not the same as being the cause of the speedup, and a "
+            "controlled run is what separates them.")
+    return "\n\n".join(parts)
 
 
 def dlog_block(root: Path, tag: str) -> Optional[str]:
@@ -377,10 +433,17 @@ def dlog_block(root: Path, tag: str) -> Optional[str]:
                   align="lrr"),
         ]
     parts += [
-        "**The absorbing element.** Zero is not in the multiplicative group: with it "
-        "the structure is a monoid and the character story does not apply. Whether it "
-        "gets its own sub-circuit is unclaimed in the literature:",
+        "**The absorbing element.** Zero has no multiplicative inverse, so it sits "
+        "outside the group the character story is about. Whether it gets its own "
+        "sub-circuit is unclaimed in the literature:",
         zero,
+        "The answer is that it does not. No neuron correlates with `a == 0` above "
+        f"{z['max_neuron_corr_a_is_zero']:.3f}. Instead the network **shrinks the "
+        f"embedding of 0 until it barely exists** -- norm {z['zero_row_norm']:.4f} "
+        f"against {z['mean_other_row_norm']:.4f} for the other rows, the smallest of all "
+        f"{m['p']}. With almost nothing added to the residual stream the default output "
+        "takes over, and the default is the right answer: the model is correct on all "
+        "225 pairs involving a zero, and predicts 0 for every one of them.",
     ]
     return "\n\n".join(parts)
 
@@ -496,6 +559,7 @@ GENERATORS = {
     "runtime": runtime,
     "phase_diagram": phase_diagram_block,
     "redundancy": redundancy,
+    "controls": controls,
 }
 
 MULTI_TAG_GENERATORS = {

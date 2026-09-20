@@ -42,7 +42,7 @@ def _freq_block_mask(p: int, freqs: List[int], include_direct: bool) -> torch.Te
     mask[0, 0] = True                                   # the overall mean
     for k in freqs:
         ck, sk = block_indices(k, p)
-        idx = torch.tensor([ck, sk])
+        idx = torch.tensor(sorted({ck, sk}))
         mask[idx.unsqueeze(1), idx.unsqueeze(0)] = True  # the 2x2 product block
         if include_direct:
             mask[idx, 0] = True                          # f(a) alone
@@ -61,6 +61,9 @@ def _keep_sum_directions(coeffs: torch.Tensor, p: int, freqs: List[int]) -> torc
     out[0, 0] = coeffs[0, 0]
     for k in freqs:
         ck, sk = block_indices(k, p)
+        if ck == sk:
+            out[ck, ck] = coeffs[ck, ck]     # Nyquist: keep it as it is
+            continue
         cc, cs, sc, ss = coeffs[ck, ck], coeffs[ck, sk], coeffs[sk, ck], coeffs[sk, sk]
         A = (cc - ss) / 2
         B = (sc + cs) / 2
@@ -148,7 +151,7 @@ def per_frequency_excluded_loss(snapshot, F: torch.Tensor,
     p = snapshot.p
     idx = _split_idx(snapshot, split)
     out = {}
-    for k in range(1, (p - 1) // 2 + 1):
+    for k in range(1, p // 2 + 1):
         edited = filter_logits(snapshot.logits, F, p, [k], keep=False, mode="sum")
         out[k] = _loss_acc(edited, snapshot.data, idx)["loss"]
     return out
