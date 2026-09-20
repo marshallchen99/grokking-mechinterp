@@ -201,6 +201,25 @@ These edit the **weights** and re-run the network, so the intervention propagate
 
 ![ablations](figures/fig4_ablations.png)
 
+### A fourth identification, using no rule at all
+
+<!-- BEGIN:load_bearing -->
+The three rules in section 2 all read the model's *representation*. This one reads its *behaviour*, and uses no threshold, no clustering and no gap statistic: delete one frequency's two output directions at a time and measure what it costs. The unablated training loss is 2.95e-07.
+
+| frequency removed | train loss afterwards |
+|:--|--:|
+| 22  (identified as key) | 11.1375 |
+| 18  (identified as key) | 1.2226 |
+| 1  (identified as key) | 0.4058 |
+| 56  (identified as key) | 0.0060 |
+| 44 | 1.24e-05 |
+| 47 | 2.50e-06 |
+
+The remaining 52 frequencies have a median cost of 3.14e-07 -- a separation of seven orders of magnitude between the frequencies that carry the computation and the ones that do not.
+
+Taking the top 4 by this measure alone gives [1, 18, 22, 56], which **matches the three rules exactly**, so four methods with no shared machinery agree on the same set.
+<!-- END:load_bearing -->
+
 ### Is the circuit minimal?
 
 <!-- BEGIN:redundancy -->
@@ -275,6 +294,8 @@ Each run uses the identical configuration; only the operation (and, in one pair,
 
 - `(a^2 + ab + b^2) mod p` at p=109 did not reach 90% test accuracy within its 30,000-step budget. That is a censored observation, not a demonstration that it never would.
 <!-- END:operations -->
+
+![operations](figures/fig5_operations.png)
 
 ### Multiplication, and the discrete logarithm
 
@@ -358,6 +379,8 @@ Averaged over the training fractions that grokked, the step at which generalisat
 | wd 1.0, frac 0.5 | 815 | 3 | 0.8922 | 0.9916 | 1.0000 |
 | wd 3.0, frac 0.5 | 344 | 3 | 0.8919 | 0.9912 | 1.0000 |
 <!-- END:phase_diagram -->
+
+![phase diagram](figures/fig6_phase_diagram.png)
 
 ---
 
