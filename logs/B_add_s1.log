@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/mnt/d/Portfolio/grokking-mechinterp/scripts/run_train.py", line 72, in <module>
+    main()
+    ~~~~^^
+  File "/mnt/d/Portfolio/grokking-mechinterp/scripts/run_train.py", line 53, in main
+    tcfg = TrainConfig(
+        steps=args.steps, lr=args.lr, weight_decay=args.weight_decay,
+        log_every=args.log_every, n_checkpoints=args.n_checkpoints,
+    )
+TypeError: TrainConfig.__init__() got an unexpected keyword argument 'n_checkpoints'. Did you mean 'n_log_checkpoints'?

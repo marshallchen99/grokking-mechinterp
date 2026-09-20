@@ -258,3 +258,47 @@ def progress_panel(rows: List[Dict], mode: str = "light",
     for ax in axes:
         ax.set_xlim(0, float(step[-1]) * 1.02)
     return fig
+
+
+def spectrum_before_after(rows: List[Dict], key_freqs: Sequence[int],
+                          steps: Sequence[int], mode: str = "light",
+                          figsize=(6.6, 4.4)):
+    """The same spectrum at several points in training.
+
+    The story is "these few, not those fifty", so each panel is the emphasis
+    form: accent hue for the frequencies the finished model uses, de-emphasis
+    grey for the rest.  The key set is the *final* one in every panel, which is
+    the point -- it shows those frequencies growing out of the noise.
+    """
+    t = PALETTE[mode]
+    accent = categorical(mode, 1)[0]
+    key = set(key_freqs)
+    picked = []
+    for s in steps:
+        picked.append(min(rows, key=lambda r: abs(r["step"] - s)))
+
+    fig, axes = plt.subplots(len(picked), 1, figsize=figsize, sharex=True)
+    if len(picked) == 1:
+        axes = [axes]
+    ymax = 0.0
+    shares = []
+    for r in picked:
+        pw = np.asarray(r["emb_power_per_freq"], dtype=float)[1:]
+        sh = pw / pw.sum() if pw.sum() else pw
+        shares.append(sh)
+        ymax = max(ymax, float(sh.max()))
+
+    for ax, r, sh in zip(axes, picked, shares):
+        freqs = np.arange(1, len(sh) + 1)
+        colors = [accent if f in key else t["deemph"] for f in freqs]
+        ax.bar(freqs, sh, color=colors, width=0.72)
+        ax.set_ylim(0, ymax * 1.18)
+        ax.set_xlim(0.2, len(sh) + 0.8)
+        ax.grid(axis="x", visible=False)
+        ax.set_ylabel("share")
+        in_key = float(sum(sh[f - 1] for f in key))
+        ax.set_title(f"step {r['step']:,}   -   test accuracy {r['test_acc']:.1%}   -   "
+                     f"{in_key:.1%} of the power on the {len(key)} key frequencies",
+                     color=t["text_primary"], fontsize=9)
+    axes[-1].set_xlabel("frequency  k")
+    return fig

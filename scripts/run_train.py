@@ -36,7 +36,10 @@ def main():
     ap.add_argument("--n-heads", type=int, default=4)
     ap.add_argument("--d-mlp", type=int, default=512)
     ap.add_argument("--log-every", type=int, default=10)
-    ap.add_argument("--n-checkpoints", type=int, default=160)
+    ap.add_argument("--n-log-checkpoints", type=int, default=120)
+    ap.add_argument("--dense-from", type=int, default=5_000)
+    ap.add_argument("--dense-to", type=int, default=20_000)
+    ap.add_argument("--dense-every", type=int, default=250)
     ap.add_argument("--threads", type=int, default=6)
     ap.add_argument("--out", default=str(ROOT))
     args = ap.parse_args()
@@ -52,7 +55,9 @@ def main():
     model = OneLayerTransformer(mcfg)
     tcfg = TrainConfig(
         steps=args.steps, lr=args.lr, weight_decay=args.weight_decay,
-        log_every=args.log_every, n_checkpoints=args.n_checkpoints,
+        log_every=args.log_every,
+        n_log_checkpoints=args.n_log_checkpoints, dense_from=args.dense_from,
+        dense_to=args.dense_to, dense_every=args.dense_every,
     )
 
     print(json.dumps({"tag": args.tag, "op": args.op, "p": args.p,

@@ -1,0 +1,43 @@
+{
+  "tag": "B_add_s0",
+  "op": "add",
+  "p": 113,
+  "n_train": 3830,
+  "n_test": 8939,
+  "n_params": 226048,
+  "model": {
+    "d_vocab": 114,
+    "d_vocab_out": 113,
+    "n_ctx": 3,
+    "d_model": 128,
+    "n_heads": 4,
+    "d_head": 32,
+    "d_mlp": 512,
+    "act": "relu",
+    "causal": true,
+    "init_std": 0.0,
+    "init_range": 0.8,
+    "seed": 0
+  },
+  "train": {
+    "steps": 40000,
+    "lr": 0.001,
+    "betas": [
+      0.9,
+      0.98
+    ],
+    "eps": 1e-08,
+    "weight_decay": 1.0,
+    "optimizer": "adamw",
+    "warmup_steps": 10,
+    "log_every": 10,
+    "n_log_checkpoints": 120,
+    "dense_from": 5000,
+    "dense_to": 20000,
+    "dense_every": 250,
+    "seed": 0
+  }
+}
+step      0 | train 4.7352/0.010 | test 4.7326/0.008 | |w| 33.6 | 0s
+step   1000 | train 0.0000/1.000 | test 28.9035/0.014 | |w| 59.3 | 136s
+step   2000 | train 0.0000/1.000 | test 29.3363/0.018 | |w| 53.7 | 307s

@@ -6,7 +6,7 @@
   "model_seed": 0,
   "data_seed": 0,
   "threads": 5,
-  "dense-to": 20000
+  "dense_to": 25000
  },
  {
   "tag": "B_add_s1",
@@ -14,6 +14,7 @@
   "steps": 30000,
   "model_seed": 1,
   "data_seed": 1,
-  "threads": 5
+  "threads": 5,
+  "dense_to": 25000
  }
 ]
