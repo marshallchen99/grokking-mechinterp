@@ -40,6 +40,8 @@ def main():
     ap.add_argument("--dense-from", type=int, default=5_000)
     ap.add_argument("--dense-to", type=int, default=20_000)
     ap.add_argument("--dense-every", type=int, default=250)
+    ap.add_argument("--warmup-steps", type=int, default=10)
+    ap.add_argument("--loss-dtype", default="float64", choices=["float64", "float32"])
     ap.add_argument("--threads", type=int, default=6)
     ap.add_argument("--out", default=str(ROOT))
     args = ap.parse_args()
@@ -58,6 +60,7 @@ def main():
         log_every=args.log_every,
         n_log_checkpoints=args.n_log_checkpoints, dense_from=args.dense_from,
         dense_to=args.dense_to, dense_every=args.dense_every,
+        warmup_steps=args.warmup_steps, loss_dtype=args.loss_dtype,
     )
 
     print(json.dumps({"tag": args.tag, "op": args.op, "p": args.p,
