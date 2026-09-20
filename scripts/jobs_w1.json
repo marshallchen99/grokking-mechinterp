@@ -1,0 +1,18 @@
+[
+ {
+  "tag": "B_add_s0",
+  "op": "add",
+  "steps": 40000,
+  "model_seed": 0,
+  "data_seed": 0,
+  "threads": 5
+ },
+ {
+  "tag": "B_mul_s0",
+  "op": "mul",
+  "steps": 40000,
+  "model_seed": 0,
+  "data_seed": 0,
+  "threads": 5
+ }
+]

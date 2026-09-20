@@ -25,9 +25,17 @@ import numpy as np
 from .style import PALETTE, categorical, diverging_cmap, emphasis, sequential_cmap
 
 
-def _logx(ax, lo: float = 1.0):
+def _logx(ax, lo: float = 1.0, xmax: Optional[float] = None):
+    """Log step axis that still shows step 0.
+
+    symlog is the right scale here -- the phenomenon spans three orders of
+    magnitude and step 0 has to be on the plot -- but by default it also draws
+    the negative branch, which is meaningless for a step count.
+    """
     ax.set_xscale("symlog", linthresh=lo)
     ax.set_xlabel("training step")
+    if xmax is not None:
+        ax.set_xlim(0, xmax)
 
 
 def _endpoint_labels(ax, x, items, dx=1.04, fontsize=8, min_gap_frac=0.055):
@@ -111,8 +119,8 @@ def grokking_curve(hist: List[Dict], mode: str = "light",
     # legend to the right of the left-aligned title so the two never collide
     ax1.legend(loc="lower right", ncols=2, bbox_to_anchor=(1.0, 1.0),
                frameon=False, borderaxespad=0.2)
-    _logx(ax2)
-    ax2.set_xlim(0, step[-1] * 1.35)
+    _logx(ax2, xmax=float(step[-1]) * 1.35)
+    ax1.set_xlim(0, float(step[-1]) * 1.35)
     return fig
 
 
@@ -176,52 +184,77 @@ def heatmap(grid: np.ndarray, mode: str = "light", signed: bool = False,
 
 def progress_panel(rows: List[Dict], mode: str = "light",
                    grok_step: Optional[int] = None,
-                   figsize=(6.4, 5.4)):
-    """The argument that grokking is not sudden.
+                   phases: Optional[Dict[str, float]] = None,
+                   figsize=(6.6, 6.4)):
+    """The argument that the transition is not sudden.
 
-    Top panel: the externally visible metric (test accuracy) -- flat, then a
-    cliff.  Lower panels: the internal measures, which move during the flat
-    stretch.  Each panel uses emphasis, because in each one a single line is
-    the claim and the others are there for reference.
+    Top panel is what an observer sees from outside: flat, then a cliff.  The
+    panels below are measured inside the same checkpoints and move thousands of
+    steps earlier.  Each panel uses emphasis -- in each one a single line is
+    the claim -- rather than spending categorical hues on a story about one of
+    them.
     """
     t = PALETTE[mode]
     c1, c2, c3 = categorical(mode, 3)
     step = np.array([r["step"] for r in rows], dtype=float)
 
+    def col(key, default=np.nan):
+        return np.array([r.get(key, default) for r in rows], dtype=float)
+
     fig, axes = plt.subplots(3, 1, figsize=figsize, sharex=True)
 
     ax = axes[0]
-    ax.plot(step, [r["train_acc"] for r in rows], color=t["deemph"], label="train")
-    ax.plot(step, [r["test_acc"] for r in rows], color=c2, label="test")
+    ax.plot(step, col("train_acc"), color=t["deemph"], label="train", linewidth=1.5)
+    ax.plot(step, col("test_acc"), color=c2, label="test", linewidth=2.2)
     ax.set_ylabel("accuracy")
     ax.set_ylim(-0.04, 1.06)
-    ax.set_title("what you can see from outside", color=t["text_primary"])
-    ax.legend(loc="center left", ncols=2, frameon=False)
+    ax.set_yticks([0, 0.5, 1.0]); ax.set_yticklabels(["0%", "50%", "100%"])
+    ax.set_title("what an observer sees from outside", color=t["text_primary"])
+    ax.legend(loc="upper left", ncols=2, frameon=False)
 
     ax = axes[1]
-    ax.plot(step, [r["restricted_loss_block"] for r in rows], color=c1,
-            label="restricted loss (key frequencies only)")
-    ax.plot(step, [r["excluded_loss_block"] for r in rows], color=c3,
-            label="excluded loss (key frequencies removed)")
-    ax.plot(step, [r["train_loss"] for r in rows], color=t["deemph"],
-            label="train loss", linewidth=1.4)
+    ax.plot(step, col("restricted_loss_sum_all"), color=c1,
+            label="restricted loss  (keep only the key frequencies)")
+    ax.plot(step, col("excluded_loss_sum"), color=c3,
+            label="excluded loss  (delete only the key frequencies)")
+    ax.plot(step, col("train_loss"), color=t["deemph"], linewidth=1.2,
+            label="train loss")
     ax.set_yscale("log")
-    ax.set_ylabel("loss")
+    ax.set_ylabel("cross-entropy loss")
     ax.set_title("what the progress measures see", color=t["text_primary"])
-    ax.legend(loc="best", frameon=False, fontsize=7.5)
+    ax.legend(loc="lower left", frameon=False, fontsize=7.5)
 
     ax = axes[2]
-    ax.plot(step, [r["logit_var_a+b"] for r in rows], color=c1,
-            label="variance explained by (a+b)")
-    ax.plot(step, [r.get("emb_gini", np.nan) for r in rows], color=c3,
-            label="embedding spectrum sparsity (Gini)")
+    ax.plot(step, col("logit_var_a+b"), color=c1,
+            label="logit variance explained by (a+b)")
+    ax.plot(step, col("emb_gini"), color=c3,
+            label="embedding spectrum concentration (Gini)")
+    ax.plot(step, col("neuron_frac_above_85pct"), color=t["deemph"], linewidth=1.5,
+            label="neurons explained >85% by one frequency")
     ax.set_ylabel("fraction")
     ax.set_ylim(-0.04, 1.06)
-    ax.set_title("structure inside the model", color=t["text_primary"])
-    ax.legend(loc="best", frameon=False, fontsize=7.5)
+    ax.set_title("structure forming inside the model", color=t["text_primary"])
+    ax.legend(loc="upper left", frameon=False, fontsize=7.5)
 
+    # Phases are marked by their boundaries, with only the middle one shaded.
+    # Shading all three in the same tone just paints the whole plot.
+    if phases:
+        items = sorted(phases.items(), key=lambda kv: kv[1][0])
+        for i, (name, (a0, a1)) in enumerate(items):
+            if i == 1:
+                for ax in axes:
+                    ax.axvspan(a0, a1, color=t["grid"], alpha=0.45, zorder=0, linewidth=0)
+            if a0 > 0:
+                for ax in axes:
+                    ax.axvline(a0, color=t["axis"], linewidth=0.7, zorder=1)
+        for name, (a0, a1) in items:
+            mid = (max(a0, 0.6) * max(a1, 1)) ** 0.5
+            axes[0].annotate(name, xy=(mid, 0.72), xycoords=("data", "axes fraction"),
+                             fontsize=7.5, color=t["text_muted"], ha="center")
     if grok_step:
         for ax in axes:
-            ax.axvline(grok_step, color=t["deemph"], linewidth=1.0, zorder=0)
-    _logx(axes[-1])
+            ax.axvline(grok_step, color=c2, linewidth=1.2, zorder=1, alpha=0.8)
+    _logx(axes[-1], xmax=float(step[-1]) * 1.02)
+    for ax in axes:
+        ax.set_xlim(0, float(step[-1]) * 1.02)
     return fig
