@@ -437,6 +437,9 @@ footer p{ font-size:.86rem; }
     </p>
     <div id="phasegrid" class="phasegrid"></div>
     <p style="margin-top:1.3rem" id="phase-note"></p>
+    <h3 style="margin-top:2rem">Does that survive a change of seed?</h3>
+    <div class="tablewrap"><table id="repl-table"></table></div>
+    <p style="margin-top:1.2rem" id="repl-note"></p>
     <h3 style="margin-top:2rem">Which correction mattered?</h3>
     <div class="tablewrap"><table id="controls-table"></table></div>
     <p style="margin-top:1.2rem" id="controls-note"></p>
@@ -445,7 +448,19 @@ footer p{ font-size:.86rem; }
 
 <section>
   <div class="wrap"><div class="col">
-    <p class="eyebrow">09 &middot; honesty</p>
+    <p class="eyebrow">09 &middot; forecasting</p>
+    <h2>At step 500, before anything visible happens</h2>
+    <p id="pred-intro"></p>
+    <div class="tablewrap"><table id="pred-runs"></table></div>
+    <div class="tablewrap"><table id="pred-table"></table></div>
+    <p style="margin-top:1.2rem" id="pred-note"></p>
+    <p class="note" id="pred-caveat"></p>
+  </div></div>
+</section>
+
+<section>
+  <div class="wrap"><div class="col">
+    <p class="eyebrow">10 &middot; honesty</p>
     <h2>What this is and is not</h2>
     <p>
       <strong>Nothing here is a new discovery.</strong> The phenomenon is Power et&nbsp;al. (2022);
@@ -950,6 +965,73 @@ footer p{ font-size:.86rem; }
           "measurement is not the same as causing the speedup.";
       }
     }
+  })();
+
+  /* ---------------- replicates + prediction ---------------- */
+  (function(){
+    var R = D.replicates || [];
+    if (R.length){
+      var wds=[], seeds=[];
+      R.forEach(function(r){ if(wds.indexOf(r.wd)<0) wds.push(r.wd);
+                             if(seeds.indexOf(r.seed)<0) seeds.push(r.seed); });
+      wds.sort(function(a,b){return a-b;}); seeds.sort(function(a,b){return a-b;});
+      if (seeds.length >= 2){
+        table("repl-table", ["", ].concat(seeds.map(function(s){return "seed "+s;})),
+          wds.map(function(w){
+            return {cells:["weight decay "+w].concat(seeds.map(function(sd){
+              var m = R.filter(function(r){return r.wd===w && r.seed===sd;})[0];
+              if (!m) return "\u2014";
+              return m.grok ? commas(m.grok) : "none by "+commas(m.budget);
+            }))};
+          }));
+        document.getElementById("repl-note").innerHTML =
+          "Every cell of the grid above is one run, which is the weakest thing about "+
+          "it. Repeating the row where all four grokked, with a different seed for both "+
+          "the split and the initialisation, gives the same strict ordering \u2014 more "+
+          "weight decay, earlier grokking, at every step. One seed could do that by "+
+          "accident; two is harder to dismiss, though it is still two.";
+      }
+    }
+
+    var P = D.prediction; if (!P) return;
+    var c = P.config;
+    document.getElementById("pred-intro").innerHTML =
+      "Section 03 shows the progress measures moving before the accuracy does "+
+      "<em>within one run</em>. Whether they forecast an <em>unseen</em> run is a much "+
+      "stronger claim. These "+P.n+" runs share the task, the modulus (p = "+c.p+"), the "+
+      "training fraction ("+c.train_frac+") and the weight decay ("+c.weight_decay+"). "+
+      "What differs is the random draw \u2014 and the grokking step still spans more "+
+      "than a factor of two:";
+    table("pred-runs", ["run","grokking step"],
+      P.runs.map(function(r){ return {cells:[r.tag, commas(r.grok)]}; }));
+    var steps = Object.keys(P.at_steps).sort(function(a,b){return +a-+b;});
+    var keys = [];
+    steps.forEach(function(s){ Object.keys(P.at_steps[s]).forEach(function(k){
+      if (keys.indexOf(k)<0) keys.push(k); }); });
+    table("pred-table", ["signal"].concat(steps.map(function(s){return "at step "+commas(+s);})),
+      keys.map(function(k){
+        var lab = null;
+        steps.forEach(function(s){ if(P.at_steps[s][k]) lab = P.at_steps[s][k].label; });
+        return {cls: k==="test_acc" ? "dead" : (k==="weight_norm" ? "" : "hi"),
+                cells:[lab].concat(steps.map(function(s){
+                  var v = P.at_steps[s][k];
+                  return v ? (v.rho>=0?"+":"")+v.rho.toFixed(2) : "\u2014"; }))};
+      }));
+    document.getElementById("pred-note").innerHTML =
+      "Rank correlation between a signal read early and the step at which the run "+
+      "eventually generalises; negative means a higher reading predicts an earlier "+
+      "transition. <strong>At step 500 \u2014 six to fourteen thousand steps before "+
+      "anything happens \u2014 several internal signals rank these runs almost "+
+      "perfectly, while the one quantity an observer can actually see, the test "+
+      "accuracy, does not rank them at all.</strong>";
+    document.getElementById("pred-caveat").innerHTML =
+      "How much to believe: n = "+P.n+", and eight signals were checked at four time "+
+      "points, so no single coefficient here survives a correction for multiple "+
+      "comparisons. What is worth something is that every internal signal points the "+
+      "same way at every time point while the external one does not. And the "+
+      "deflationary reading deserves equal billing \u2014 the plain weight norm does as "+
+      "well as any mechanistic measure, so on this evidence forecasting grokking may "+
+      "not require interpretability at all.";
   })();
 
   /* ---------------- config ---------------- */

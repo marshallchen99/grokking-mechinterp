@@ -1,0 +1,28 @@
+183 checkpoints, steps 0 .. 25000
+key frequencies from the FINAL checkpoint (step 25000):
+    rule_a_embedding_norm    [1, 8, 21, 38]
+    rule_b_neuron_cluster    [1, 8, 21, 38]
+    rule_c_power_gap         [1, 8, 21, 38]
+    -> used                  [1, 8, 21, 38]   Jaccard 1.000 agree=True
+  key frequencies carry 0.9528 of embedding power; Gini(W_E) 0.9013; 0.9805 of neurons above 0.85 explained
+  [1/183] step      0 test_acc 0.008 restr 4.73e+00 excl 4.735 a+b 0.0001 (2s)
+  [11/183] step     10 test_acc 0.008 restr 4.74e+00 excl 4.715 a+b 0.0001 (18s)
+  [21/183] step     23 test_acc 0.005 restr 4.74e+00 excl 4.681 a+b 0.0001 (32s)
+  [31/183] step     55 test_acc 0.004 restr 4.74e+00 excl 4.307 a+b 0.0002 (47s)
+  [41/183] step    128 test_acc 0.004 restr 4.84e+00 excl 1.884 a+b 0.0085 (61s)
+  [51/183] step    299 test_acc 0.009 restr 4.80e+00 excl 0.065 a+b 0.0195 (77s)
+  [61/183] step    701 test_acc 0.012 restr 3.95e+00 excl 0.008 a+b 0.0328 (93s)
+  [71/183] step   1642 test_acc 0.018 restr 3.06e+00 excl 0.011 a+b 0.0355 (108s)
+  [81/183] step   3845 test_acc 0.054 restr 1.93e+00 excl 1.988 a+b 0.3232 (122s)
+  [91/183] step   6000 test_acc 0.371 restr 1.69e-01 excl 13.506 a+b 0.3652 (139s)
+  [101/183] step   7750 test_acc 1.000 restr 2.14e-04 excl 7.094 a+b 0.2491 (153s)
+  [111/183] step   9750 test_acc 1.000 restr 1.69e-07 excl 15.792 a+b 0.9415 (168s)
+  [121/183] step  11623 test_acc 1.000 restr 2.50e-05 excl 14.104 a+b 0.9002 (183s)
+  [131/183] step  13750 test_acc 1.000 restr 6.98e-06 excl 19.701 a+b 0.8320 (197s)
+  [141/183] step  15750 test_acc 1.000 restr 1.01e-06 excl 18.591 a+b 0.9655 (212s)
+  [151/183] step  17787 test_acc 1.000 restr 4.73e-04 excl 12.120 a+b 0.8926 (228s)
+  [161/183] step  20000 test_acc 1.000 restr 5.89e-08 excl 23.413 a+b 0.8834 (243s)
+  [171/183] step  22250 test_acc 1.000 restr 1.42e-06 excl 21.253 a+b 0.9710 (257s)
+  [181/183] step  24500 test_acc 1.000 restr 2.69e-04 excl 14.123 a+b 0.9446 (272s)
+  [183/183] step  25000 test_acc 1.000 restr 1.54e-06 excl 19.788 a+b 0.9731 (275s)
+wrote /mnt/d/Portfolio/grokking-mechinterp/results/C_add_f32_analysis.json  (275s)

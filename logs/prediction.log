@@ -1,0 +1,51 @@
+21 runs with complete trajectories (9 censored)
+
+=== measured at step 200  (21 runs) ===
+  feature                             AUC grok/censored   rho vs grok step
+  restricted loss                                 0.667             +0.601
+  excluded loss                                   0.713             -0.713
+  embedding Gini                                  0.815             -0.657
+  power in key frequencies                        0.593             -0.650
+  (a+b) variance explained                        0.778             -0.664
+  weight norm                                     0.250             +0.594
+  train loss                                      0.306             +0.217
+  test accuracy (the visible one)                 0.676             -0.685
+
+=== measured at step 500  (21 runs) ===
+  feature                             AUC grok/censored   rho vs grok step
+  restricted loss                                 0.639             +0.650
+  excluded loss                                   0.556             -0.713
+  embedding Gini                                  0.833             -0.678
+  power in key frequencies                        0.620             -0.643
+  (a+b) variance explained                        0.815             -0.678
+  weight norm                                     0.296             +0.608
+  train loss                                      0.287             +0.343
+  test accuracy (the visible one)                 0.667             -0.706
+
+=== measured at step 1,000  (21 runs) ===
+  feature                             AUC grok/censored   rho vs grok step
+  restricted loss                                 0.667             +0.699
+  excluded loss                                   0.556             -0.706
+  embedding Gini                                  0.843             -0.678
+  power in key frequencies                        0.648             -0.643
+  (a+b) variance explained                        0.843             -0.678
+  weight norm                                     0.315             +0.657
+  train loss                                      0.287             +0.322
+  test accuracy (the visible one)                 0.667             -0.685
+
+=== measured at step 2,000  (21 runs) ===
+  feature                             AUC grok/censored   rho vs grok step
+  restricted loss                                 0.722             +0.706
+  excluded loss                                   0.639             -0.601
+  embedding Gini                                  0.824             -0.678
+  power in key frequencies                        0.676             -0.636
+  (a+b) variance explained                        0.833             -0.657
+  weight norm                                     0.398             +0.608
+  train loss                                      0.231             +0.308
+  test accuracy (the visible one)                 0.676             -0.697
+
+wrote /mnt/d/Portfolio/grokking-mechinterp/results/prediction_summary.json
+
+AUC is the probability that a run which will grok scores above one that will not; 0.5 is chance.
+rho is the rank correlation between the signal and the grokking step among runs that grokked;
+negative means a higher signal predicts an earlier grok.

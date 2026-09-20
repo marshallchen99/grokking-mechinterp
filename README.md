@@ -159,10 +159,10 @@ These edit the **weights** and re-run the network, so the intervention propagate
 
 | edit applied to W_E | train acc | test acc | test loss |
 |:--|--:|--:|--:|
-| none (baseline) | 1.0000 | 1.0000 | 6.18e-06 |
-| keep ONLY the key frequencies [1, 18, 22, 56] | 1.0000 | 0.9998 | 0.0020 |
+| none (baseline) | 1.0 | 1.0 | 6.18e-06 |
+| keep ONLY the key frequencies [1, 18, 22, 56] | 1.0 | 0.9998 | 0.0020 |
 | delete ONLY the key frequencies [1, 18, 22, 56] | 0.0097 | 0.0105 | 9.8109 |
-| delete 4 control frequencies [2, 20, 38, 55] | 1.0000 | 1.0000 | 2.81e-05 |
+| delete 4 control frequencies [2, 20, 38, 55] | 1.0 | 1.0 | 2.81e-05 |
 | keep ONLY the control frequencies [2, 20, 38, 55] | 0.0123 | 0.0103 | 9.4146 |
 
 **Neuron surgery.**
@@ -182,7 +182,7 @@ These edit the **weights** and re-run the network, so the intervention propagate
 
 | component removed | train acc | test acc | test loss |
 |:--|--:|--:|--:|
-| baseline | 1.0000 | 1.0000 | 6.18e-06 |
+| baseline | 1.0 | 1.0 | 6.18e-06 |
 | no mlp | 0.0773 | 0.0675 | 4.3367 |
 | no head 0 | 0.4676 | 0.4691 | 3.8923 |
 | no head 1 | 0.3037 | 0.2797 | 5.8884 |
@@ -194,8 +194,8 @@ These edit the **weights** and re-run the network, so the intervention propagate
 
 | logit-space edit | split | loss | accuracy |
 |:--|:--|--:|--:|
-| keep only the key frequencies' (a+b) directions | all pairs | 4.15e-06 | 1.0000 |
-| keep only the key frequencies' (a+b) directions | train | 3.98e-06 | 1.0000 |
+| keep only the key frequencies' (a+b) directions | all pairs | 4.15e-06 | 1.0 |
+| keep only the key frequencies' (a+b) directions | train | 3.98e-06 | 1.0 |
 | delete exactly those directions | train | 26.5789 | 0.0050 |
 <!-- END:ablations -->
 
@@ -282,9 +282,9 @@ Each run uses the identical configuration; only the operation (and, in one pair,
 
 | task | grokking step | final test acc | key freqs | Gini(W_E) | (a+b) variance | trig fraction |
 |:--|--:|--:|--:|--:|--:|--:|
-| `(a + b) mod p`, p=113  (`B_add_s0`) | 7,083 | 1.0000 | 5 | 0.9225 | 0.9874 | 0.8671 |
-| `(a - b) mod p`, p=113  (`B_sub_s0`) | 27,242 | 1.0000 | 4 | 0.9467 | 9.19e-05 | 0.1231 |
-| `(a * b) mod p`, p=113  (`B_mul_s0`) | 7,571 | 1.0000 | 56 | 0.0176 | 0.0087 | 0.5031 |
+| `(a + b) mod p`, p=113  (`B_add_s0`) | 7,083 | 1.0 | 5 | 0.9225 | 0.9874 | 0.8671 |
+| `(a - b) mod p`, p=113  (`B_sub_s0`) | 27,242 | 1.0 | 4 | 0.9467 | 9.19e-05 | 0.1231 |
+| `(a * b) mod p`, p=113  (`B_mul_s0`) | 7,571 | 1.0 | 56 | 0.0176 | 0.0087 | 0.5031 |
 | `(a^2 + ab + b^2) mod p`, p=113  (`B_sqx_p113`) | none by 30,000 | 0.1138 | -- | -- | -- | -- |
 | `(a^2 + ab + b^2) mod p`, p=109  (`B_sqx_p109`) | none by 30,000 | 0.0893 | -- | -- | -- | -- |
 
@@ -311,7 +311,7 @@ The nonzero residues mod p form a cyclic group of order p-1 under multiplication
 
 | edit | loss | accuracy |
 |:--|--:|--:|
-| keep only the multiplicative key frequencies | 8.92e-05 | 1.0000 |
+| keep only the multiplicative key frequencies | 8.92e-05 | 1.0 |
 | delete exactly those | 9.9218 | 0.0088 |
 
 **The absorbing element.** Zero has no multiplicative inverse, so it sits outside the group the character story is about. Whether it gets its own sub-circuit is unclaimed in the literature:
@@ -373,11 +373,11 @@ Averaged over the training fractions that grokked, the step at which generalisat
 | wd 0.1, frac 0.35 | none (max 5%) | 29 | 0.2076 | 0.0461 | 0.0455 |
 | wd 0.3, frac 0.35 | none (max 6%) | 29 | 0.2701 | 0.0729 | 0.0544 |
 | wd 1.0, frac 0.35 | none (max 17%) | 26 | 0.4495 | 0.3618 | 0.1653 |
-| wd 3.0, frac 0.35 | 14,426 | 4 | 0.8489 | 0.9804 | 1.0000 |
-| wd 0.1, frac 0.5 | 10,794 | 8 | 0.7362 | 0.9797 | 1.0000 |
-| wd 0.3, frac 0.5 | 3,100 | 3 | 0.8909 | 0.9906 | 1.0000 |
-| wd 1.0, frac 0.5 | 815 | 3 | 0.8922 | 0.9916 | 1.0000 |
-| wd 3.0, frac 0.5 | 344 | 3 | 0.8919 | 0.9912 | 1.0000 |
+| wd 3.0, frac 0.35 | 14,426 | 4 | 0.8489 | 0.9804 | 1.0 |
+| wd 0.1, frac 0.5 | 10,794 | 8 | 0.7362 | 0.9797 | 1.0 |
+| wd 0.3, frac 0.5 | 3,100 | 3 | 0.8909 | 0.9906 | 1.0 |
+| wd 1.0, frac 0.5 | 815 | 3 | 0.8922 | 0.9916 | 1.0 |
+| wd 3.0, frac 0.5 | 344 | 3 | 0.8919 | 0.9912 | 1.0 |
 <!-- END:phase_diagram -->
 
 ![phase diagram](figures/fig6_phase_diagram.png)
@@ -385,7 +385,16 @@ Averaged over the training fractions that grokked, the step at which generalisat
 ### Does that survive a change of seed?
 
 <!-- BEGIN:replicates -->
-_Not yet run._
+Every cell of the diagram above is a single run, which is the weakest thing about it. This repeats the row where all four cells grokked, with a different seed for both the data split and the initialisation:
+
+|  | seed 0 | seed 1 |
+|:--|--:|--:|
+| weight decay 0.1 | 10,794 | none by 12,000 |
+| weight decay 0.3 | 3,100 | 4,010 |
+| weight decay 1.0 | 815 | 922 |
+| weight decay 3.0 | 344 | 255 |
+
+The ordering is strictly monotone in both seeds: more weight decay, earlier grokking, at every step of the grid. One seed could have produced that by accident; two making the same ordering is harder to dismiss, though it is still two.
 <!-- END:replicates -->
 
 ---
@@ -393,7 +402,90 @@ _Not yet run._
 ## 7. Can the transition be predicted in advance?
 
 <!-- BEGIN:prediction -->
-_Not yet run._
+Section 4 shows the progress measures moving before the accuracy does *within one run*. That is a much weaker claim than being able to look at an unseen run at step 1,000 and say what happens at step 10,000. With 21 runs that have a full trajectory (9 of which never reached 90% inside their budget), both questions can at least be asked.
+
+**Measured at step 200** (21 runs):
+
+| signal | AUC: will grok vs will not | rank correlation with the grokking step |
+|:--|--:|--:|
+| embedding Gini | **0.815** | -0.66 |
+| (a+b) variance explained | 0.778 | -0.66 |
+| excluded loss | 0.713 | -0.71 |
+| test accuracy (the visible one) | 0.676 | -0.69 |
+| restricted loss | 0.667 | 0.6 |
+| power in key frequencies | 0.593 | -0.65 |
+| train loss | 0.306 | 0.22 |
+| weight norm | 0.25 | 0.59 |
+
+**Measured at step 500** (21 runs):
+
+| signal | AUC: will grok vs will not | rank correlation with the grokking step |
+|:--|--:|--:|
+| embedding Gini | **0.833** | -0.68 |
+| (a+b) variance explained | 0.815 | -0.68 |
+| test accuracy (the visible one) | 0.667 | -0.71 |
+| restricted loss | 0.639 | 0.65 |
+| power in key frequencies | 0.62 | -0.64 |
+| excluded loss | 0.556 | -0.71 |
+| weight norm | 0.296 | 0.61 |
+| train loss | 0.287 | 0.34 |
+
+**Measured at step 1,000** (21 runs):
+
+| signal | AUC: will grok vs will not | rank correlation with the grokking step |
+|:--|--:|--:|
+| embedding Gini | 0.843 | -0.68 |
+| (a+b) variance explained | **0.843** | -0.68 |
+| restricted loss | 0.667 | 0.7 |
+| test accuracy (the visible one) | 0.667 | -0.69 |
+| power in key frequencies | 0.648 | -0.64 |
+| excluded loss | 0.556 | -0.71 |
+| weight norm | 0.315 | 0.66 |
+| train loss | 0.287 | 0.32 |
+
+**Measured at step 2,000** (21 runs):
+
+| signal | AUC: will grok vs will not | rank correlation with the grokking step |
+|:--|--:|--:|
+| (a+b) variance explained | **0.833** | -0.66 |
+| embedding Gini | 0.824 | -0.68 |
+| restricted loss | 0.722 | 0.71 |
+| power in key frequencies | 0.676 | -0.64 |
+| test accuracy (the visible one) | 0.676 | -0.7 |
+| excluded loss | 0.639 | -0.6 |
+| weight norm | 0.398 | 0.61 |
+| train loss | 0.231 | 0.31 |
+
+AUC is the probability that a run which will grok scores above one that will not, so 0.5 is chance and 1.0 is perfect separation.
+
+**That table is confounded and should not be read as a result.** The runs that never grokked are almost all low-training-fraction sweep cells, and the training fraction is itself what decides whether grokking happens, so any signal that merely tracks it scores well. The clean question has to be asked inside a single configuration.
+
+**Within one configuration.** These 5 runs share the task (`add`), the modulus (p = 113), the training fraction (0.3) and the weight decay (1.0). What differs is the random draw, and the grokking step still spans more than a factor of two:
+
+| run | grokking step |
+|:--|--:|
+| B_add_s1 | 6,228 |
+| C_add_f32 | 6,734 |
+| B_add_s0 | 7,083 |
+| C_add_nowarm | 9,764 |
+| main_add_s0 | 14,536 |
+
+Rank correlation between the signal measured early and the step at which the run eventually generalises. Negative means a higher reading predicts an earlier transition:
+
+| signal | at step 200 | at step 500 | at step 1,000 | at step 2,000 |
+|:--|--:|--:|--:|--:|
+| restricted loss | 0.6 | 0.6 | 0.7 | 0.9 |
+| excluded loss | -0.9 | -1.0 | -1.0 | -0.7 |
+| embedding Gini | -0.8 | -0.9 | -0.9 | -0.9 |
+| power in key frequencies | -1.0 | -0.9 | -0.9 | -1.0 |
+| (a+b) variance explained | -0.9 | -0.9 | -0.9 | -0.7 |
+| weight norm | 0.9 | 1.0 | 0.9 | 0.2 |
+| train loss | -0.7 | -0.7 | -0.5 | -0.6 |
+| test accuracy (the visible one) | -0.3 | -0.4 | -0.1 | -0.3 |
+
+At step 500 -- six to fourteen thousand steps before anything happens -- several internal signals rank these runs almost perfectly, while the one quantity an observer can actually see, the test accuracy, does not rank them at all.
+
+**How much to believe.** n = 5, and 8 signals were checked at 4 time points, so no single coefficient here survives a correction for multiple comparisons. What is worth something is that every internal signal points the same way at every time point while the external one does not. And the deflationary reading deserves equal billing: the plain weight norm does as well as any mechanistic measure, so on this evidence predicting grokking may not require interpretability at all.
 <!-- END:prediction -->
 
 ---

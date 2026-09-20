@@ -15,3 +15,5 @@ key frequencies from the FINAL checkpoint (step 20000):
   [61/88] step   7500 test_acc 0.010 restr 2.77e+00 excl 0.073 a+b 0.0275 (32s)
   [71/88] step  11500 test_acc 0.011 restr 2.21e+00 excl 0.140 a+b 0.0333 (37s)
   [81/88] step  15500 test_acc 0.014 restr 1.99e+00 excl 0.188 a+b 0.0376 (41s)
+  [88/88] step  20000 test_acc 0.013 restr 1.88e+00 excl 0.219 a+b 0.0420 (45s)
+wrote /mnt/d/Portfolio/grokking-mechinterp/results/S_p59_wd1.0_f0.25_analysis.json  (45s)

@@ -60,7 +60,10 @@ def _fmt(v, nd: int = 4) -> str:
     if isinstance(v, float):
         if v != 0 and (abs(v) < 1e-3 or abs(v) >= 1e5):
             return f"{v:.2e}"
-        return f"{v:.{nd}f}"
+        # respect the precision a caller already rounded to, rather than
+        # padding 0.6 out to 0.6000
+        dec = len(str(v).split(".")[1]) if "." in str(v) else 0
+        return f"{v:.{min(nd, max(dec, 1))}f}"
     if isinstance(v, (list, tuple)):
         return ", ".join(str(x) for x in v)
     return str(v)

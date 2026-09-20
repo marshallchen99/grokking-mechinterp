@@ -1,0 +1,29 @@
+184 checkpoints, steps 0 .. 30000
+key frequencies from the FINAL checkpoint (step 30000):
+    rule_a_embedding_norm    [13, 16, 26, 30]
+    rule_b_neuron_cluster    [13, 16, 30]
+    rule_c_power_gap         [13, 16, 26, 30]
+    -> used                  [13, 16, 26, 30]   Jaccard 0.750 agree=False
+    NOTE: rules disagree; the union is used and this must be stated in the write-up
+  key frequencies carry 0.9868 of embedding power; Gini(W_E) 0.9415; 0.7031 of neurons above 0.85 explained
+  [1/184] step      0 test_acc 0.008 restr 4.73e+00 excl 4.735 a+b 0.0001 (2s)
+  [11/184] step     10 test_acc 0.009 restr 4.73e+00 excl 4.734 a+b 0.0001 (17s)
+  [21/184] step     25 test_acc 0.010 restr 4.74e+00 excl 4.741 a+b 0.0001 (32s)
+  [31/184] step     59 test_acc 0.023 restr 4.75e+00 excl 5.115 a+b 0.0003 (46s)
+  [41/184] step    139 test_acc 0.279 restr 4.90e+00 excl 7.849 a+b 0.0180 (62s)
+  [51/184] step    332 test_acc 0.363 restr 4.81e+00 excl 13.487 a+b 0.0308 (76s)
+  [61/184] step    789 test_acc 0.378 restr 3.96e+00 excl 17.375 a+b 0.0473 (92s)
+  [71/184] step   1876 test_acc 0.393 restr 2.67e+00 excl 20.585 a+b 0.0869 (106s)
+  [81/184] step   4461 test_acc 0.466 restr 7.00e-01 excl 17.605 a+b 0.3984 (123s)
+  [91/184] step   6308 test_acc 0.949 restr 1.03e-04 excl 21.329 a+b 0.8440 (138s)
+  [101/184] step   8180 test_acc 1.000 restr 6.53e-08 excl 10.536 a+b 0.9910 (154s)
+  [111/184] step  10000 test_acc 1.000 restr 5.04e-08 excl 8.162 a+b 0.9927 (170s)
+  [121/184] step  12000 test_acc 1.000 restr 4.80e-08 excl 7.702 a+b 0.9930 (186s)
+  [131/184] step  14000 test_acc 1.000 restr 4.77e-08 excl 7.535 a+b 0.9932 (203s)
+  [141/184] step  16250 test_acc 1.000 restr 4.79e-08 excl 7.442 a+b 0.9934 (219s)
+  [151/184] step  18250 test_acc 1.000 restr 4.82e-08 excl 7.393 a+b 0.9935 (235s)
+  [161/184] step  20500 test_acc 1.000 restr 4.87e-08 excl 7.354 a+b 0.9936 (252s)
+  [171/184] step  22750 test_acc 1.000 restr 4.92e-08 excl 7.321 a+b 0.9938 (267s)
+  [181/184] step  25000 test_acc 1.000 restr 4.97e-08 excl 7.292 a+b 0.9939 (283s)
+  [184/184] step  30000 test_acc 1.000 restr 5.06e-08 excl 7.240 a+b 0.9941 (288s)
+wrote /mnt/d/Portfolio/grokking-mechinterp/results/B_add_s1_analysis.json  (288s)

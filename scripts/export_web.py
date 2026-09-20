@@ -152,6 +152,21 @@ def main():
                          "budget": h["train_cfg"]["steps"]})
     out["controls"] = controls
 
+    pred = load(root, "prediction_summary.json")
+    if pred and pred.get("within_config"):
+        out["prediction"] = pred["within_config"]
+
+    import glob as _glob
+    repl = []
+    for hp in sorted(_glob.glob(str(root / "results" / "*_f0.5*_history.json"))):
+        h = json.loads(Path(hp).read_text())
+        if not is_finished(h) or h["data"]["p"] != 59:
+            continue
+        repl.append({"wd": h["train_cfg"]["weight_decay"], "seed": h["data"]["seed"],
+                     "grok": r4(crossing_step(h["history"], "test_acc", 0.90)),
+                     "budget": h["train_cfg"]["steps"]})
+    out["replicates"] = repl
+
     ops = []
     for tag in args.op_tags:
         h = load(root, f"{tag}_history.json")
