@@ -8,7 +8,7 @@ generalises.
 
 This repository reproduces that, and then takes the trained network apart to
 show what it actually learned: not a lookup table, but a specific algorithm
-built out of trigonometry, identified by three independent methods that agree,
+built out of trigonometry, identified by four methods with no shared machinery,
 and confirmed by cutting it out of the weights and watching the model die.
 
 Everything runs on CPU. No data is downloaded -- the dataset is generated
@@ -48,7 +48,7 @@ cells shown and 8,939 hidden.
 
 Two completely different strategies both score 100% on the visible cells:
 
-- **Memorise.** With 226,048 parameters and 3,830 examples there is ample room
+- **Memorise.** With about 226,000 parameters and 3,830 examples there is ample room
   for a lookup table. It fits the training set perfectly and says nothing at all
   about the hidden cells, so test accuracy stays at chance (1/113 = 0.88%).
 - **Find the rule.** Then the hidden cells come out right too.
@@ -381,6 +381,20 @@ Averaged over the training fractions that grokked, the step at which generalisat
 <!-- END:phase_diagram -->
 
 ![phase diagram](figures/fig6_phase_diagram.png)
+
+### Does that survive a change of seed?
+
+<!-- BEGIN:replicates -->
+_Not yet run._
+<!-- END:replicates -->
+
+---
+
+## 7. Can the transition be predicted in advance?
+
+<!-- BEGIN:prediction -->
+_Not yet run._
+<!-- END:prediction -->
 
 ---
 
