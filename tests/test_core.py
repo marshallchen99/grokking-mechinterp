@@ -149,9 +149,12 @@ def test_param_count_matches_formula():
         + 3 * cfg.n_heads * cfg.d_model * cfg.d_head    # W_Q, W_K, W_V
         + cfg.n_heads * cfg.d_head * cfg.d_model        # W_O
         + cfg.d_model * cfg.d_mlp * 2                   # W_in, W_out
-        + cfg.d_model * cfg.d_vocab                     # W_U
+        + cfg.d_model * cfg.d_vocab_out                 # W_U: output space is the
+        #                                                 residues only, no "=" column
     )
     assert m.n_params() == expected
+    # the canonical configuration, and the published model's own weight count
+    assert OneLayerTransformer(ModelConfig()).n_params() == 226_048
 
 
 def test_untrained_loss_is_uniform():
@@ -209,12 +212,19 @@ def test_no_layernorm_no_biases():
 # ---------------------------------------------------------------- train
 
 def test_checkpoint_schedule():
-    cs = checkpoint_steps(40_000, 160)
+    cs = checkpoint_steps(40_000, 120, (5_000, 20_000, 250))
     assert cs[0] == 0 and cs[-1] == 40_000
     assert cs == sorted(set(cs))
-    assert len(cs) <= 160
-    # log spacing: dense early, sparse late
-    assert sum(1 for s in cs if s <= 1_000) > sum(1 for s in cs if s > 20_000)
+    # the log band resolves the memorisation phase, which is over by step ~200
+    assert sum(1 for s in cs if s <= 1_000) > 30
+    # the dense band resolves the transition
+    dense = [s for s in cs if 5_000 <= s <= 20_000]
+    assert len(dense) >= 61
+    gaps = [b - a for a, b in zip(dense, dense[1:])]
+    assert max(gaps) <= 250
+    # a run shorter than the dense band must not produce steps past its end
+    short = checkpoint_steps(3_000, 120, (5_000, 20_000, 250))
+    assert short[-1] == 3_000 and max(short) <= 3_000
 
 
 # ------------------------------------------------- even-order basis & dlog
