@@ -357,3 +357,101 @@ def phase_diagram(cells: List[Dict], x_key: str, y_key: str, value_key: str,
     if title:
         ax.set_title(title, color=t["text_primary"])
     return fig
+
+
+def ablation_bars(entries: List[Dict], mode: str = "light", chance: float = 1 / 113,
+                  baseline: Optional[float] = None, title: str = "",
+                  figsize=(6.4, 3.4)):
+    """Test accuracy under each intervention, as horizontal bars.
+
+    The story is "these interventions kill it and those do not", which is a
+    contrast between two groups, not eight identities -- so this is the
+    emphasis form: the accent hue for interventions that survive, de-emphasis
+    grey for the rest, with chance marked as a rule.  Each entry is
+    {"label": str, "value": float, "survives": bool}.
+    """
+    t = PALETTE[mode]
+    accent = categorical(mode, 1)[0]
+    labels = [e["label"] for e in entries]
+    vals = [e["value"] for e in entries]
+    colors = [accent if e.get("survives") else t["deemph"] for e in entries]
+
+    fig, ax = plt.subplots(figsize=figsize)
+    y = np.arange(len(entries))
+    ax.barh(y, vals, color=colors, height=0.66)
+    ax.set_yticks(y)
+    ax.set_yticklabels(labels, fontsize=8)
+    ax.invert_yaxis()
+    ax.set_xlim(0, 1.06)
+    ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
+    ax.set_xticklabels(["0%", "25%", "50%", "75%", "100%"])
+    ax.set_xlabel("test accuracy")
+    ax.grid(axis="y", visible=False)
+
+    ax.axvline(chance, color=t["text_muted"], linewidth=1.0, zorder=3)
+    ax.annotate("chance", xy=(chance, -0.62), xytext=(4, 0),
+                textcoords="offset points", fontsize=7.5, color=t["text_muted"],
+                va="center", annotation_clip=False)
+    if baseline is not None:
+        ax.axvline(baseline, color=t["axis"], linewidth=1.0, zorder=3)
+
+    for yi, v in zip(y, vals):
+        inside = v > 0.22
+        ax.annotate(f"{v:.1%}", xy=(v, yi),
+                    xytext=(-4 if inside else 4, 0), textcoords="offset points",
+                    ha="right" if inside else "left", va="center", fontsize=7.5,
+                    color=(t["surface"] if inside else t["text_secondary"]))
+    if title:
+        ax.set_title(title, color=t["text_primary"])
+    return fig
+
+
+def operation_panels(runs: List[Dict], mode: str = "light", ncols: int = 3,
+                     figsize=(7.0, 4.2), chance: Optional[float] = None):
+    """Small multiples: one test-accuracy curve per operation.
+
+    Six operations would need six categorical hues overlaid on one axis, where
+    the eye cannot follow any of them.  Small multiples put each on its own
+    panel with a shared scale, so the comparison is positional rather than
+    chromatic; one hue is enough.  Each entry is
+    {"label": str, "hist": [...], "grok_step": float|None, "budget": int}.
+    """
+    t = PALETTE[mode]
+    c_train, c_test = categorical(mode, 2)
+    n = len(runs)
+    nrows = int(np.ceil(n / ncols))
+    fig, axes = plt.subplots(nrows, ncols, figsize=figsize, sharex=True, sharey=True,
+                             squeeze=False)
+    flat = [ax for row in axes for ax in row]
+
+    for ax, r in zip(flat, runs):
+        step = np.array([h["step"] for h in r["hist"]], dtype=float)
+        ax.plot(step, [h["train_acc"] for h in r["hist"]], color=t["deemph"],
+                linewidth=1.2)
+        ax.plot(step, [h["test_acc"] for h in r["hist"]], color=c_test, linewidth=1.8)
+        if chance is not None:
+            ax.axhline(chance, color=t["axis"], linewidth=0.7, zorder=0)
+        if r.get("grok_step"):
+            ax.axvline(r["grok_step"], color=t["text_muted"], linewidth=0.9, zorder=1)
+            note = f"{r['grok_step']:,.0f}"
+        else:
+            note = f"no grok by {r['budget']:,}"
+        ax.set_title(r["label"], color=t["text_primary"], fontsize=8.5)
+        ax.annotate(note, xy=(0.04, 0.86), xycoords="axes fraction", fontsize=7.5,
+                    color=t["text_secondary"])
+        ax.set_ylim(-0.04, 1.06)
+        ax.set_xscale("symlog", linthresh=1.0)
+        ax.set_xlim(0, float(step[-1]) * 1.02)
+    for ax in flat[n:]:
+        ax.set_visible(False)
+    for row in axes:
+        row[0].set_ylabel("accuracy")
+        row[0].set_yticks([0, 0.5, 1.0])
+        row[0].set_yticklabels(["0%", "50%", "100%"])
+    for ax in axes[-1]:
+        ax.set_xlabel("training step")
+    # one legend for the whole figure: grey is train, colour is test
+    axes[0][0].plot([], [], color=t["deemph"], label="train")
+    axes[0][0].plot([], [], color=c_test, label="test")
+    axes[0][0].legend(loc="lower right", frameon=False, fontsize=7.5)
+    return fig

@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from .literature import PUBLISHED
-from .report import load_analysis, load_history, load_json, table
+from .report import is_finished, load_analysis, load_history, load_json, table
 
 
 PENDING = "_Not yet run._"
@@ -294,8 +294,8 @@ def operations(root: Path, tags: List[str]) -> Optional[str]:
     rows, notes, any_found = [], [], False
     for tag in tags:
         h = load_history(root, tag)
-        if not h:
-            continue
+        if not is_finished(h):
+            continue                 # a run still in progress is not a result
         any_found = True
         hist = h["history"]
         grok = crossing_step(hist, "test_acc", 0.90)

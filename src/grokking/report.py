@@ -33,6 +33,16 @@ def load_analysis(root: Path, tag: str) -> Optional[Dict]:
     return json.loads(p.read_text()) if p.exists() else None
 
 
+def is_finished(h) -> bool:
+    """Has this run reached the step count it was configured for?
+
+    History files are flushed periodically while a run is in progress, so a
+    partial one is perfectly well-formed and will happily render as a finished
+    experiment.  Everything that consumes a history must check.
+    """
+    return bool(h) and h["history"] and h["history"][-1]["step"] >= h["train_cfg"]["steps"]
+
+
 def load_json(root: Path, name: str) -> Optional[Dict]:
     p = root / "results" / name
     return json.loads(p.read_text()) if p.exists() else None

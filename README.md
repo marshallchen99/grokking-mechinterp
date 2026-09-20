@@ -199,6 +199,8 @@ These edit the **weights** and re-run the network, so the intervention propagate
 | delete exactly those directions | train | 26.5789 | 0.0050 |
 <!-- END:ablations -->
 
+![ablations](figures/fig4_ablations.png)
+
 ### Is the circuit minimal?
 
 <!-- BEGIN:redundancy -->
@@ -262,14 +264,6 @@ Each run uses the identical configuration; only the operation (and, in one pair,
 | task | grokking step | final test acc | key freqs | Gini(W_E) | (a+b) variance | trig fraction |
 |:--|--:|--:|--:|--:|--:|--:|
 | `(a + b) mod p`, p=113 | 14,536 | 1.0000 | 4 | 0.9124 | 0.9626 | 0.9966 |
-| `(a + b) mod p`, p=113 | none by 40,000 | 0.0559 | -- | -- | -- | -- |
-| `(a * b) mod p`, p=113 | none by 40,000 | 0.0673 | -- | -- | -- | -- |
-
-**Runs that did not grok within budget.**
-
-- `(a + b) mod p` at p=113 did not reach 90% test accuracy within its 40,000-step budget. That is a censored observation, not a demonstration that it never would.
-
-- `(a * b) mod p` at p=113 did not reach 90% test accuracy within its 40,000-step budget. That is a censored observation, not a demonstration that it never would.
 <!-- END:operations -->
 
 ### Multiplication, and the discrete logarithm
@@ -310,6 +304,15 @@ bottoms out at that value and the gradient of the correct class degrades.
 Since the entire phenomenon lives in the tens of thousands of steps *after* the
 training loss is nominally zero, a loss floor is exactly the wrong artefact to
 have. Parameters stay in float32; only the logits are upcast.
+
+**Runs are reproducible in distribution, not bit-exact.** With one thread,
+identical seeds give bit-identical weights, and `tests/` asserts it. With more
+than one thread they do not: PyTorch's multi-threaded CPU reductions do not fix
+their summation order, and two runs of the same code at 6 threads diverge in
+the training loss by about 1e-4 within a hundred steps. The mainline runs here
+use 5-6 threads for speed, so a re-run will land near these numbers rather than
+on them. Grokking time is the quantity most exposed to that, which is one more
+reason the seed replicates matter.
 
 **Published numbers are quarantined** in `src/grokking/literature.py`, each with
 its reference, and appear only in columns labelled as such. Values that a source
