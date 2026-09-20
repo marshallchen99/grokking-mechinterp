@@ -28,6 +28,21 @@ from .data import ModularDataset
 from .model import ModelConfig, OneLayerTransformer, final_logits
 
 
+def cross_entropy_f64(logits: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
+    """Cross-entropy with the logits upcast to float64.
+
+    This matters more than it looks.  Once the model has memorised, the gap
+    between the correct logit and the rest grows past about 16, and in float32
+    `log_softmax` quantises at 2^-23 = 1.2e-7: the reported loss bottoms out at
+    that value and the gradient of the correct class degrades towards zero.
+    Since the whole phenomenon lives in the tens of thousands of steps *after*
+    the training loss is nominally zero, a loss floor is exactly the wrong
+    artefact to have.  Parameters stay float32; only the logits are upcast, and
+    the measured cost is inside run-to-run noise.
+    """
+    return torch.nn.functional.cross_entropy(logits.to(torch.float64), labels)
+
+
 @dataclass
 class TrainConfig:
     steps: int = 40_000
@@ -36,8 +51,12 @@ class TrainConfig:
     eps: float = 1e-8
     weight_decay: float = 1.0
     optimizer: str = "adamw"
+    warmup_steps: int = 10
     log_every: int = 10
-    n_checkpoints: int = 160
+    n_log_checkpoints: int = 120
+    dense_from: int = 5_000
+    dense_to: int = 20_000
+    dense_every: int = 250
     seed: int = 0
 
     def to_dict(self) -> Dict:
@@ -46,28 +65,39 @@ class TrainConfig:
         return d
 
 
-def checkpoint_steps(total: int, n: int) -> List[int]:
-    """Log-spaced step indices, always including 0 and `total`.
+def checkpoint_steps(total: int, n_log: int = 120, dense: tuple = (5_000, 20_000, 250)
+                     ) -> List[int]:
+    """A hybrid log + dense checkpoint schedule.
 
-    Log spacing is the right choice here: the memorisation phase is over within
-    a few hundred steps, while cleanup happens tens of thousands of steps later,
-    so linear spacing would waste almost every checkpoint on the flat middle.
+    The trajectory is the object of study, and neither spacing works alone:
+    log spacing puts almost everything in the first few hundred steps and
+    almost nothing across the transition; linear spacing does the reverse.  So:
+
+      * a log band of `n_log` geometric points across the whole run, which
+        resolves the memorisation phase (over by step ~200) and gives cheap
+        coverage of the long plateau;
+      * a dense band of evenly spaced points across the window where the
+        transition is expected, which is where the interesting derivative is.
+
+    If a run's transition falls outside the dense band, widen the band and
+    re-run rather than interpolating across it.
     """
-    if n >= total + 1:
-        return list(range(total + 1))
     import math
-    lo, hi = 1.0, float(total)
-    raw = [0] + [int(round(math.exp(math.log(lo) + (math.log(hi) - math.log(lo)) * i / (n - 2))))
-                 for i in range(n - 1)]
-    out = sorted(set(raw) | {0, total})
-    return [s for s in out if 0 <= s <= total]
+    S = {0, total}
+    if total >= 1:
+        for i in range(n_log):
+            S.add(int(round(math.exp(math.log(total) * i / max(n_log - 1, 1)))))
+    lo, hi, step = dense
+    for s in range(lo, min(hi, total) + 1, step):
+        S.add(s)
+    return sorted(x for x in S if 0 <= x <= total)
 
 
 @torch.no_grad()
 def evaluate(model: OneLayerTransformer, tokens: torch.Tensor, labels: torch.Tensor,
              n_answer: int) -> Dict[str, float]:
     logits = final_logits(model(tokens, last_only=True), n_answer)
-    loss = F.cross_entropy(logits, labels)
+    loss = cross_entropy_f64(logits, labels)
     acc = (logits.argmax(-1) == labels).float().mean()
     return {"loss": float(loss), "acc": float(acc)}
 
@@ -106,10 +136,38 @@ class Trainer:
         else:
             raise ValueError(f"unknown optimizer {cfg.optimizer!r}")
 
-        self.ckpt_at = set(checkpoint_steps(cfg.steps, cfg.n_checkpoints))
+        # Linear warmup over the first `warmup_steps` optimizer steps.  Note the
+        # multiplier at step 0 is exactly 0, so the first step updates nothing
+        # -- including the decoupled weight decay, which AdamW scales by lr.
+        # Both reference implementations behave this way; it is not an
+        # off-by-one to be "fixed".
+        w = max(cfg.warmup_steps, 1)
+        self.sched = torch.optim.lr_scheduler.LambdaLR(
+            self.opt, lambda step: min(step / w, 1.0))
+
+        self.ckpt_at = set(checkpoint_steps(
+            cfg.steps, cfg.n_log_checkpoints,
+            (cfg.dense_from, cfg.dense_to, cfg.dense_every)))
+        self._write_manifest()
         self.history: List[Dict] = []
 
     # ------------------------------------------------------------------
+
+    def _write_manifest(self):
+        """Record exactly what was run, next to the checkpoints it produced."""
+        import torch as _t
+        (self.ckpt_dir / "manifest.json").write_text(json.dumps({
+            "tag": self.tag,
+            "model_cfg": self.model.cfg.to_dict(),
+            "train_cfg": self.cfg.to_dict(),
+            "data": {"p": self.data.p, "op": self.data.op,
+                     "train_frac": self.data.train_frac, "seed": self.data.seed,
+                     "n_train": self.data.n_train, "n_test": self.data.n_test},
+            "n_params": self.model.n_params(),
+            "checkpoint_steps": sorted(self.ckpt_at),
+            "torch_version": _t.__version__,
+            "num_threads": _t.get_num_threads(),
+        }, indent=1))
 
     def _save_ckpt(self, step: int):
         torch.save(
@@ -162,10 +220,11 @@ class Trainer:
 
             # ---- one full-batch gradient step ------------------------------
             logits = final_logits(self.model(self.train_x, last_only=True), self.n_answer)
-            loss = F.cross_entropy(logits, self.train_y)
+            loss = cross_entropy_f64(logits, self.train_y)
             self.opt.zero_grad(set_to_none=True)
             loss.backward()
             self.opt.step()
+            self.sched.step()
 
         self._write_history()
         return self.history

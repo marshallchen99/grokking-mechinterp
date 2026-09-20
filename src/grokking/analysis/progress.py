@@ -97,26 +97,61 @@ def filter_logits(logits: torch.Tensor, F: torch.Tensor, p: int, freqs: List[int
     return inverse_fourier_2d(new, F)
 
 
-def _loss_acc(logits: torch.Tensor, data, idx: torch.Tensor) -> Dict[str, float]:
+def _loss_acc(logits: torch.Tensor, data, idx: Optional[torch.Tensor]) -> Dict[str, float]:
+    """Loss and accuracy of edited logits, in float64.
+
+    Restricted loss reaches the 1e-4 range and below once the circuit is
+    formed, which float32 cross-entropy cannot resolve; the whole measure is
+    about small numbers, so it is computed in double throughout.
+    """
     p = data.p
-    flat = logits.reshape(p * p, p).float()
-    sub, lab = flat[idx], data.labels[idx]
+    flat = logits.reshape(p * p, p).to(torch.float64)
+    if idx is None:
+        sub, lab = flat, data.labels
+    else:
+        sub, lab = flat[idx], data.labels[idx]
     return {"loss": float(tF.cross_entropy(sub, lab)),
             "acc": float((sub.argmax(-1) == lab).float().mean())}
 
 
+def _split_idx(snapshot, split: str):
+    if split == "train":
+        return snapshot.data.train_idx
+    if split == "test":
+        return snapshot.data.test_idx
+    if split == "all":
+        return None
+    raise ValueError(f"unknown split {split!r}")
+
+
 def restricted_loss(snapshot, F: torch.Tensor, freqs: List[int],
-                    mode: str = "block", split: str = "train") -> Dict[str, float]:
+                    mode: str = "sum", split: str = "all") -> Dict[str, float]:
     edited = filter_logits(snapshot.logits, F, snapshot.p, freqs, keep=True, mode=mode)
-    idx = snapshot.data.train_idx if split == "train" else snapshot.data.test_idx
-    return _loss_acc(edited, snapshot.data, idx)
+    return _loss_acc(edited, snapshot.data, _split_idx(snapshot, split))
 
 
 def excluded_loss(snapshot, F: torch.Tensor, freqs: List[int],
-                  mode: str = "block", split: str = "train") -> Dict[str, float]:
+                  mode: str = "sum", split: str = "train") -> Dict[str, float]:
     edited = filter_logits(snapshot.logits, F, snapshot.p, freqs, keep=False, mode=mode)
-    idx = snapshot.data.train_idx if split == "train" else snapshot.data.test_idx
-    return _loss_acc(edited, snapshot.data, idx)
+    return _loss_acc(edited, snapshot.data, _split_idx(snapshot, split))
+
+
+def per_frequency_excluded_loss(snapshot, F: torch.Tensor,
+                                split: str = "train") -> Dict[int, float]:
+    """Excluded loss with a single frequency removed, for every frequency.
+
+    Useful because it needs no key-frequency identification at all: whichever
+    frequencies the model is relying on will stand out as the ones whose
+    removal hurts.  That makes it the right tool for runs whose key set is
+    ambiguous, and an independent check on the key set for runs where it is not.
+    """
+    p = snapshot.p
+    idx = _split_idx(snapshot, split)
+    out = {}
+    for k in range(1, (p - 1) // 2 + 1):
+        edited = filter_logits(snapshot.logits, F, p, [k], keep=False, mode="sum")
+        out[k] = _loss_acc(edited, snapshot.data, idx)["loss"]
+    return out
 
 
 def progress_measures(snapshot, F: torch.Tensor, freqs: List[int],
@@ -124,14 +159,24 @@ def progress_measures(snapshot, F: torch.Tensor, freqs: List[int],
     """Every scalar we track along the trajectory, for one checkpoint."""
     base = snapshot.losses()
     out = {"step": snapshot.step, **base}
-    for mode in ("block", "sum"):
-        r = restricted_loss(snapshot, F, freqs, mode=mode)
-        e = excluded_loss(snapshot, F, freqs, mode=mode)
-        out[f"restricted_loss_{mode}"] = r["loss"]
-        out[f"restricted_acc_{mode}"] = r["acc"]
+    # "sum" is the strict form of the algorithmic claim (2 directions per
+    # frequency); "block" also keeps the (a-b) content, so it is a looser
+    # upper bound.  The literature is inconsistent about which it used, so
+    # both are reported rather than one being silently chosen.
+    for mode in ("sum", "block"):
+        for split in ("all", "train"):
+            r = restricted_loss(snapshot, F, freqs, mode=mode, split=split)
+            out[f"restricted_loss_{mode}_{split}"] = r["loss"]
+            out[f"restricted_acc_{mode}_{split}"] = r["acc"]
+        e = excluded_loss(snapshot, F, freqs, mode=mode, split="train")
         out[f"excluded_loss_{mode}"] = e["loss"]
         out[f"excluded_acc_{mode}"] = e["acc"]
+    # back-compat aliases used by the figure code
+    out["restricted_loss_block"] = out["restricted_loss_block_all"]
+    out["restricted_loss_sum"] = out["restricted_loss_sum_all"]
     out["weight_norm"] = snapshot.model.param_norm()
+    with torch.no_grad():
+        out["sum_sq_weights"] = float(sum(q.pow(2).sum() for q in snapshot.model.parameters()))
     if emb_spectrum is not None:
         out["emb_gini"] = emb_spectrum.gini
         out["emb_key_frac"] = emb_spectrum.sparsity_report()["frac_power_in_key_freqs"]

@@ -63,8 +63,11 @@ def _model_cfg_from_state(state: Dict[str, torch.Tensor], seed: int = 0) -> Mode
     n_ctx = state["W_pos"].shape[0]
     n_heads, _, d_head = state["W_Q"].shape
     d_mlp = state["W_in"].shape[1]
-    return ModelConfig(d_vocab=d_vocab, n_ctx=n_ctx, d_model=d_model,
-                       n_heads=n_heads, d_head=d_head, d_mlp=d_mlp, seed=seed)
+    d_vocab_out = state["W_U"].shape[1]      # read from the checkpoint, so that
+                                             # runs from either convention load
+    return ModelConfig(d_vocab=d_vocab, d_vocab_out=d_vocab_out, n_ctx=n_ctx,
+                       d_model=d_model, n_heads=n_heads, d_head=d_head,
+                       d_mlp=d_mlp, seed=seed)
 
 
 @torch.no_grad()
