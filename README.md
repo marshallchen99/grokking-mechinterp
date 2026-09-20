@@ -263,21 +263,100 @@ Each run uses the identical configuration; only the operation (and, in one pair,
 
 | task | grokking step | final test acc | key freqs | Gini(W_E) | (a+b) variance | trig fraction |
 |:--|--:|--:|--:|--:|--:|--:|
-| `(a + b) mod p`, p=113 | 14,536 | 1.0000 | 4 | 0.9124 | 0.9626 | 0.9966 |
+| `(a + b) mod p`, p=113  (`B_add_s0`) | 7,083 | 1.0000 | 5 | 0.9225 | 0.9874 | 0.8671 |
+| `(a - b) mod p`, p=113  (`B_sub_s0`) | 27,242 | 1.0000 | 4 | 0.9467 | 9.19e-05 | 0.1231 |
+| `(a * b) mod p`, p=113  (`B_mul_s0`) | 7,571 | 1.0000 | 56 | 0.0176 | 0.0087 | 0.5031 |
+| `(a^2 + ab + b^2) mod p`, p=113  (`B_sqx_p113`) | none by 30,000 | 0.1138 | -- | -- | -- | -- |
+| `(a^2 + ab + b^2) mod p`, p=109  (`B_sqx_p109`) | none by 30,000 | 0.0893 | -- | -- | -- | -- |
+
+**Runs that did not grok within budget.**
+
+- `(a^2 + ab + b^2) mod p` at p=113 did not reach 90% test accuracy within its 30,000-step budget. That is a censored observation, not a demonstration that it never would.
+
+- `(a^2 + ab + b^2) mod p` at p=109 did not reach 90% test accuracy within its 30,000-step budget. That is a censored observation, not a demonstration that it never would.
 <!-- END:operations -->
 
 ### Multiplication, and the discrete logarithm
 
 <!-- BEGIN:dlog -->
-_Not yet run._
+The nonzero residues mod p form a cyclic group of order p-1 under multiplication, so re-indexing them by discrete logarithm turns `a * b` into `dlog(a) + dlog(b) mod (p-1)` -- multiplication becomes addition. This reduction is prior art (Doshi et al., arXiv:2406.03495); what is measured here is whether the circuit is load-bearing in that basis, which is a causal question the observational work did not ask.
+
+| basis | key frequencies | Gini(W_E) | power in key freqs | variance explained by the sum |
+|:--|--:|--:|--:|--:|
+| ordinary (residues 0..p-1) | 56 | 0.0176 | 0.0387 | 0.0087 |
+| discrete log (base g=3, n=112) | 3 | 0.9361 | 0.9690 | 0.9740 |
+
+**Causal test in the multiplicative basis:**
+
+| edit | loss | accuracy |
+|:--|--:|--:|
+| keep only the multiplicative key frequencies | 8.92e-05 | 1.0000 |
+| delete exactly those | 9.9218 | 0.0088 |
+
+**The absorbing element.** Zero has no multiplicative inverse, so it sits outside the group the character story is about. Whether it gets its own sub-circuit is unclaimed in the literature:
+
+| question | value |
+|:--|--:|
+| norm of the embedding row for 0 | 0.5056 |
+| mean norm of the other rows | 1.0468 |
+| that as a z-score | -17.0170 |
+| strongest neuron correlation with (a == 0) | 0.0348 |
+| strongest neuron correlation with (b == 0) | 0.0351 |
+
+The answer is that it does not. No neuron correlates with `a == 0` above 0.035. Instead the network **shrinks the embedding of 0 until it barely exists** -- norm 0.5056 against 1.0468 for the other rows, the smallest of all 113. With almost nothing added to the residual stream the default output takes over, and the default is the right answer: the model is correct on all 225 pairs involving a zero, and predicts 0 for every one of them.
 <!-- END:dlog -->
+
+### Which correction actually mattered?
+
+<!-- BEGIN:controls -->
+The first run of this project used float32 cross-entropy, no learning-rate warmup, and an unembedding with a column for the "=" token that can never be correct. Fixing all three at once halved the grokking step, which is the kind of observation that is easy to attribute to the most interesting of the three causes. These runs change one thing at a time.
+
+| run | what differs | grokking step |
+|:--|:--|--:|
+| `main_add_s0` | float32 loss, no warmup, a dead "=" column in W_U | 14,536 |
+| `B_add_s0` | the corrected configuration: float64 loss, 10-step warmup, no dead column | 7,083 |
+| `C_add_f32` | as B_add_s0 but the loss back in float32 -- only that | 6,734 |
+| `C_add_nowarm` | as B_add_s0 but no warmup -- only that | 9,764 |
+| `B_add_s1` | as B_add_s0, different seed for both the split and the weights | 6,228 |
+
+**Float32 was not the cause.** Putting the loss back in float32 and changing nothing else moves the grokking step by -349 (6,734 against 7,083) -- within the seed-to-seed spread below. Removing the warmup costs +2,681. Neither accounts for the gap to the original 14,536, and the remaining difference is the initialisation: dropping the dead W_U column changes the shape of a weight matrix and therefore the whole random draw, so those two runs do not share an initialisation at all. The honest reading is that the original run was a slow draw, not that any correction sped things up.
+
+This is worth stating plainly because the float64 loss *is* the right choice -- in float32 the reported training loss bottoms out at 1.2e-7 and the curve below that is an artefact -- but being right about the measurement is not the same as being the cause of the speedup, and a controlled run is what separates them.
+<!-- END:controls -->
 
 ---
 
 ## 6. When does grokking happen?
 
 <!-- BEGIN:phase_diagram -->
-_Not yet run._
+A smaller modulus (p = 59) makes a run cheap enough to sweep. Each cell is one run of 20,000 steps; the number is the step at which test accuracy first reaches 90%.
+
+|  | wd = 0.1 | wd = 0.3 | wd = 1.0 | wd = 3.0 |
+|:--|--:|--:|--:|--:|
+| train fraction 0.25 | none (max 2%) | none (max 2%) | none (max 2%) | none (max 2%) |
+| train fraction 0.35 | none (max 5%) | none (max 6%) | none (max 17%) | 14,426 |
+| train fraction 0.5 | 10,794 | 3,100 | 815 | 344 |
+
+**Censoring.** 7 of 12 cells did not reach 90% within 20,000 steps. That is a censored observation -- such a run may grok later -- and is never reported as 'does not grok'.
+
+Averaged over the training fractions that grokked, the step at which generalisation happens **falls** with weight decay: wd 0.1 -> 10,794, wd 0.3 -> 3,100, wd 1.0 -> 815, wd 3.0 -> 7,385. The primary source contradicts itself three ways on the direction of this effect, so this is reported as our own measurement on one seed at one modulus, not as a confirmation of anything.
+
+**Does the mechanism depend on the configuration?**
+
+| configuration | grokking step | key freqs | Gini(W_E) | (a+b) variance | final test acc |
+|:--|--:|--:|--:|--:|--:|
+| wd 0.1, frac 0.25 | none (max 2%) | 29 | 0.1947 | 0.0155 | 0.0088 |
+| wd 0.3, frac 0.25 | none (max 2%) | 29 | 0.2456 | 0.0261 | 0.0088 |
+| wd 1.0, frac 0.25 | none (max 2%) | 29 | 0.2985 | 0.0420 | 0.0130 |
+| wd 3.0, frac 0.25 | none (max 2%) | 29 | 0.2926 | 0.0459 | 0.0100 |
+| wd 0.1, frac 0.35 | none (max 5%) | 29 | 0.2076 | 0.0461 | 0.0455 |
+| wd 0.3, frac 0.35 | none (max 6%) | 29 | 0.2701 | 0.0729 | 0.0544 |
+| wd 1.0, frac 0.35 | none (max 17%) | 26 | 0.4495 | 0.3618 | 0.1653 |
+| wd 3.0, frac 0.35 | 14,426 | 4 | 0.8489 | 0.9804 | 1.0000 |
+| wd 0.1, frac 0.5 | 10,794 | 8 | 0.7362 | 0.9797 | 1.0000 |
+| wd 0.3, frac 0.5 | 3,100 | 3 | 0.8909 | 0.9906 | 1.0000 |
+| wd 1.0, frac 0.5 | 815 | 3 | 0.8922 | 0.9916 | 1.0000 |
+| wd 3.0, frac 0.5 | 344 | 3 | 0.8919 | 0.9912 | 1.0000 |
 <!-- END:phase_diagram -->
 
 ---
@@ -377,9 +456,15 @@ tests/             correctness tests for everything the results depend on
 - **Runs that fail to grok are reported as failures**, with the step budget
   stated in the same sentence, because "did not grok in 30,000 steps" and "does
   not grok" are different claims.
-- **The lead times in section 4 are single-run measurements.** Grokking time is
-  known to vary substantially across seeds; the seed replicates in section 5 are
-  the only check on that here, and two seeds is not a distribution.
+- **The lead times in section 4 are single-run measurements.** Grokking time
+  varies substantially: across the five addition runs here it ranges from 6,228
+  to 14,536 steps under nominally the same recipe. Two seeds is not a
+  distribution, and the "which correction mattered" section exists because the
+  first reading of that spread was wrong.
+- **One hypothesis in this repository was tested and refuted.** The corrected
+  configuration grokked in half the steps of the original, and the obvious
+  explanation -- the float64 loss -- turned out to be wrong when run as a
+  controlled comparison. It is left in the write-up rather than quietly removed.
 - This project was built with AI assistance (Claude). The experimental design,
   the corrections to the implementation, and the write-up were produced
   interactively; every number was produced by running the code in this

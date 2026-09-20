@@ -1,10 +1,73 @@
-Traceback (most recent call last):
-  File "/mnt/d/Portfolio/grokking-mechinterp/scripts/run_train.py", line 72, in <module>
-    main()
-    ~~~~^^
-  File "/mnt/d/Portfolio/grokking-mechinterp/scripts/run_train.py", line 53, in main
-    tcfg = TrainConfig(
-        steps=args.steps, lr=args.lr, weight_decay=args.weight_decay,
-        log_every=args.log_every, n_checkpoints=args.n_checkpoints,
-    )
-TypeError: TrainConfig.__init__() got an unexpected keyword argument 'n_checkpoints'. Did you mean 'n_log_checkpoints'?
+{
+  "tag": "B_add_s1",
+  "op": "add",
+  "p": 113,
+  "n_train": 3830,
+  "n_test": 8939,
+  "n_params": 226048,
+  "model": {
+    "d_vocab": 114,
+    "d_vocab_out": 113,
+    "n_ctx": 3,
+    "d_model": 128,
+    "n_heads": 4,
+    "d_head": 32,
+    "d_mlp": 512,
+    "act": "relu",
+    "causal": true,
+    "init_std": 0.0,
+    "init_range": 0.8,
+    "seed": 1
+  },
+  "train": {
+    "steps": 30000,
+    "lr": 0.001,
+    "betas": [
+      0.9,
+      0.98
+    ],
+    "eps": 1e-08,
+    "weight_decay": 1.0,
+    "optimizer": "adamw",
+    "warmup_steps": 10,
+    "loss_dtype": "float64",
+    "log_every": 10,
+    "n_log_checkpoints": 120,
+    "dense_from": 5000,
+    "dense_to": 25000,
+    "dense_every": 250,
+    "seed": 0
+  }
+}
+step      0 | train 4.7357/0.008 | test 4.7338/0.009 | |w| 33.7 | 0s
+step   1000 | train 0.0000/1.000 | test 23.8305/0.121 | |w| 58.1 | 122s
+step   2000 | train 0.0000/1.000 | test 23.6119/0.136 | |w| 52.7 | 253s
+step   3000 | train 0.0000/1.000 | test 20.1378/0.157 | |w| 50.5 | 386s
+step   4000 | train 0.0000/1.000 | test 15.5439/0.200 | |w| 48.9 | 523s
+step   5000 | train 0.0000/1.000 | test 9.0606/0.312 | |w| 46.6 | 680s
+step   6000 | train 0.0000/1.000 | test 1.1094/0.784 | |w| 42.5 | 924s
+step   7000 | train 0.0000/1.000 | test 0.0105/0.996 | |w| 36.9 | 1234s
+step   8000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 31.5 | 1538s
+step   9000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 29.5 | 1826s
+step  10000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 29.1 | 2120s
+step  11000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 29.0 | 2416s
+step  12000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.9 | 2702s
+step  13000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.9 | 2984s
+step  14000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.9 | 3269s
+step  15000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.9 | 3546s
+step  16000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.9 | 3819s
+step  17000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.8 | 4089s
+step  18000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.8 | 4358s
+step  19000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.8 | 4628s
+step  20000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.8 | 4859s
+step  21000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.8 | 5005s
+step  22000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.8 | 5150s
+step  23000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.8 | 5297s
+step  24000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.8 | 5447s
+step  25000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.8 | 5595s
+step  26000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.8 | 5748s
+step  27000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.8 | 5896s
+step  28000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.8 | 6048s
+step  29000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.8 | 6203s
+step  30000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.8 | 6357s
+DONE {"step": 30000, "train_loss": 0.0, "train_acc": 1.0, "test_loss": 0.0, "test_acc": 1.0, "weight_norm": 28.79179, "elapsed": 6357.33173}

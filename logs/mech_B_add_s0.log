@@ -1,0 +1,5 @@
+B_add_s0: final checkpoint step 40000
+  key frequencies [1, 8, 16, 21, 38]  (Jaccard 0.800)
+  (a+b) variance 0.9874; trig sum-fraction 0.8671
+  running ablations...
+wrote /mnt/d/Portfolio/grokking-mechinterp/results/B_add_s0_mechanism.json

@@ -28,11 +28,15 @@ def block_indices(k: int, p: Optional[int] = None) -> Tuple[int, int]:
     """
     if k < 1:
         raise ValueError("frequency 0 is the constant term and has no sin/cos pair")
-    if p is not None and k > (p - 1) // 2:
+    if p is not None and k > p // 2:
         raise ValueError(
-            f"frequency {k} does not exist for p={p}; the distinct frequencies "
-            f"are 1..{(p - 1) // 2} (higher ones alias back onto these)"
+            f"frequency {k} does not exist for n={p}; the distinct frequencies "
+            f"are 1..{p // 2} (higher ones alias back onto these)"
         )
+    if p is not None and p % 2 == 0 and k == p // 2:
+        # Nyquist: cos(pi x) = (-1)^x has no sine partner, so the "block" for
+        # this frequency is one index, not two.  Callers deduplicate.
+        return p - 1, p - 1
     return 2 * k - 1, 2 * k
 
 
@@ -76,7 +80,7 @@ def embedding_spectrum(W_E: torch.Tensor, F: torch.Tensor, p: int,
 def _group_power(per_index: torch.Tensor, p: int) -> torch.Tensor:
     """Sum a per-basis-index quantity into per-frequency buckets."""
     freqs = index_frequencies(p)
-    out = torch.zeros((p + 1) // 2, dtype=per_index.dtype)
+    out = torch.zeros(p // 2 + 1, dtype=per_index.dtype)
     out.index_add_(0, freqs, per_index)
     return out
 
@@ -128,15 +132,15 @@ def key_frequencies(power_per_freq: torch.Tensor, method: str = "gap",
 
 # -------------------------------------------------------------- activations
 
-def freq_block_power(coeffs2d: torch.Tensor, k: int) -> torch.Tensor:
+def freq_block_power(coeffs2d: torch.Tensor, k: int, p: Optional[int] = None) -> torch.Tensor:
     """Power of the 2D coefficients belonging purely to frequency k.
 
     That is the 3x3 block {const, cos k, sin k} x {const, cos k, sin k}, minus
     the constant-constant term (which is the overall mean and belongs to no
     frequency).
     """
-    ck, sk = block_indices(k)
-    idx = torch.tensor([0, ck, sk])
+    ck, sk = block_indices(k, p)
+    idx = torch.tensor(sorted({0, ck, sk}))
     block = coeffs2d[idx][:, idx]
     total = block.pow(2).sum(dim=(0, 1))
     const = coeffs2d[0, 0].pow(2)
@@ -155,8 +159,8 @@ def neuron_frequencies(neuron_acts: torch.Tensor, F: torch.Tensor, p: int
     acts = neuron_acts.to(F.dtype)
     coeffs = fourier_2d(acts, F)                                 # (p, p, d_mlp)
     total = coeffs.pow(2).sum(dim=(0, 1)) - coeffs[0, 0].pow(2)  # variance, minus mean
-    n_freq = (p - 1) // 2
-    per_freq = torch.stack([freq_block_power(coeffs, k) for k in range(1, n_freq + 1)])
+    n_freq = p // 2
+    per_freq = torch.stack([freq_block_power(coeffs, k, p) for k in range(1, n_freq + 1)])
     frac = per_freq / (total + 1e-30)
     best = frac.argmax(dim=0) + 1
     return {
@@ -174,8 +178,8 @@ def logit_frequency_power(logits: torch.Tensor, F: torch.Tensor, p: int
     """Per-frequency power of the logits viewed as a function of (a, b)."""
     coeffs = fourier_2d(logits.to(F.dtype), F)                  # (p, p, p)
     total = coeffs.pow(2).sum(dim=(0, 1)) - coeffs[0, 0].pow(2)
-    n_freq = (p - 1) // 2
-    per_freq = torch.stack([freq_block_power(coeffs, k) for k in range(1, n_freq + 1)])
+    n_freq = p // 2
+    per_freq = torch.stack([freq_block_power(coeffs, k, p) for k in range(1, n_freq + 1)])
     return {"coeffs": coeffs, "power_per_freq": per_freq, "total": total}
 
 

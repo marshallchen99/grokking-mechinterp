@@ -1,0 +1,68 @@
+{
+  "tag": "C_add_nowarm",
+  "op": "add",
+  "p": 113,
+  "n_train": 3830,
+  "n_test": 8939,
+  "n_params": 226048,
+  "model": {
+    "d_vocab": 114,
+    "d_vocab_out": 113,
+    "n_ctx": 3,
+    "d_model": 128,
+    "n_heads": 4,
+    "d_head": 32,
+    "d_mlp": 512,
+    "act": "relu",
+    "causal": true,
+    "init_std": 0.0,
+    "init_range": 0.8,
+    "seed": 0
+  },
+  "train": {
+    "steps": 25000,
+    "lr": 0.001,
+    "betas": [
+      0.9,
+      0.98
+    ],
+    "eps": 1e-08,
+    "weight_decay": 1.0,
+    "optimizer": "adamw",
+    "warmup_steps": 1,
+    "loss_dtype": "float64",
+    "log_every": 10,
+    "n_log_checkpoints": 120,
+    "dense_from": 5000,
+    "dense_to": 25000,
+    "dense_every": 250,
+    "seed": 0
+  }
+}
+step      0 | train 4.7352/0.010 | test 4.7326/0.008 | |w| 33.6 | 0s
+step   1000 | train 0.0000/1.000 | test 30.2163/0.014 | |w| 59.6 | 137s
+step   2000 | train 0.0000/1.000 | test 31.5237/0.019 | |w| 54.1 | 298s
+step   3000 | train 0.0000/1.000 | test 28.7079/0.022 | |w| 52.1 | 446s
+step   4000 | train 0.0000/1.000 | test 25.9409/0.031 | |w| 51.0 | 605s
+step   5000 | train 0.0000/1.000 | test 23.3753/0.042 | |w| 50.1 | 767s
+step   6000 | train 0.0000/1.000 | test 20.8197/0.057 | |w| 49.2 | 946s
+step   7000 | train 0.0000/1.000 | test 17.6231/0.089 | |w| 48.3 | 1150s
+step   8000 | train 0.0000/1.000 | test 12.2026/0.172 | |w| 46.9 | 1348s
+step   9000 | train 0.0000/1.000 | test 3.7220/0.532 | |w| 43.8 | 1566s
+step  10000 | train 0.0000/1.000 | test 0.1412/0.962 | |w| 38.9 | 1825s
+step  11000 | train 0.0000/1.000 | test 0.0001/1.000 | |w| 33.1 | 2066s
+step  12000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 30.9 | 2267s
+step  13000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 30.2 | 2462s
+step  14000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 30.0 | 2659s
+step  15000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 29.9 | 2855s
+step  16000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 29.9 | 3054s
+step  17000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 29.8 | 3251s
+step  18000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 29.8 | 3449s
+step  19000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 29.8 | 3646s
+step  20000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 29.7 | 3843s
+step  21000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 29.7 | 4041s
+step  22000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 29.7 | 4238s
+step  23000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 29.6 | 4357s
+step  24000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 29.6 | 4463s
+step  25000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 29.5 | 4568s
+DONE {"step": 25000, "train_loss": 0.0, "train_acc": 1.0, "test_loss": 0.0, "test_acc": 1.0, "weight_norm": 29.47818, "elapsed": 4567.80326}

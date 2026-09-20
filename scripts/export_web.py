@@ -122,6 +122,36 @@ def main():
                                        "loss": r4(r["test_loss"])} for r in red["rows"]],
                              "minimal": red["minimal_subsets"],
                              "redundant": red["redundant_frequencies"]}
+    mul = load(root, "B_mul_s0_mechanism.json")
+    if mul and "dlog" in mul:
+        d = mul["dlog"]
+        out["dlog"] = {
+            "n": d["n"], "g": d["primitive_root"],
+            "ordinary": {"nkeys": len(mul["key_freqs"]["used"]),
+                         "gini": r4(mul["key_freqs"]["gini_W_E"]),
+                         "power": r4(mul["key_freqs"]["frac_power_in_key"]),
+                         "sumvar": r4(mul["structure"]["a+b"]),
+                         "jaccard": r4(mul["key_freqs"]["jaccard"])},
+            "star": {"nkeys": len(d["key_freqs"]["used"]),
+                     "keys": d["key_freqs"]["used"],
+                     "gini": r4(d["key_freqs"]["gini_W_E"]),
+                     "power": r4(d["key_freqs"]["frac_power_in_key"]),
+                     "sumvar": r4(d["structure"]["a+b"]),
+                     "jaccard": r4(d["key_freqs"]["jaccard"])},
+            "causal": {k: {kk: r4(vv) for kk, vv in v.items()}
+                       for k, v in d.get("progress", {}).items()},
+            "zero": {k: r4(v) for k, v in d["zero_element"].items()},
+        }
+
+    controls = []
+    for tag in ["main_add_s0", "B_add_s0", "C_add_f32", "C_add_nowarm", "B_add_s1"]:
+        h = load(root, f"{tag}_history.json")
+        if not is_finished(h):
+            continue
+        controls.append({"tag": tag, "grok": r4(crossing_step(h["history"], "test_acc", 0.90)),
+                         "budget": h["train_cfg"]["steps"]})
+    out["controls"] = controls
+
     ops = []
     for tag in args.op_tags:
         h = load(root, f"{tag}_history.json")
@@ -131,6 +161,13 @@ def main():
                     "grok": r4(crossing_step(h["history"], "test_acc", 0.90)),
                     "budget": h["train_cfg"]["steps"],
                     "final_test": r4(h["history"][-1]["test_acc"]),
+                    "mech": (lambda m: None if not m else {
+                        "nkeys": len(m["key_freqs"]["used"]),
+                        "gini": r4(m["key_freqs"]["gini_W_E"]),
+                        "sumvar": r4(m["structure"]["a+b"]),
+                        "diffvar": r4(m["structure"]["a-b"]),
+                        "trig": r4(m["trig"]["mean_sum_frac"])})(
+                            load(root, f"{tag}_mechanism.json")),
                     "curve": [{"s": r["step"], "te": r4(r["test_acc"]),
                                "tr": r4(r["train_acc"])} for r in thin(h["history"], 220)]})
     out["operations"] = ops

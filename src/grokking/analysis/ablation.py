@@ -132,7 +132,7 @@ def frequency_ablation_study(model: OneLayerTransformer, data, F: torch.Tensor,
     arbitrary ones.
     """
     p = data.p
-    all_freqs = list(range(1, (p - 1) // 2 + 1))
+    all_freqs = list(range(1, p // 2 + 1))
     others = [k for k in all_freqs if k not in set(key_freqs)]
 
     # deterministic "random" control: evenly spaced non-key frequencies, so the

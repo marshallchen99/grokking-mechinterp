@@ -204,6 +204,16 @@ pre.f b{ color:var(--signal); font-weight:600; }
 .bar.live .lab .n{ color:var(--signal); font-weight:600; }
 
 /* ---------- notes ---------- */
+.phasegrid{ display:grid; gap:4px; margin-top:1.4rem;
+  grid-template-columns:auto repeat(4, minmax(0,1fr)); align-items:stretch; }
+.phasegrid .h{ font-family:var(--mono); font-size:.68rem; color:var(--ink-3);
+  display:grid; place-items:center; letter-spacing:.06em; }
+.phasegrid .h.row{ justify-content:end; padding-right:8px; }
+.phasegrid .cell{ border-radius:6px; padding:12px 6px; text-align:center;
+  font-family:var(--mono); font-variant-numeric:tabular-nums; font-size:.88rem;
+  font-weight:600; }
+.phasegrid .cell.cen{ background:var(--panel-2); color:var(--ink-3);
+  font-weight:400; font-size:.68rem; }
 .note{
   border-left:3px solid var(--rule-2); padding:.1rem 0 .1rem 14px;
   font-size:.92rem; color:var(--ink-2); margin:1.4rem 0;
@@ -380,9 +390,62 @@ footer p{ font-size:.86rem; }
   </div></div>
 </section>
 
+
 <section>
   <div class="wrap"><div class="col">
-    <p class="eyebrow">06 &middot; honesty</p>
+    <p class="eyebrow">06 &middot; generality</p>
+    <h2>Change the operation and the same circuit appears, rotated</h2>
+    <p>
+      Identical configuration; only the operation changes. The last two columns are the
+      mechanism tests from section 04, so a row that groks with a low
+      <span class="num">(a+b)</span> score has found a <em>different</em> algorithm, not
+      the same one.
+    </p>
+    <div class="tablewrap"><table id="ops-table"></table></div>
+    <p style="margin-top:1.2rem" id="ops-note"></p>
+  </div></div>
+</section>
+
+<section>
+  <div class="wrap"><div class="col">
+    <p class="eyebrow">07 &middot; the same model, two coordinate systems</p>
+    <h2>Multiplication only looks structureless</h2>
+    <p>
+      The nonzero residues mod&nbsp;113 form a cyclic group of order 112 under
+      multiplication, so re-indexing them by discrete logarithm turns
+      <span class="num">a*b</span> into <span class="num">dlog(a) + dlog(b) mod 112</span>
+      &mdash; multiplication <em>is</em> addition, in the right coordinate. The reduction
+      itself is published; what is measured here is whether the circuit is load-bearing in
+      that basis.
+    </p>
+    <div class="tablewrap"><table id="dlog-table"></table></div>
+    <p style="margin-top:1.2rem" id="dlog-note"></p>
+    <h3 style="margin-top:2rem">And the element that is not in the group</h3>
+    <p id="zero-note"></p>
+  </div></div>
+</section>
+
+<section>
+  <div class="wrap"><div class="col">
+    <p class="eyebrow">08 &middot; when it happens at all</p>
+    <h2>Weight decay is the dial</h2>
+    <p>
+      Twelve runs at a smaller modulus (<span class="num">p = 59</span>), each 20,000
+      steps. The number is the step at which test accuracy first reaches 90%; grey cells
+      did not get there inside the budget, which is a censored observation and not a
+      demonstration that they never would.
+    </p>
+    <div id="phasegrid" class="phasegrid"></div>
+    <p style="margin-top:1.3rem" id="phase-note"></p>
+    <h3 style="margin-top:2rem">Which correction mattered?</h3>
+    <div class="tablewrap"><table id="controls-table"></table></div>
+    <p style="margin-top:1.2rem" id="controls-note"></p>
+  </div></div>
+</section>
+
+<section>
+  <div class="wrap"><div class="col">
+    <p class="eyebrow">09 &middot; honesty</p>
     <h2>What this is and is not</h2>
     <p>
       <strong>Nothing here is a new discovery.</strong> The phenomenon is Power et&nbsp;al. (2022);
@@ -732,6 +795,160 @@ footer p{ font-size:.86rem; }
         minRow.loss.toFixed(4) + ", a factor of " + Math.round(minRow.loss/Math.max(full.loss,1e-9)) +
         ". Under weight decay it pays for its own norm, which is exactly when a circuit-efficiency " +
         "account says a redundant component should survive cleanup.";
+    }
+  })();
+
+  /* ---------------- operations ---------------- */
+  var OPLAB = {add:"(a + b) mod p", sub:"(a - b) mod p", mul:"(a * b) mod p",
+               sq_sum_cross:"(a\u00b2 + ab + b\u00b2) mod p"};
+  (function(){
+    var ops = D.operations || []; if (!ops.length) return;
+    var rows = ops.map(function(o){
+      var m = o.mech;
+      return {cls: o.grok ? "" : "dead",
+              cells:[ OPLAB[o.op] || o.op, "p = "+o.p,
+                      o.grok ? commas(o.grok) : "none by "+commas(o.budget),
+                      m ? String(m.nkeys) : "\u2014",
+                      m ? m.gini.toFixed(3) : "\u2014",
+                      m ? m.sumvar.toFixed(4) : "\u2014",
+                      m ? m.diffvar.toFixed(4) : "\u2014" ]};
+    });
+    table("ops-table", ["task","modulus","grokking step","key freqs","Gini(W_E)",
+                        "(a+b) variance","(a-b) variance"], rows);
+    var sub = ops.filter(function(o){return o.op==="sub";})[0];
+    var add = ops.filter(function(o){return o.op==="add";})[0];
+    var sq  = ops.filter(function(o){return o.op==="sq_sum_cross";});
+    var bits = [];
+    if (sub && sub.mech && add && add.mech){
+      bits.push("<strong>Subtraction builds the mirror image.</strong> Same sparse "+
+        "spectrum, same four frequencies, same trigonometric construction \u2014 but its "+
+        "output is a function of (a\u2212b) to "+sub.mech.diffvar.toFixed(4)+
+        " and of (a+b) to "+sub.mech.sumvar.toFixed(4)+", exactly reversed from addition. "+
+        "It also takes about "+Math.round(sub.grok/add.grok)+" times as long to get there.");
+    }
+    if (sq.length===2){
+      bits.push("<strong>The quadratic form does not grok at either prime.</strong> "+
+        "a\u00b2+ab+b\u00b2 factors into linear forms over F_p exactly when p \u2261 1 "+
+        "(mod 3), which holds at p = 109 and fails at p = 113. If factorability mattered "+
+        "for learnability the two should differ; within a 30,000-step budget neither "+
+        "reaches 90%, so this run detects no difference \u2014 a null result, and a "+
+        "censored one.");
+    }
+    document.getElementById("ops-note").innerHTML = bits.join("<br><br>");
+  })();
+
+  /* ---------------- discrete log ---------------- */
+  (function(){
+    var d = D.dlog; if (!d) return;
+    function row(name, o, cls){
+      return {cls:cls, cells:[name, String(o.nkeys), o.gini.toFixed(4),
+                              pct(o.power,1), o.sumvar.toFixed(4), o.jaccard.toFixed(3)]};
+    }
+    table("dlog-table", ["basis","key frequencies","Gini(W_E)","power in them",
+                         "variance explained by the sum","rules agree"],
+      [row("ordinary (0\u2026112)", d.ordinary, "dead"),
+       row("discrete log (g = "+d.g+", n = "+d.n+")", d.star, "hi")]);
+    var c = d.causal || {};
+    var txt = "In the ordinary coordinate every one of the 56 frequencies looks "+
+      "equally important, the three identification rules disagree completely, and the "+
+      "output has no more dependence on a+b than chance. Re-index the very same weights "+
+      "by discrete logarithm and "+d.star.nkeys+" frequencies carry "+
+      pct(d.star.power,1)+" of the power, the rules agree exactly, and the trigonometric "+
+      "construction is back.";
+    if (c.restricted_sum_all && c.excluded_sum_train){
+      txt += " <strong>And it is load-bearing:</strong> keeping only those "+d.star.nkeys+
+        " frequencies leaves the model at "+pct(c.restricted_sum_all.acc)+
+        " accuracy; deleting exactly those three drops it to "+
+        pct(c.excluded_sum_train.acc,2)+" \u2014 chance is "+pct(M.chance,2)+".";
+    }
+    document.getElementById("dlog-note").innerHTML = txt;
+    var z = d.zero;
+    document.getElementById("zero-note").innerHTML =
+      "Zero has no multiplicative inverse, so it sits outside the group the character "+
+      "story is about. The network's answer is not a detector sub-circuit: no neuron "+
+      "correlates with <span class=\"num\">a = 0</span> above "+
+      z.max_neuron_corr_a_is_zero.toFixed(3)+". Instead it <strong>shrinks the embedding "+
+      "of 0 until it barely exists</strong> \u2014 norm "+z.zero_row_norm.toFixed(4)+
+      " against a mean of "+z.mean_other_row_norm.toFixed(4)+" for the other rows, a "+
+      "z-score of "+z.zero_row_norm_zscore.toFixed(1)+" and the smallest of all 113. "+
+      "With almost nothing added to the residual stream, the default output takes over, "+
+      "and the default is the right answer: the model is correct on all 225 pairs "+
+      "involving a zero.";
+  })();
+
+  /* ---------------- phase diagram ---------------- */
+  (function(){
+    var cells = D.sweep; if (!cells || !cells.length) return;
+    var wds = [], frs = [];
+    cells.forEach(function(c){
+      if (wds.indexOf(c.weight_decay)<0) wds.push(c.weight_decay);
+      if (frs.indexOf(c.train_frac)<0) frs.push(c.train_frac);
+    });
+    wds.sort(function(a,b){return a-b;}); frs.sort(function(a,b){return b-a;});
+    var host = document.getElementById("phasegrid");
+    host.style.gridTemplateColumns = "auto repeat("+wds.length+", minmax(0,1fr))";
+    function add(cls, txt, style){
+      var e = document.createElement("div"); e.className = cls; e.textContent = txt;
+      if (style) e.setAttribute("style", style);
+      host.appendChild(e);
+    }
+    add("h","");
+    wds.forEach(function(w){ add("h","wd "+w); });
+    var got = cells.filter(function(c){ return !c.censored; }).map(function(c){ return c.grok_step; });
+    var lo = Math.log10(Math.min.apply(null,got)), hi = Math.log10(Math.max.apply(null,got));
+    frs.forEach(function(f){
+      add("h row", "frac "+f);
+      wds.forEach(function(w){
+        var c = cells.filter(function(x){ return x.weight_decay===w && x.train_frac===f; })[0];
+        if (!c || c.censored){ add("cell cen","not within budget"); return; }
+        var t = (Math.log10(c.grok_step)-lo)/Math.max(hi-lo,1e-9);
+        var bg = "color-mix(in srgb, var(--signal) "+Math.round(18+72*t)+"%, var(--panel))";
+        add("cell", commas(c.grok_step),
+            "background:"+bg+"; color:"+(t>0.45?"#fff":"var(--ink)"));
+      });
+    });
+    var best = cells.filter(function(c){ return !c.censored && c.train_frac===frs[0]; })
+                    .sort(function(a,b){ return a.weight_decay-b.weight_decay; });
+    if (best.length>1){
+      document.getElementById("phase-note").innerHTML =
+        "Along the top row the effect is monotone and large: raising weight decay from "+
+        best[0].weight_decay+" to "+best[best.length-1].weight_decay+" cuts the grokking "+
+        "step from "+commas(best[0].grok_step)+" to "+commas(best[best.length-1].grok_step)+
+        ", a factor of "+Math.round(best[0].grok_step/best[best.length-1].grok_step)+
+        ". At a smaller training fraction it decides whether grokking happens at all "+
+        "inside the budget. The primary source for this setup contradicts itself three "+
+        "ways on the direction of this effect, so this is reported as a measurement, not "+
+        "a confirmation.";
+    }
+    var ctl = D.controls || [];
+    if (ctl.length >= 2){
+      var LAB = {main_add_s0:"float32 loss, no warmup, a dead \u201c=\u201d column in W_U",
+                 B_add_s0:"the corrected configuration",
+                 C_add_f32:"corrected, but the loss back in float32 \u2014 only that",
+                 C_add_nowarm:"corrected, but no warmup \u2014 only that",
+                 B_add_s1:"corrected, different seed"};
+      table("controls-table", ["run","what differs","grokking step"],
+        ctl.map(function(c){
+          return {cls: c.tag==="main_add_s0" ? "dead" : "",
+                  cells:[c.tag, LAB[c.tag]||"", c.grok ? commas(c.grok) : "none"]};
+        }));
+      var by = {}; ctl.forEach(function(c){ by[c.tag]=c.grok; });
+      if (by.B_add_s0 && by.C_add_f32){
+        document.getElementById("controls-note").innerHTML =
+          "The first run of this project used float32 cross-entropy, no warmup, and an "+
+          "unembedding column that can never be correct. Fixing all three at once halved "+
+          "the grokking step \u2014 an observation it is tempting to attribute to the most "+
+          "interesting of the three. <strong>It was none of them.</strong> Putting the "+
+          "loss back in float32 alone moves the step by "+
+          (by.C_add_f32-by.B_add_s0>0?"+":"")+commas(by.C_add_f32-by.B_add_s0)+
+          "; removing the warmup costs "+commas(by.C_add_nowarm-by.B_add_s0)+
+          ". Dropping the dead column changes the shape of a weight matrix and so the "+
+          "entire random draw, meaning the two runs never shared an initialisation. The "+
+          "honest reading is that the original was a slow draw. Float64 is still the right "+
+          "choice \u2014 in float32 the reported training loss bottoms out at 1.2e-7 and "+
+          "everything below that is an artefact \u2014 but being right about the "+
+          "measurement is not the same as causing the speedup.";
+      }
     }
   })();
 

@@ -102,6 +102,8 @@ def trig_identity_report(logits: torch.Tensor, F: torch.Tensor, p: int,
     out: Dict[str, object] = {"per_freq": {}}
     for k in freqs:
         ck, sk = block_indices(k, p)
+        if ck == sk:          # Nyquist has no sine partner: skip it here
+            continue
         cc, cs = coeffs[ck, ck], coeffs[ck, sk]         # each (p,) over c
         sc, ss = coeffs[sk, ck], coeffs[sk, sk]
 
