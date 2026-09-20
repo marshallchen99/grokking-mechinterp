@@ -1,0 +1,20 @@
+[
+ {
+  "tag": "B_sqx_p113",
+  "op": "sq_sum_cross",
+  "p": 113,
+  "steps": 30000,
+  "model_seed": 0,
+  "data_seed": 0,
+  "threads": 5
+ },
+ {
+  "tag": "B_sqx_p109",
+  "op": "sq_sum_cross",
+  "p": 109,
+  "steps": 30000,
+  "model_seed": 0,
+  "data_seed": 0,
+  "threads": 5
+ }
+]
