@@ -508,6 +508,87 @@ def phase_diagram_block(root: Path, _tag: str) -> Optional[str]:
     ] if x)
 
 
+def prediction(root: Path, _tag: str) -> Optional[str]:
+    """Can an early signal forecast whether, and when, a run will grok?"""
+    d = load_json(root, "prediction_summary.json")
+    if not d:
+        return None
+    steps = sorted(d["at_steps"], key=int)
+    if not steps:
+        return None
+    parts = [
+        "Section 4 shows the progress measures moving before the accuracy does "
+        "*within one run*. That is a much weaker claim than being able to look at an "
+        "unseen run at step 1,000 and say what happens at step 10,000. With "
+        f"{d['n_runs']} runs that have a full trajectory ({d['n_censored']} of which "
+        "never reached 90% inside their budget), both questions can at least be asked.",
+    ]
+    for at in steps:
+        rec = d["at_steps"][at]
+        rows = []
+        for key, f in rec["features"].items():
+            rows.append([f["label"], f["auc"], f["rho"]])
+        rows.sort(key=lambda r: -(r[1] if r[1] is not None else -1))
+        parts.append(f"**Measured at step {int(at):,}** ({rec['n']} runs):")
+        parts.append(table(
+            ["signal", "AUC: will grok vs will not", "rank correlation with the grokking step"],
+            rows, bold_best={1: "max"}))
+    parts.append(
+        "AUC is the probability that a run which will grok scores above one that will "
+        "not, so 0.5 is chance and 1.0 is perfect separation. The rank correlation is "
+        "taken only over the runs that did grok, so its sample is smaller still. "
+        "**These are small numbers of runs across two different moduli and several "
+        "hyperparameter settings**, which is the honest caveat: the table shows which "
+        "signals are worth a proper study, not that any of them is a calibrated "
+        "predictor.")
+    return "\n\n".join(parts)
+
+
+def replicates(root: Path, _tag: str) -> Optional[str]:
+    """Does the weight-decay effect survive a change of seed?"""
+    import glob
+    from .analysis.timing import crossing_step
+    rows = []
+    for hp in sorted(glob.glob(str(root / "results" / "*_f0.5*_history.json"))):
+        h = json.loads(Path(hp).read_text())
+        if not is_finished(h) or h["data"]["p"] != 59:
+            continue
+        g = crossing_step(h["history"], "test_acc", 0.90)
+        rows.append({"wd": h["train_cfg"]["weight_decay"], "seed": h["data"]["seed"],
+                     "grok": g, "budget": h["train_cfg"]["steps"]})
+    if len({r["seed"] for r in rows}) < 2:
+        return None
+    wds = sorted({r["wd"] for r in rows})
+    seeds = sorted({r["seed"] for r in rows})
+    body = []
+    for wd in wds:
+        line = [f"weight decay {wd}"]
+        for sd in seeds:
+            m = [r for r in rows if r["wd"] == wd and r["seed"] == sd]
+            line.append(int(round(m[0]["grok"])) if m and m[0]["grok"]
+                        else (f"none by {m[0]['budget']:,}" if m else "--"))
+        body.append(line)
+    tbl = table(["", *[f"seed {s}" for s in seeds]], body)
+    mono = []
+    for sd in seeds:
+        seq = [next((r["grok"] for r in rows if r["wd"] == w and r["seed"] == sd), None)
+               for w in wds]
+        if all(v is not None for v in seq):
+            mono.append(all(a > b for a, b in zip(seq, seq[1:])))
+    note = ""
+    if mono:
+        note = ("The ordering is strictly monotone in " + ("both seeds" if all(mono)
+                else f"{sum(mono)} of {len(mono)} seeds") +
+                ": more weight decay, earlier grokking, at every step of the grid. "
+                "One seed could have produced that by accident; two making the same "
+                "ordering is harder to dismiss, though it is still two.")
+    return "\n\n".join(x for x in [
+        "Every cell of the diagram above is a single run, which is the weakest thing "
+        "about it. This repeats the row where all four cells grokked, with a different "
+        "seed for both the data split and the initialisation:",
+        tbl, note] if x)
+
+
 def load_bearing(root: Path, tag: str) -> Optional[str]:
     """A fourth identification, using no rule at all.
 
@@ -605,6 +686,8 @@ GENERATORS = {
     "redundancy": redundancy,
     "controls": controls,
     "load_bearing": load_bearing,
+    "prediction": prediction,
+    "replicates": replicates,
 }
 
 MULTI_TAG_GENERATORS = {
