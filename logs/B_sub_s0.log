@@ -1,0 +1,7 @@
+usage: run_train.py [-h] --tag TAG [--op OP] [--p P] [--train-frac TRAIN_FRAC]
+                    [--data-seed DATA_SEED] [--model-seed MODEL_SEED]
+                    [--steps STEPS] [--lr LR] [--weight-decay WEIGHT_DECAY]
+                    [--d-model D_MODEL] [--n-heads N_HEADS] [--d-mlp D_MLP]
+                    [--log-every LOG_EVERY] [--n-checkpoints N_CHECKPOINTS]
+                    [--threads THREADS] [--out OUT]
+run_train.py: error: unrecognized arguments: --dense-to 20000

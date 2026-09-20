@@ -6,7 +6,8 @@
   "steps": 30000,
   "model_seed": 0,
   "data_seed": 0,
-  "threads": 5
+  "threads": 5,
+  "dense_to": 25000
  },
  {
   "tag": "B_sqx_p109",
@@ -15,6 +16,7 @@
   "steps": 30000,
   "model_seed": 0,
   "data_seed": 0,
-  "threads": 5
+  "threads": 5,
+  "dense_to": 25000
  }
 ]

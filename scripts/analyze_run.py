@@ -69,8 +69,17 @@ def analyse_one(snap, F, key_freqs, p, with_neurons=True):
     return row
 
 
-def _write(out_path, args, key_freqs, cons, final, final_spec, rows):
+def _write(out_path, args, key_freqs, cons, final, final_spec, rows, complete=False):
+    """Write the analysis file.
+
+    `complete` is False on the incremental writes made while the walk is still
+    running.  Consumers must check it: a partially written trajectory looks
+    perfectly well-formed and silently produces nonsense (a "lead time" of four
+    steps rather than four thousand).
+    """
     out_path.write_text(json.dumps({
+        "complete": complete,
+        "n_checkpoints_analysed": len(rows),
         "tag": args.tag, "op": args.op, "p": args.p,
         "key_freqs": key_freqs,
         "key_freq_rules": cons["by_rule"],
@@ -154,7 +163,7 @@ def main():
                   f"a+b {rows[-1]['logit_var_a+b']:.4f} "
                   f"({time.time()-t0:.0f}s)", flush=True)
             _write(out_path, args, key_freqs, cons, final, final_spec, rows)
-    _write(out_path, args, key_freqs, cons, final, final_spec, rows)
+    _write(out_path, args, key_freqs, cons, final, final_spec, rows, complete=True)
     print(f"wrote {out_path}  ({time.time()-t0:.0f}s)", flush=True)
 
 

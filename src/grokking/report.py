@@ -45,8 +45,8 @@ def _fmt(v, nd: int = 4) -> str:
         return "--"
     if isinstance(v, bool):
         return "yes" if v else "no"
-    if isinstance(v, (int,)) or (isinstance(v, float) and float(v).is_integer() and abs(v) >= 1000):
-        return f"{int(v):,}"
+    if isinstance(v, int) or (isinstance(v, float) and float(v).is_integer() and abs(v) >= 1000):
+        return f"{int(v):+,}" if isinstance(v, int) and v < 0 else f"{int(v):,}"
     if isinstance(v, float):
         if v != 0 and (abs(v) < 1e-3 or abs(v) >= 1e5):
             return f"{v:.2e}"
