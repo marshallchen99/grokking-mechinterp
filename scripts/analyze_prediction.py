@@ -100,7 +100,7 @@ def main():
         if not a.get("complete"):
             continue
         grok = crossing_step(h["history"], "test_acc", 0.90)
-        runs.append({"tag": tag, "p": h["data"]["p"],
+        runs.append({"tag": tag, "p": h["data"]["p"], "op": h["data"]["op"],
                      "wd": h["train_cfg"]["weight_decay"],
                      "frac": h["data"]["train_frac"],
                      "budget": h["train_cfg"]["steps"],
@@ -145,6 +145,52 @@ def main():
             print(f"  {label:34s} {('%.3f' % a_) if a_ is not None else '--':>18s} "
                   f"{('%+.3f' % rho) if rho is not None else '--':>18s}")
         out["at_steps"][str(at)] = rec
+        print()
+
+    # ---- the unconfounded version --------------------------------------
+    # The censored runs are mostly low-train-fraction sweep cells, so any signal
+    # that merely tracks the training fraction scores a high AUC above.  The
+    # clean question is asked inside a single configuration, where the only thing
+    # that differs is the random draw.
+    # Group by the OPERATION too: two runs on different tasks do not differ only
+    # in their random draw, and subtraction's grokking step is driven by the task.
+    groups = {}
+    for r in runs:
+        groups.setdefault((r["op"], r["p"], r["frac"], r["wd"]), []).append(r)
+    best = max(groups.items(), key=lambda kv: sum(not x["censored"] for x in kv[1]))
+    cfg, members = best
+    members = [m for m in members if not m["censored"]]
+    if len(members) >= 4:
+        members.sort(key=lambda m: m["grok"])
+        within = {"config": {"op": cfg[0], "p": cfg[1], "train_frac": cfg[2],
+                             "weight_decay": cfg[3]},
+                  "n": len(members),
+                  "runs": [{"tag": m["tag"], "grok": m["grok"]} for m in members],
+                  "at_steps": {}}
+        print(f"=== within one configuration: {cfg[0]}, p={cfg[1]}, frac={cfg[2]}, wd={cfg[3]} "
+              f"({len(members)} runs, only the random draw differs) ===")
+        for at in args.at_steps:
+            rec = {}
+            for key, label, _ in FEATURES:
+                xs, ys = [], []
+                for m in members:
+                    row = min(m["rows"], key=lambda x: abs(x["step"] - at))
+                    if row.get(key) is None:
+                        continue
+                    xs.append(row[key]); ys.append(m["grok"])
+                rho = spearman(xs, ys) if len(xs) >= 3 else None
+                if rho is not None:
+                    rec[key] = {"label": label, "rho": rho}
+            within["at_steps"][str(at)] = rec
+        hdr = "  %-28s" % "signal" + "".join("%12s" % f"step {a:,}" for a in args.at_steps)
+        print(hdr)
+        for key, label, _ in FEATURES:
+            line = "  %-28s" % label
+            for at in args.at_steps:
+                v = within["at_steps"][str(at)].get(key)
+                line += "%12s" % (f"{v['rho']:+.2f}" if v else "--")
+            print(line)
+        out["within_config"] = within
         print()
 
     path = root / "results" / "prediction_summary.json"

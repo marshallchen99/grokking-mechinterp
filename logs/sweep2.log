@@ -1,0 +1,14 @@
+12 runs
+  S_p59_wd0.1_f0.25            wd=0.1   frac=0.25  censored             final test acc 0.0088  gini 0.195
+  S_p59_wd0.1_f0.35            wd=0.1   frac=0.35  censored             final test acc 0.0455  gini 0.208
+  S_p59_wd0.1_f0.5             wd=0.1   frac=0.5   grok at 10,794       final test acc 1.0000  gini 0.736
+  S_p59_wd0.3_f0.25            wd=0.3   frac=0.25  censored             final test acc 0.0088  gini 0.246
+  S_p59_wd0.3_f0.35            wd=0.3   frac=0.35  censored             final test acc 0.0544  gini 0.270
+  S_p59_wd0.3_f0.5             wd=0.3   frac=0.5   grok at 3,100        final test acc 1.0000  gini 0.891
+  S_p59_wd1.0_f0.25            wd=1.0   frac=0.25  censored             final test acc 0.0130  gini 0.298
+  S_p59_wd1.0_f0.35            wd=1.0   frac=0.35  censored             final test acc 0.1653  gini 0.449
+  S_p59_wd1.0_f0.5             wd=1.0   frac=0.5   grok at 815          final test acc 1.0000  gini 0.892
+  S_p59_wd3.0_f0.25            wd=3.0   frac=0.25  censored             final test acc 0.0100  gini 0.293
+  S_p59_wd3.0_f0.35            wd=3.0   frac=0.35  grok at 14,426       final test acc 1.0000  gini 0.849
+  S_p59_wd3.0_f0.5             wd=3.0   frac=0.5   grok at 344          final test acc 1.0000  gini 0.892
+wrote /mnt/d/Portfolio/grokking-mechinterp/results/sweep_summary.json  (7/12 censored)

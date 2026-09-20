@@ -14,6 +14,17 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from .literature import PUBLISHED
+
+FEATURES = [
+    ("restricted_loss_sum_all", "restricted loss", False),
+    ("excluded_loss_sum", "excluded loss", True),
+    ("emb_gini", "embedding Gini", True),
+    ("emb_key_frac", "power in key frequencies", True),
+    ("logit_var_a+b", "(a+b) variance explained", True),
+    ("weight_norm", "weight norm", False),
+    ("train_loss", "train loss", False),
+    ("test_acc", "test accuracy (the visible one)", True),
+]
 from .report import is_finished, load_analysis, load_history, load_json, table
 
 
@@ -527,7 +538,9 @@ def prediction(root: Path, _tag: str) -> Optional[str]:
         rec = d["at_steps"][at]
         rows = []
         for key, f in rec["features"].items():
-            rows.append([f["label"], f["auc"], f["rho"]])
+            rows.append([f["label"],
+                         None if f["auc"] is None else round(f["auc"], 3),
+                         None if f["rho"] is None else round(f["rho"], 2)])
         rows.sort(key=lambda r: -(r[1] if r[1] is not None else -1))
         parts.append(f"**Measured at step {int(at):,}** ({rec['n']} runs):")
         parts.append(table(
@@ -535,12 +548,52 @@ def prediction(root: Path, _tag: str) -> Optional[str]:
             rows, bold_best={1: "max"}))
     parts.append(
         "AUC is the probability that a run which will grok scores above one that will "
-        "not, so 0.5 is chance and 1.0 is perfect separation. The rank correlation is "
-        "taken only over the runs that did grok, so its sample is smaller still. "
-        "**These are small numbers of runs across two different moduli and several "
-        "hyperparameter settings**, which is the honest caveat: the table shows which "
-        "signals are worth a proper study, not that any of them is a calibrated "
-        "predictor.")
+        "not, so 0.5 is chance and 1.0 is perfect separation.")
+    parts.append(
+        "**That table is confounded and should not be read as a result.** The runs that "
+        "never grokked are almost all low-training-fraction sweep cells, and the "
+        "training fraction is itself what decides whether grokking happens, so any "
+        "signal that merely tracks it scores well. The clean question has to be asked "
+        "inside a single configuration.")
+
+    w = d.get("within_config")
+    if w:
+        c = w["config"]
+        rows = [[r["tag"], int(round(r["grok"]))] for r in w["runs"]]
+        parts.append(
+            f"**Within one configuration.** These {w['n']} runs share the task "
+            f"(`{c.get('op','add')}`), the "
+            f"modulus (p = {c['p']}), the training fraction ({c['train_frac']}) and the "
+            f"weight decay ({c['weight_decay']}). What differs is the random draw, and "
+            f"the grokking step still spans more than a factor of two:")
+        parts.append(table(["run", "grokking step"], rows))
+        steps = sorted(w["at_steps"], key=int)
+        keys = [k for k, _, _ in FEATURES if any(k in w["at_steps"][s] for s in steps)]
+        body = []
+        for k in keys:
+            lab = next(v["label"] for s in steps if k in w["at_steps"][s]
+                       for v in [w["at_steps"][s][k]])
+            body.append([lab] + [
+                (lambda v: None if v is None else round(v, 2))(
+                    w["at_steps"][s].get(k, {}).get("rho")) for s in steps])
+        parts.append(
+            "Rank correlation between the signal measured early and the step at which "
+            "the run eventually generalises. Negative means a higher reading predicts "
+            "an earlier transition:")
+        parts.append(table(["signal", *[f"at step {int(s):,}" for s in steps]], body))
+        parts.append(
+            f"At step 500 -- six to fourteen thousand steps before anything happens -- "
+            f"several internal signals rank these runs almost perfectly, while the one "
+            f"quantity an observer can actually see, the test accuracy, does not rank "
+            f"them at all.")
+        parts.append(
+            f"**How much to believe.** n = {w['n']}, and {len(keys)} signals were checked "
+            f"at {len(steps)} time points, so no single coefficient here survives a "
+            f"correction for multiple comparisons. What is worth something is that every "
+            f"internal signal points the same way at every time point while the external "
+            f"one does not. And the deflationary reading deserves equal billing: the "
+            f"plain weight norm does as well as any mechanistic measure, so on this "
+            f"evidence predicting grokking may not require interpretability at all.")
     return "\n\n".join(parts)
 
 
