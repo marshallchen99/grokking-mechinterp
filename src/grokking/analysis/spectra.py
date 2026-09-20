@@ -177,3 +177,77 @@ def logit_frequency_power(logits: torch.Tensor, F: torch.Tensor, p: int
     n_freq = (p - 1) // 2
     per_freq = torch.stack([freq_block_power(coeffs, k) for k in range(1, n_freq + 1)])
     return {"coeffs": coeffs, "power_per_freq": per_freq, "total": total}
+
+
+# ------------------------------------------- key frequencies, three ways
+#
+# Which frequencies is the model using?  The answer drives every progress
+# measure and every ablation, so it must not depend on a threshold chosen
+# after seeing the result.  Three rules with independent logic are computed;
+# agreement between them is itself reported, and disagreement is reported
+# rather than resolved by picking a favourite.
+
+def key_freqs_rule_a(W_E: torch.Tensor, F: torch.Tensor, p: int,
+                     ratio: float = 4.0) -> Dict[str, object]:
+    """Embedding-norm threshold: keep basis indices whose norm exceeds max/ratio.
+
+    Operates on per-*index* norms rather than per-frequency power, so a
+    frequency counts if either its cosine or its sine component is large.
+    """
+    coeffs = fourier_1d(W_E[:p].to(F.dtype), F, dim=0)
+    norms = coeffs.norm(dim=1)
+    m = float(norms[1:].max())
+    idx = [i for i in range(1, p) if float(norms[i]) > m / ratio]
+    freqs = sorted({(i + 1) // 2 for i in idx})
+    return {"freqs": freqs, "indices": idx, "max_norm": m, "norms": norms}
+
+
+def key_freqs_rule_b(neuron_acts: torch.Tensor, F: torch.Tensor, p: int,
+                     threshold: float = 0.85) -> Dict[str, object]:
+    """Neuron clustering: frequencies that at least one neuron is dedicated to.
+
+    A neuron counts as dedicated to frequency k if the 8 two-dimensional basis
+    cells belonging to k explain more than `threshold` of its variance.  The
+    activations are centred first; without that the constant term dominates
+    every frequency's share and every neuron looks like frequency 1.
+    """
+    nf = neuron_frequencies(neuron_acts, F, p)
+    dom, frac = nf["dominant_freq"], nf["dominant_frac"]
+    above = frac > threshold
+    return {
+        "freqs": sorted({int(k) for k in dom[above].tolist()}),
+        "freqs_unrestricted": sorted({int(k) for k in dom.tolist()}),
+        "n_above": int(above.sum()),
+        "n_total": int(dom.numel()),
+        "frac_above": float(above.float().mean()),
+        "mean_domfrac": float(frac.mean()),
+        "dominant_freq": dom,
+        "dominant_frac": frac,
+    }
+
+
+def key_freqs_consensus(W_E: torch.Tensor, neuron_acts: torch.Tensor,
+                        F: torch.Tensor, p: int) -> Dict[str, object]:
+    """Run all three rules and report whether they agree."""
+    a = key_freqs_rule_a(W_E, F, p)
+    b = key_freqs_rule_b(neuron_acts, F, p)
+    spec = embedding_spectrum(W_E, F, p, method="gap")
+    c = spec.key_freqs
+
+    sets = {"rule_a_embedding_norm": set(a["freqs"]),
+            "rule_b_neuron_cluster": set(b["freqs"]),
+            "rule_c_power_gap": set(c)}
+    union = set().union(*sets.values())
+    inter = set.intersection(*sets.values()) if union else set()
+    jaccard = len(inter) / len(union) if union else 0.0
+    return {
+        "by_rule": {k: sorted(v) for k, v in sets.items()},
+        "consensus": sorted(inter),
+        "union": sorted(union),
+        "jaccard": jaccard,
+        "agree": jaccard == 1.0,
+        "rule_a": {k: v for k, v in a.items() if k != "norms"},
+        "rule_b": {k: v for k, v in b.items()
+                   if k not in ("dominant_freq", "dominant_frac")},
+        "spectrum": spec,
+    }

@@ -32,7 +32,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from grokking.analysis.core import checkpoint_paths, load_snapshot   # noqa: E402
 from grokking.analysis.progress import progress_measures             # noqa: E402
 from grokking.analysis.spectra import (                              # noqa: E402
-    embedding_spectrum, neuron_frequencies,
+    embedding_spectrum, key_freqs_consensus, neuron_frequencies,
 )
 from grokking.analysis.structure import (                            # noqa: E402
     additive_structure, trig_identity_report,
@@ -69,6 +69,20 @@ def analyse_one(snap, F, key_freqs, p, with_neurons=True):
     return row
 
 
+def _write(out_path, args, key_freqs, cons, final, final_spec, rows):
+    out_path.write_text(json.dumps({
+        "tag": args.tag, "op": args.op, "p": args.p,
+        "key_freqs": key_freqs,
+        "key_freq_rules": cons["by_rule"],
+        "key_freq_jaccard": cons["jaccard"],
+        "key_freq_rules_agree": cons["agree"],
+        "final_checkpoint_step": final.step,
+        "final_emb_report": final_spec.sparsity_report(),
+        "neuron_report": cons["rule_b"],
+        "rows": rows,
+    }))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", required=True)
@@ -96,16 +110,32 @@ def main():
     paths = paths[:: args.every]
     print(f"{len(paths)} checkpoints, steps {paths[0][0]} .. {paths[-1][0]}", flush=True)
 
-    # Key frequencies are read off the FINAL model and then held fixed, so that
-    # "restricted loss at step 500" means "how good is the circuit that will
-    # eventually exist", not "how good is whatever happens to be strongest now".
-    final = load_snapshot(paths[-1][1], data)
-    final_spec = embedding_spectrum(final.model.W_E.detach(), F, args.p,
-                                    method=args.key_method, k=args.key_k)
-    key_freqs = final_spec.key_freqs
-    print(f"key frequencies from final model ({args.key_method}): {key_freqs}", flush=True)
-    print(f"  they carry {final_spec.sparsity_report()['frac_power_in_key_freqs']:.4f} "
-          f"of embedding power; spectrum gini {final_spec.gini:.4f}", flush=True)
+    # Key frequencies are read off the FINAL checkpoint and then held fixed
+    # across the whole trajectory.  That is the entire point of the progress
+    # measures: the question is *when the final circuit starts to exist*, so
+    # re-deriving the set per checkpoint would ask a different question at every
+    # step -- and at early steps the spectrum is dense, so the rules just pick an
+    # arbitrary frequency.
+    #
+    # Three independent rules are computed and their agreement is reported.  If
+    # they disagree the write-up has to say so rather than quietly pick one.
+    all_paths = checkpoint_paths(root / "checkpoints" / args.tag)
+    final = load_snapshot(all_paths[-1][1], data)
+    cons = key_freqs_consensus(final.model.W_E.detach(), final.neuron_acts, F, args.p)
+    final_spec = cons["spectrum"]
+    key_freqs = cons["consensus"] if cons["agree"] else cons["union"]
+    print(f"key frequencies from the FINAL checkpoint (step {final.step}):", flush=True)
+    for rule, v in cons["by_rule"].items():
+        print(f"    {rule:24s} {v}", flush=True)
+    print(f"    {'-> used':24s} {key_freqs}   Jaccard {cons['jaccard']:.3f} "
+          f"agree={cons['agree']}", flush=True)
+    if not cons["agree"]:
+        print("    NOTE: rules disagree; the union is used and this must be "
+              "stated in the write-up", flush=True)
+    print(f"  key frequencies carry "
+          f"{final_spec.sparsity_report()['frac_power_in_key_freqs']:.4f} of embedding "
+          f"power; Gini(W_E) {final_spec.gini:.4f}; "
+          f"{cons['rule_b']['frac_above']:.4f} of neurons above 0.85 explained", flush=True)
     if not key_freqs:
         print("  WARNING: no key frequencies found -- the model may not have "
               "developed a sparse representation", flush=True)
@@ -119,20 +149,12 @@ def main():
         if i % 10 == 0 or i == len(paths) - 1:
             print(f"  [{i+1}/{len(paths)}] step {step:6d} "
                   f"test_acc {rows[-1]['test_acc']:.3f} "
-                  f"restr {rows[-1]['restricted_loss_block']:.4f} "
-                  f"excl {rows[-1]['excluded_loss_block']:.4f} "
+                  f"restr {rows[-1]['restricted_loss_sum_all']:.2e} "
+                  f"excl {rows[-1]['excluded_loss_sum']:.3f} "
                   f"a+b {rows[-1]['logit_var_a+b']:.4f} "
                   f"({time.time()-t0:.0f}s)", flush=True)
-            out_path.write_text(json.dumps(
-                {"tag": args.tag, "op": args.op, "p": args.p,
-                 "key_freqs": key_freqs, "key_method": args.key_method,
-                 "final_emb_report": final_spec.sparsity_report(),
-                 "rows": rows}))
-    out_path.write_text(json.dumps(
-        {"tag": args.tag, "op": args.op, "p": args.p,
-         "key_freqs": key_freqs, "key_method": args.key_method,
-         "final_emb_report": final_spec.sparsity_report(),
-         "rows": rows}))
+            _write(out_path, args, key_freqs, cons, final, final_spec, rows)
+    _write(out_path, args, key_freqs, cons, final, final_spec, rows)
     print(f"wrote {out_path}  ({time.time()-t0:.0f}s)", flush=True)
 
 

@@ -30,10 +30,36 @@ def _logx(ax, lo: float = 1.0):
     ax.set_xlabel("training step")
 
 
-def _endpoint_label(ax, x, y, text, color, dx=1.04, va="center", fontsize=8):
-    ax.annotate(text, xy=(x, y), xytext=(x * dx, y), color=color,
-                va=va, ha="left", fontsize=fontsize,
-                annotation_clip=False, fontweight="bold")
+def _endpoint_labels(ax, x, items, dx=1.04, fontsize=8, min_gap_frac=0.055):
+    """Direct labels at the right edge, nudged apart when they would collide.
+
+    Two series that both end at 100% would otherwise print on top of each
+    other, which is the most common way a direct label stops being a label.
+    """
+    lo, hi = ax.get_ylim()
+    log = ax.get_yscale() == "log"
+
+    def to_frac(y):
+        if log:
+            import math
+            return (math.log10(max(y, 1e-300)) - math.log10(lo)) / (math.log10(hi) - math.log10(lo))
+        return (y - lo) / (hi - lo)
+
+    def from_frac(f):
+        if log:
+            return 10 ** (f * (math.log10(hi) - math.log10(lo)) + math.log10(lo))
+        return f * (hi - lo) + lo
+
+    import math
+    placed = sorted(((to_frac(y), text, color) for y, text, color in items))
+    for i in range(1, len(placed)):
+        if placed[i][0] - placed[i - 1][0] < min_gap_frac:
+            placed[i] = (placed[i - 1][0] + min_gap_frac, placed[i][1], placed[i][2])
+    for f, text, color in placed:
+        ax.annotate(text, xy=(x, from_frac(min(f, 1.0))), color=color,
+                    va="center", ha="left", fontsize=fontsize,
+                    xytext=(x * dx, from_frac(min(f, 1.0))),
+                    annotation_clip=False, fontweight="bold")
 
 
 def grokking_curve(hist: List[Dict], mode: str = "light",
@@ -75,10 +101,11 @@ def grokking_curve(hist: List[Dict], mode: str = "light",
                      xy=(grok_step, 0.5), xytext=(grok_step * 1.15, 0.42),
                      color=t["text_secondary"], fontsize=8, ha="left")
 
-    # selective direct labels at the right edge
+    # selective direct labels at the right edge, de-overlapped
     for ax, keys in ((ax1, ("train_acc", "test_acc")), (ax2, ("train_loss", "test_loss"))):
-        for key, color, name in zip(keys, (c_train, c_test), ("train", "test")):
-            _endpoint_label(ax, step[-1], hist[-1][key], name, color)
+        _endpoint_labels(ax, step[-1],
+                         [(hist[-1][k], n, c)
+                          for k, c, n in zip(keys, (c_train, c_test), ("train", "test"))])
 
     ax1.set_title(title, color=t["text_primary"])
     # legend to the right of the left-aligned title so the two never collide

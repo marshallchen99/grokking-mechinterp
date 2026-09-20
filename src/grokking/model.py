@@ -31,6 +31,7 @@ import torch.nn as nn
 @dataclass
 class ModelConfig:
     d_vocab: int = 114          # p + 1, the extra token is "="
+    d_vocab_out: int = 113      # p -- the answer is always a residue, never "="
     n_ctx: int = 3              # [a, b, =]
     d_model: int = 128
     n_heads: int = 4
@@ -43,6 +44,8 @@ class ModelConfig:
     seed: int = 0
 
     def __post_init__(self):
+        if self.d_vocab_out is None:
+            self.d_vocab_out = self.d_vocab - 1
         if self.d_head * self.n_heads != self.d_model:
             raise ValueError(
                 f"n_heads * d_head ({self.n_heads} * {self.d_head}) must equal "
@@ -82,7 +85,11 @@ class OneLayerTransformer(nn.Module):
         self.W_in = param(cfg.d_model, cfg.d_mlp)
         self.W_out = param(cfg.d_mlp, cfg.d_model)
 
-        self.W_U = param(cfg.d_model, cfg.d_vocab)
+        # The output space is the residues 0..p-1 only.  Giving W_U a column
+        # for "=" would create a class that can never be correct: it would
+        # receive gradient, be weight-decayed, and show up in the weight-norm
+        # curve while contributing nothing.
+        self.W_U = param(cfg.d_model, cfg.d_vocab_out)
 
         mask = torch.tril(torch.ones(cfg.n_ctx, cfg.n_ctx, dtype=torch.bool))
         self.register_buffer("causal_mask", mask, persistent=False)
@@ -170,10 +177,11 @@ class OneLayerTransformer(nn.Module):
 
 
 def final_logits(logits: torch.Tensor, n_answer: int) -> torch.Tensor:
-    """Take the last position and drop the "=" column.
+    """Take the last position, and the first `n_answer` columns.
 
-    The answer is always a residue in 0..p-1, so column p (the "=" token) can
-    never be correct.  Keeping it would add a meaningless direction to every
-    Fourier decomposition of the logits.
+    With the current config the unembedding already has exactly `n_answer`
+    columns, so the slice is a no-op; it is kept so that checkpoints written by
+    an earlier version -- whose W_U did carry a dead "=" column -- still load
+    and analyse correctly.
     """
     return logits[:, -1, :n_answer]
