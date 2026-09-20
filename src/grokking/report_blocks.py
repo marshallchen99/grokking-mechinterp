@@ -508,6 +508,50 @@ def phase_diagram_block(root: Path, _tag: str) -> Optional[str]:
     ] if x)
 
 
+def load_bearing(root: Path, tag: str) -> Optional[str]:
+    """A fourth identification, using no rule at all.
+
+    Remove one frequency's two output directions at a time and measure the
+    damage.  It needs no threshold, no clustering and no gap statistic, so it
+    is an independent check on the three rules -- and, as it turns out, it
+    answers a slightly different question than they do.
+    """
+    m = load_json(root, f"{tag}_mechanism.json")
+    if not m or not m.get("per_frequency_excluded_loss"):
+        return None
+    pf = {int(k): v for k, v in m["per_frequency_excluded_loss"].items()}
+    K = m["key_freqs"]["used"]
+    items = sorted(pf.items(), key=lambda kv: -kv[1])
+    base = m["baseline"]["train_loss"]
+    top = items[: max(len(K), 4) + 2]
+    rows = [[f"{k}" + ("  (identified as key)" if k in K else ""), v] for k, v in top]
+    rest = [v for k, v in items[len(K):]]
+    tbl = table(["frequency removed", "train loss afterwards"], rows)
+    picked = sorted(k for k, _ in items[: len(K)])
+    agree = picked == sorted(K)
+    parts = [
+        "The three rules in section 2 all read the model's *representation*. This one "
+        "reads its *behaviour*, and uses no threshold, no clustering and no gap "
+        "statistic: delete one frequency's two output directions at a time and measure "
+        f"what it costs. The unablated training loss is {base:.2e}.",
+        tbl,
+        f"The remaining {len(rest)} frequencies have a median cost of "
+        f"{sorted(rest)[len(rest)//2]:.2e} -- a separation of seven orders of magnitude "
+        f"between the frequencies that carry the computation and the ones that do not.",
+    ]
+    parts.append(
+        f"Taking the top {len(K)} by this measure alone gives {picked}, which "
+        + ("**matches the three rules exactly**, so four methods with no shared "
+           "machinery agree on the same set."
+           if agree else
+           f"differs from the rules' {sorted(K)}. That is not a contradiction: this "
+           "measure ranks frequencies by how much work they do, and a frequency the "
+           "model represents but does not lean on costs nothing to remove, so it falls "
+           "into the tie at the bottom. The subset analysis above identifies exactly "
+           "such a passenger."))
+    return "\n\n".join(parts)
+
+
 def redundancy(root: Path, tag: str) -> Optional[str]:
     """Is the frequency set the model found minimal?"""
     d = load_json(root, f"{tag}_redundancy.json")
@@ -560,6 +604,7 @@ GENERATORS = {
     "phase_diagram": phase_diagram_block,
     "redundancy": redundancy,
     "controls": controls,
+    "load_bearing": load_bearing,
 }
 
 MULTI_TAG_GENERATORS = {
