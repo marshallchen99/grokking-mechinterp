@@ -1,0 +1,16 @@
+[
+  {
+    "tag": "op_sub_s0",
+    "op": "sub",
+    "steps": 25000,
+    "n_checkpoints": 80,
+    "threads": 3
+  },
+  {
+    "tag": "op_mul_s0",
+    "op": "mul",
+    "steps": 25000,
+    "n_checkpoints": 80,
+    "threads": 3
+  }
+]

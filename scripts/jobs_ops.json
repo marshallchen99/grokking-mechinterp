@@ -1,0 +1,42 @@
+[
+  {
+    "tag": "op_sub_s0",
+    "op": "sub",
+    "steps": 40000,
+    "model_seed": 0,
+    "data_seed": 0,
+    "n_checkpoints": 90
+  },
+  {
+    "tag": "op_mul_s0",
+    "op": "mul",
+    "steps": 40000,
+    "model_seed": 0,
+    "data_seed": 0,
+    "n_checkpoints": 90
+  },
+  {
+    "tag": "op_sq_sum_cross_s0",
+    "op": "sq_sum_cross",
+    "steps": 40000,
+    "model_seed": 0,
+    "data_seed": 0,
+    "n_checkpoints": 90
+  },
+  {
+    "tag": "main_add_s1",
+    "op": "add",
+    "steps": 40000,
+    "model_seed": 1,
+    "data_seed": 1,
+    "n_checkpoints": 90
+  },
+  {
+    "tag": "main_add_s2",
+    "op": "add",
+    "steps": 40000,
+    "model_seed": 2,
+    "data_seed": 2,
+    "n_checkpoints": 90
+  }
+]
