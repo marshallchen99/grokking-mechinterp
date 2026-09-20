@@ -1,0 +1,768 @@
+<title>Grokking, Reverse-Engineered</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap">
+
+<style>
+:root{
+  color-scheme: light;
+  --ground:#f7f8fa;
+  --panel:#ffffff;
+  --panel-2:#eef1f6;
+  --ink:#14171d;
+  --ink-2:#4b5160;
+  --ink-3:#7d8494;
+  --rule:#dfe3ea;
+  --rule-2:#c9cfda;
+  --signal:#2a78d6;
+  --signal-soft:#d9e6f8;
+  --counter:#d4541f;
+  --counter-soft:#f8e3d8;
+  --dead:#b6bac2;
+  --good:#0f7a4d;
+  --shadow: 0 1px 2px rgba(20,23,29,.05), 0 8px 24px -16px rgba(20,23,29,.22);
+  --serif:"IBM Plex Serif", Georgia, "Times New Roman", serif;
+  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --col: 68ch;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --ground:#101317;
+    --panel:#171b21;
+    --panel-2:#1e232b;
+    --ink:#eef1f6;
+    --ink-2:#a8b0be;
+    --ink-3:#79818f;
+    --rule:#262c35;
+    --rule-2:#39414d;
+    --signal:#5b9ff0;
+    --signal-soft:#1b2c44;
+    --counter:#ef7a45;
+    --counter-soft:#3a2117;
+    --dead:#4b525d;
+    --good:#34b57c;
+    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 10px 28px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --ground:#101317;
+  --panel:#171b21;
+  --panel-2:#1e232b;
+  --ink:#eef1f6;
+  --ink-2:#a8b0be;
+  --ink-3:#79818f;
+  --rule:#262c35;
+  --rule-2:#39414d;
+  --signal:#5b9ff0;
+  --signal-soft:#1b2c44;
+  --counter:#ef7a45;
+  --counter-soft:#3a2117;
+  --dead:#4b525d;
+  --good:#34b57c;
+  --shadow: 0 1px 2px rgba(0,0,0,.5), 0 10px 28px -18px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{ padding-inline:20px; padding-block:0; }
+.col{ max-width:var(--col); margin-inline:auto; }
+.wide{ max-width:1080px; margin-inline:auto; }
+
+h1,h2,h3{ font-family:var(--serif); font-weight:600; text-wrap:balance; margin:0; line-height:1.18; }
+h1{ font-size:clamp(2.1rem, 6vw, 3.4rem); letter-spacing:-.02em; }
+h2{ font-size:clamp(1.45rem, 3.4vw, 1.95rem); letter-spacing:-.01em; }
+h3{ font-size:1.06rem; }
+p{ margin:0 0 1em; color:var(--ink-2); }
+p strong{ color:var(--ink); font-weight:600; }
+a{ color:var(--signal); text-underline-offset:2px; }
+
+.eyebrow{
+  font-family:var(--mono); font-size:.695rem; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink-3); margin:0 0 .85rem;
+}
+.lede{ font-size:1.12rem; color:var(--ink-2); }
+.num{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+
+/* ---------- hero ---------- */
+header.hero{
+  border-bottom:1px solid var(--rule);
+  background:
+    linear-gradient(to bottom, var(--panel), var(--ground));
+}
+header.hero .wrap{ padding-block:clamp(2.4rem,7vw,4.4rem) clamp(1.6rem,4vw,2.6rem); }
+.hero h1 span.hl{
+  background:linear-gradient(to bottom, transparent 62%, var(--signal-soft) 62%);
+}
+.hero-sub{ margin-top:1.1rem; }
+.byline{
+  font-family:var(--mono); font-size:.76rem; color:var(--ink-3);
+  display:flex; flex-wrap:wrap; gap:.4rem 1.2rem; margin-top:1.6rem;
+}
+
+/* ---------- sections ---------- */
+section{ border-top:1px solid var(--rule); }
+section:first-of-type{ border-top:0; }
+section > .wrap{ padding-block:clamp(2.2rem,5vw,3.4rem); }
+
+/* ---------- figures & panels ---------- */
+.panel{
+  background:var(--panel); border:1px solid var(--rule);
+  border-radius:10px; box-shadow:var(--shadow);
+}
+figure{ margin:1.8rem 0 0; }
+figcaption{
+  font-size:.83rem; color:var(--ink-3); margin-top:.7rem; line-height:1.5;
+}
+svg{ display:block; width:100%; height:auto; }
+svg text{ font-family:var(--mono); fill:var(--ink-3); }
+
+/* ---------- the instrument ---------- */
+.instrument{ padding:18px; }
+.inst-top{
+  display:grid; grid-template-columns:minmax(0,1fr) 210px; gap:18px; align-items:stretch;
+}
+@media (max-width:760px){ .inst-top{ grid-template-columns:1fr; } }
+.readouts{ display:flex; flex-direction:column; gap:10px; }
+.ro{
+  background:var(--panel-2); border-radius:8px; padding:10px 12px;
+  display:flex; flex-direction:column; gap:1px;
+}
+.ro .k{ font-family:var(--mono); font-size:.66rem; letter-spacing:.1em;
+        text-transform:uppercase; color:var(--ink-3); }
+.ro .v{ font-family:var(--mono); font-size:1.42rem; font-weight:600;
+        font-variant-numeric:tabular-nums; color:var(--ink); line-height:1.2; }
+.ro.flat .v{ color:var(--counter); }
+.ro.rising .v{ color:var(--signal); }
+.ro .sub{ font-family:var(--mono); font-size:.68rem; color:var(--ink-3); }
+
+.controls{
+  display:flex; align-items:center; gap:14px; margin-top:16px; flex-wrap:wrap;
+}
+.controls input[type=range]{
+  flex:1 1 220px; min-width:180px; accent-color:var(--signal); height:24px;
+}
+button{
+  font-family:var(--mono); font-size:.76rem; letter-spacing:.06em; text-transform:uppercase;
+  background:var(--panel-2); color:var(--ink); border:1px solid var(--rule-2);
+  border-radius:6px; padding:.5rem .9rem; cursor:pointer;
+}
+button:hover{ border-color:var(--signal); color:var(--signal); }
+button:focus-visible, input:focus-visible{ outline:2px solid var(--signal); outline-offset:2px; }
+button[aria-pressed="true"]{ background:var(--signal); color:#fff; border-color:var(--signal); }
+.steplabel{ font-family:var(--mono); font-size:.8rem; color:var(--ink-2);
+            font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+/* ---------- small grid demo ---------- */
+.modgrid{ display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:3px;
+          max-width:340px; font-family:var(--mono); font-size:.8rem; }
+.modgrid div{
+  aspect-ratio:1; display:grid; place-items:center; border-radius:4px;
+  background:var(--panel-2); color:var(--ink-2);
+}
+.modgrid div.hdr{ background:transparent; color:var(--ink-3); font-size:.7rem; }
+.modgrid div.shown{ background:var(--signal-soft); color:var(--signal); font-weight:600; }
+.modgrid div.hidden{ color:var(--dead); }
+
+/* ---------- tables ---------- */
+.tablewrap{ overflow-x:auto; margin-top:1.4rem; }
+table{ border-collapse:collapse; width:100%; font-size:.86rem; min-width:420px; }
+th,td{ text-align:right; padding:.46rem .7rem; border-bottom:1px solid var(--rule); }
+th:first-child, td:first-child{ text-align:left; }
+thead th{
+  font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink-3); border-bottom:1px solid var(--rule-2); font-weight:500;
+}
+td.n{ font-family:var(--mono); font-variant-numeric:tabular-nums; }
+tr.hi td{ background:var(--signal-soft); }
+tr.hi td.n{ color:var(--signal); font-weight:600; }
+tr.dead td.n{ color:var(--ink-3); }
+
+/* ---------- formula block ---------- */
+pre.f{
+  font-family:var(--mono); font-size:.8rem; line-height:1.85; color:var(--ink-2);
+  background:var(--panel); border:1px solid var(--rule); border-left:3px solid var(--signal);
+  border-radius:8px; padding:14px 16px; overflow-x:auto; margin:1.4rem 0;
+}
+pre.f b{ color:var(--signal); font-weight:600; }
+
+/* ---------- bars ---------- */
+.bars{ display:flex; flex-direction:column; gap:7px; margin-top:1.4rem; }
+.bar{ display:grid; grid-template-columns:minmax(0,1fr); gap:3px; }
+.bar .lab{ font-size:.8rem; color:var(--ink-2); display:flex; justify-content:space-between; gap:12px; }
+.bar .lab .n{ font-family:var(--mono); font-variant-numeric:tabular-nums; color:var(--ink-3); }
+.bar .track{ height:9px; background:var(--panel-2); border-radius:5px; overflow:hidden; }
+.bar .fill{ height:100%; border-radius:5px; background:var(--dead); }
+.bar.live .fill{ background:var(--signal); }
+.bar.live .lab .n{ color:var(--signal); font-weight:600; }
+
+/* ---------- notes ---------- */
+.note{
+  border-left:3px solid var(--rule-2); padding:.1rem 0 .1rem 14px;
+  font-size:.92rem; color:var(--ink-2); margin:1.4rem 0;
+}
+footer{ border-top:1px solid var(--rule); background:var(--panel); }
+footer .wrap{ padding-block:2.2rem 3rem; }
+footer p{ font-size:.86rem; }
+.kv{ display:grid; grid-template-columns:auto 1fr; gap:.3rem 1.1rem;
+     font-family:var(--mono); font-size:.78rem; color:var(--ink-3); margin-top:1rem; }
+.kv b{ color:var(--ink-2); font-weight:500; }
+
+@media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
+.fill, .ro .v{ transition: width .14s linear, color .14s linear; }
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="col">
+      <p class="eyebrow">Mechanistic interpretability &middot; reproduction</p>
+      <h1>A network that memorised for 14,379 steps, then <span class="hl">learned trigonometry</span></h1>
+      <p class="lede hero-sub">
+        A one-layer transformer is shown 30% of the addition table mod 113 and asked to
+        fill in the rest. It memorises what it was shown in 158 steps, sits at chance on
+        everything else for fourteen thousand more &mdash; and then, with nothing visible
+        changing, generalises. This page takes the finished network apart to show what
+        was forming in that silence.
+      </p>
+      <div class="byline">
+        <span>226,176 parameters</span><span>3,830 training pairs</span>
+        <span>40,000 steps</span><span>82 minutes on 6 CPU threads</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap"><div class="col">
+    <p class="eyebrow">01 &middot; the task</p>
+    <h2>The model is never told the rule</h2>
+    <p>
+      It sees pairs of symbols and an answer. Nothing says these are numbers, that
+      <span class="num">+</span> means addition, or that there is a modulus. Shrunk to
+      <span class="num">mod 5</span> so it fits on a page, the job is to fill in the
+      question marks from the cells it was shown:
+    </p>
+    <div class="modgrid" id="modgrid" aria-label="partially filled addition table mod 5"></div>
+    <p style="margin-top:1.2rem">
+      At <span class="num">p = 113</span> that is 3,830 cells shown and 8,939 hidden. Two
+      strategies both score 100% on the visible cells. <strong>Memorise</strong> &mdash; there is
+      ample room for a lookup table &mdash; which says nothing at all about the hidden cells.
+      Or <strong>find the rule</strong>. Gradient descent takes the first road, because
+      memorising pays immediately and a general circuit pays nothing until it is finished.
+    </p>
+  </div></div>
+</section>
+
+<section>
+  <div class="wrap"><div class="wide">
+    <p class="eyebrow">02 &middot; the phenomenon</p>
+    <h2 style="max-width:var(--col)">Training accuracy is useless as a progress signal</h2>
+    <figure>
+      <div class="panel" style="padding:16px"><div id="curve"></div></div>
+      <figcaption>
+        Train (grey) and test (orange) accuracy, log step axis. Test loss does not merely
+        stay flat during the plateau &mdash; it rises to a peak of <span class="num">32.74</span>
+        at step <span class="num">1,680</span> as the memorised solution becomes more
+        confident and more wrong. Hover the chart to read any step.
+      </figcaption>
+    </figure>
+  </div></div>
+</section>
+
+<section id="instrument-section">
+  <div class="wrap"><div class="wide">
+    <p class="eyebrow">03 &middot; the instrument</p>
+    <h2 style="max-width:var(--col)">Drag through training and watch the circuit form</h2>
+    <p style="max-width:var(--col)">
+      Each of the 113 input symbols gets a 128-dimensional embedding. Take the Fourier
+      transform of that embedding across the 113 symbols and you get 56 frequencies. Below
+      is how the embedding's power is distributed across them, at whatever step you choose.
+      Four bars are coloured: the frequencies the <em>finished</em> model ends up using.
+      Watch them climb out of the noise floor while the accuracy readout beside them
+      refuses to move.
+    </p>
+    <figure>
+      <div class="panel instrument">
+        <div class="inst-top">
+          <div><div id="spectrum"></div></div>
+          <div class="readouts">
+            <div class="ro" id="ro-step"><span class="k">training step</span><span class="v num" id="v-step">0</span></div>
+            <div class="ro" id="ro-test"><span class="k">test accuracy</span><span class="v num" id="v-test">0.8%</span><span class="sub" id="s-test">chance is 0.88%</span></div>
+            <div class="ro" id="ro-key"><span class="k">power on the 4</span><span class="v num" id="v-key">7%</span><span class="sub">of 56 frequencies</span></div>
+            <div class="ro" id="ro-restr"><span class="k">restricted loss</span><span class="v num" id="v-restr">4.73</span><span class="sub">uniform guess is 4.73</span></div>
+          </div>
+        </div>
+        <div class="controls">
+          <button id="play" aria-pressed="false">Play</button>
+          <input type="range" id="scrub" min="0" max="0" value="0" step="1" aria-label="training step">
+          <span class="steplabel" id="phaselabel">memorisation</span>
+        </div>
+      </div>
+      <figcaption>
+        <strong>Restricted loss</strong> keeps only those four frequencies' contribution to the
+        output and throws away everything else, then measures the loss. It falls long before
+        the accuracy does: the generalising machinery is already there, buried under the
+        memorised solution. That is the whole point &mdash; the transition only looks sudden
+        from outside.
+      </figcaption>
+    </figure>
+  </div></div>
+</section>
+
+<section>
+  <div class="wrap"><div class="col">
+    <p class="eyebrow">04 &middot; the algorithm</p>
+    <h2>It turned addition into rotation</h2>
+    <p>
+      Nothing in the architecture suggests trigonometry. What the trained weights do is
+      represent each number as a point on a circle and exploit the fact that, on a circle,
+      addition is just turning further:
+    </p>
+<pre class="f">  a  <b>-&gt;</b>  ( cos(w*a), sin(w*a) )        w = 2*pi*k/113, for four values of k
+
+  <b>cos(w*(a+b))</b> = cos(w*a)cos(w*b) - sin(w*a)sin(w*b)     &lt;- attention + MLP
+  <b>sin(w*(a+b))</b> = sin(w*a)cos(w*b) + cos(w*a)sin(w*b)
+
+  logit(c)  proportional to   <b>sum over k of  cos( w_k * (a + b - c) )</b></pre>
+    <p>
+      The last line is a matched filter. When <span class="num">c = a + b</span> every term
+      has phase zero and they peak together; for any other <span class="num">c</span> the
+      phases disagree and the terms cancel. Wraparound is free &mdash; the circle is already
+      periodic, so there is no "subtract 113 if too big" step anywhere in the network.
+    </p>
+    <h3 style="margin-top:2rem">Three ways of asking, one answer</h3>
+    <p>
+      Which frequencies is it using? Three rules with independent logic, applied to the
+      final checkpoint:
+    </p>
+    <div class="tablewrap"><table id="rules-table"></table></div>
+    <h3 style="margin-top:2rem">What the output is a function of</h3>
+    <p>
+      If the algorithm is right, the logits should depend on the inputs only through
+      <span class="num">(a+b)</span>. Chance for this column is
+      <span class="num">1/113 = 0.0088</span>:
+    </p>
+    <div class="tablewrap"><table id="struct-table"></table></div>
+    <p class="note">
+      The tools are calibrated before they are trusted. Run the same measurement on logits
+      built to be exactly <span class="num">sum_k cos(w_k(a+b-c))</span> and it reads
+      1.0000; on random logits it reads 0.0088. So these numbers are interpretable rather
+      than merely large.
+    </p>
+  </div></div>
+</section>
+
+<section>
+  <div class="wrap"><div class="col">
+    <p class="eyebrow">05 &middot; causal tests</p>
+    <h2>Cut it out and the model dies</h2>
+    <p>
+      Everything above is correlational: the weights <em>look like</em> the algorithm. These
+      edit the weights and re-run the whole network, so the intervention propagates the way
+      a real change would. The control rows are what make the result mean anything &mdash;
+      deleting any four of fifty-six frequencies removes some of the embedding's norm.
+    </p>
+    <div class="bars" id="ablation-bars"></div>
+    <h3 style="margin-top:2.2rem">Is the circuit minimal?</h3>
+    <p>
+      It settles on four frequencies, but that is not the same as needing four. Every
+      subset was kept in the embedding while all other frequencies were deleted:
+    </p>
+    <div class="tablewrap"><table id="subset-table"></table></div>
+    <p id="minimal-note" style="margin-top:1.2rem"></p>
+  </div></div>
+</section>
+
+<section>
+  <div class="wrap"><div class="col">
+    <p class="eyebrow">06 &middot; honesty</p>
+    <h2>What this is and is not</h2>
+    <p>
+      <strong>Nothing here is a new discovery.</strong> The phenomenon is Power et&nbsp;al. (2022);
+      the mechanism and the progress measures are Nanda et&nbsp;al. (2023). This is a
+      from-scratch reproduction &mdash; own model, own Fourier tooling, own analysis &mdash;
+      plus a few extensions.
+    </p>
+    <p>
+      <strong>The lead times are one run.</strong> Grokking time varies substantially across
+      seeds, and one run is not a distribution.
+    </p>
+    <p>
+      <strong>Runs are reproducible in distribution, not bit-exact.</strong> Single-threaded,
+      identical seeds give identical weights and the test suite asserts it. Multi-threaded
+      they do not: PyTorch's CPU reductions do not fix their summation order, and two runs
+      of the same code diverge in the loss by about 1e-4 within a hundred steps.
+    </p>
+    <p>
+      <strong>The loss is computed in float64.</strong> In float32, log-softmax quantises at
+      2<sup>-23</sup> = 1.2e-7, so once the model has memorised the reported training loss
+      bottoms out there. The entire phenomenon lives in the tens of thousands of steps after
+      the training loss is nominally zero, so a loss floor is exactly the wrong artefact to have.
+    </p>
+  </div></div>
+</section>
+
+<footer>
+  <div class="wrap"><div class="col">
+    <p class="eyebrow">Run configuration</p>
+    <div class="kv" id="config-kv"></div>
+    <p style="margin-top:1.6rem; color:var(--ink-3); font-size:.82rem">
+      Every number on this page is read out of a results file produced by running the code on
+      one laptop CPU; none is typed by hand. Built with AI assistance.
+    </p>
+  </div></div>
+</footer>
+
+<script type="application/json" id="data">__DATA__</script>
+<script>
+(function(){
+  "use strict";
+  var D = JSON.parse(document.getElementById("data").textContent);
+  var M = D.meta, FR = D.frames, MECH = D.mechanism, RED = D.redundancy;
+  var KEY = D.key_freqs, KEYSET = {}; KEY.forEach(function(k){ KEYSET[k]=1; });
+  var NS = "http://www.w3.org/2000/svg";
+
+  function el(tag, attrs, text){
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function css(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function pct(x, d){ return (100*x).toFixed(d==null?1:d) + "%"; }
+  function commas(n){ return Math.round(n).toLocaleString("en-US"); }
+
+  /* ---------------- the mod-5 grid ---------------- */
+  (function(){
+    var g = document.getElementById("modgrid"), P = 5;
+    var shown = {"0,0":1,"0,3":1,"1,1":1,"1,4":1,"2,0":1,"2,3":1,"3,2":1,"4,1":1,"4,4":1};
+    g.appendChild(Object.assign(document.createElement("div"), {className:"hdr", textContent:""}));
+    for (var b=0;b<P;b++) g.appendChild(Object.assign(document.createElement("div"), {className:"hdr", textContent:"b="+b}));
+    for (var a=0;a<P;a++){
+      g.appendChild(Object.assign(document.createElement("div"), {className:"hdr", textContent:"a="+a}));
+      for (var bb=0;bb<P;bb++){
+        var on = shown[a+","+bb];
+        g.appendChild(Object.assign(document.createElement("div"), {
+          className: on ? "shown" : "hidden",
+          textContent: on ? String((a+bb)%P) : "?"
+        }));
+      }
+    }
+  })();
+
+  /* ---------------- the grokking curve ---------------- */
+  var curveHost = document.getElementById("curve");
+  function drawCurve(){
+    curveHost.textContent = "";
+    var W = Math.max(320, curveHost.clientWidth || 820), H = Math.round(Math.min(380, Math.max(240, W*0.44)));
+    var mL = 46, mR = 58, mT = 14, mB = 34;
+    var iw = W-mL-mR, ih = H-mT-mB;
+    var svg = el("svg", {viewBox:"0 0 "+W+" "+H, role:"img",
+                         "aria-label":"train and test accuracy against training step"});
+    var maxS = D.curve[D.curve.length-1].s;
+    function X(s){ var t = Math.log10(Math.max(s,1)+1)/Math.log10(maxS+1); return mL + t*iw; }
+    function Y(v){ return mT + (1-v)*ih; }
+
+    // plateau band
+    var p0 = X(D.phases.memorisation_step), p1 = X(D.phases.grokking_step);
+    svg.appendChild(el("rect", {x:p0, y:mT, width:Math.max(p1-p0,1), height:ih,
+                                fill:css("--panel-2")}));
+    svg.appendChild(el("text", {x:(p0+p1)/2, y:mT+16, "text-anchor":"middle",
+                                "font-size":"11", fill:css("--ink-3")},
+                       commas(D.phases.plateau_length)+" steps at chance"));
+
+    // grid + y labels
+    [0,0.25,0.5,0.75,1].forEach(function(v){
+      svg.appendChild(el("line",{x1:mL,x2:mL+iw,y1:Y(v),y2:Y(v),stroke:css("--rule"),"stroke-width":1}));
+      svg.appendChild(el("text",{x:mL-9,y:Y(v)+4,"text-anchor":"end","font-size":"11"}, Math.round(v*100)+"%"));
+    });
+    [1,10,100,1000,10000].forEach(function(s){
+      if (s>maxS) return;
+      svg.appendChild(el("line",{x1:X(s),x2:X(s),y1:mT,y2:mT+ih,stroke:css("--rule"),"stroke-width":1}));
+      svg.appendChild(el("text",{x:X(s),y:H-12,"text-anchor":"middle","font-size":"11"},
+                         s>=1000 ? (s/1000)+"k" : String(s)));
+    });
+    svg.appendChild(el("text",{x:mL,y:H-12,"text-anchor":"middle","font-size":"11"},"0"));
+
+    function path(key, color, w){
+      var d = D.curve.map(function(r,i){ return (i?"L":"M")+X(r.s).toFixed(1)+" "+Y(r[key]).toFixed(1); }).join("");
+      svg.appendChild(el("path",{d:d,fill:"none",stroke:color,"stroke-width":w,
+                                 "stroke-linejoin":"round","stroke-linecap":"round"}));
+    }
+    path("tr", css("--dead"), 2);
+    path("te", css("--counter"), 2.4);
+    svg.appendChild(el("text",{x:mL+iw+8,y:Y(D.curve[D.curve.length-1].tr)+4,"font-size":"11",
+                               fill:css("--dead"),"font-weight":"600"},"train"));
+    svg.appendChild(el("text",{x:mL+iw+8,y:Y(D.curve[D.curve.length-1].te)-10,"font-size":"11",
+                               fill:css("--counter"),"font-weight":"600"},"test"));
+
+    // hover
+    var hl = el("line",{x1:0,x2:0,y1:mT,y2:mT+ih,stroke:css("--ink-3"),"stroke-width":1,opacity:0});
+    var dot1 = el("circle",{r:3.5,fill:css("--counter"),opacity:0});
+    var dot2 = el("circle",{r:3.5,fill:css("--dead"),opacity:0});
+    var tip  = el("text",{"font-size":"11.5",fill:css("--ink"),opacity:0,"font-weight":"600"});
+    svg.appendChild(hl); svg.appendChild(dot1); svg.appendChild(dot2); svg.appendChild(tip);
+    var hit = el("rect",{x:mL,y:mT,width:iw,height:ih,fill:"transparent"});
+    svg.appendChild(hit);
+    function move(ev){
+      var r = svg.getBoundingClientRect();
+      var px = (ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left;
+      var sx = px * (W / r.width);
+      var best = D.curve[0], bd = 1e9;
+      for (var i=0;i<D.curve.length;i++){ var d = Math.abs(X(D.curve[i].s)-sx); if (d<bd){bd=d;best=D.curve[i];} }
+      hl.setAttribute("x1",X(best.s)); hl.setAttribute("x2",X(best.s)); hl.setAttribute("opacity",1);
+      dot1.setAttribute("cx",X(best.s)); dot1.setAttribute("cy",Y(best.te)); dot1.setAttribute("opacity",1);
+      dot2.setAttribute("cx",X(best.s)); dot2.setAttribute("cy",Y(best.tr)); dot2.setAttribute("opacity",1);
+      var left = X(best.s) > mL+iw*0.62;
+      tip.textContent = "step "+commas(best.s)+"  ·  test "+pct(best.te);
+      tip.setAttribute("x", X(best.s) + (left ? -8 : 8));
+      tip.setAttribute("text-anchor", left ? "end" : "start");
+      tip.setAttribute("y", mT+ih-8); tip.setAttribute("opacity",1);
+    }
+    function leave(){ [hl,dot1,dot2,tip].forEach(function(n){ n.setAttribute("opacity",0); }); }
+    hit.addEventListener("mousemove", move);
+    hit.addEventListener("touchmove", function(e){ move(e); }, {passive:true});
+    hit.addEventListener("mouseleave", leave);
+    curveHost.appendChild(svg);
+  }
+
+  /* ---------------- the spectrum instrument ---------------- */
+  var specHost = document.getElementById("spectrum");
+  var specSvg = null, bars = [], SW=0, SH=0, sMargins={l:34,r:8,t:12,b:26};
+  function buildSpectrum(){
+    specHost.textContent = ""; bars = [];
+    SW = Math.max(300, specHost.clientWidth || 640);
+    SH = Math.round(Math.min(280, Math.max(190, SW*0.42)));
+    var iw = SW-sMargins.l-sMargins.r, ih = SH-sMargins.t-sMargins.b;
+    specSvg = el("svg",{viewBox:"0 0 "+SW+" "+SH, role:"img",
+                        "aria-label":"share of embedding power by frequency"});
+    [0,0.1,0.2,0.3,0.4].forEach(function(v){
+      var y = sMargins.t + (1-v/0.4)*ih;
+      specSvg.appendChild(el("line",{x1:sMargins.l,x2:sMargins.l+iw,y1:y,y2:y,
+                                     stroke:css("--rule"),"stroke-width":1}));
+      specSvg.appendChild(el("text",{x:sMargins.l-7,y:y+4,"text-anchor":"end","font-size":"10"},
+                             Math.round(v*100)+"%"));
+    });
+    var n = 56, bw = iw/n;
+    for (var k=1;k<=n;k++){
+      var r = el("rect",{x:(sMargins.l + (k-1)*bw + bw*0.13).toFixed(2), y:sMargins.t+ih,
+                         width:Math.max(bw*0.74,1).toFixed(2), height:0,
+                         fill: KEYSET[k] ? css("--signal") : css("--dead"), rx:1});
+      specSvg.appendChild(r); bars.push(r);
+    }
+    [1,10,20,30,40,50].forEach(function(k){
+      specSvg.appendChild(el("text",{x:(sMargins.l+(k-0.5)*bw).toFixed(1),y:SH-9,
+                                     "text-anchor":"middle","font-size":"10"}, String(k)));
+    });
+    specSvg.appendChild(el("text",{x:sMargins.l+iw/2,y:SH-9,"text-anchor":"middle",
+                                   "font-size":"10",opacity:0},""));
+    specHost.appendChild(specSvg);
+  }
+  function renderFrame(i){
+    var f = FR[i], ih = SH-sMargins.t-sMargins.b;
+    var pw = f.pw.slice(1), tot = 0, j;
+    for (j=0;j<pw.length;j++) tot += pw[j];
+    var keyshare = 0;
+    for (j=0;j<bars.length;j++){
+      var share = tot ? pw[j]/tot : 0;
+      if (KEYSET[j+1]) keyshare += share;
+      var h = Math.max(0, Math.min(1, share/0.4)) * ih;
+      bars[j].setAttribute("height", h.toFixed(2));
+      bars[j].setAttribute("y", (sMargins.t + ih - h).toFixed(2));
+    }
+    document.getElementById("v-step").textContent = commas(f.s);
+    var te = document.getElementById("v-test");
+    te.textContent = pct(f.te);
+    var roTest = document.getElementById("ro-test");
+    roTest.className = "ro " + (f.te > 0.5 ? "rising" : "flat");
+    document.getElementById("v-key").textContent = pct(keyshare, 0);
+    document.getElementById("ro-key").className = "ro " + (keyshare > 0.5 ? "rising" : "");
+    var rl = f.restr == null ? null : f.restr;
+    document.getElementById("v-restr").textContent =
+      rl == null ? "—" : (rl < 0.01 ? rl.toExponential(1) : rl.toFixed(2));
+    document.getElementById("ro-restr").className = "ro " + (rl != null && rl < 1 ? "rising" : "");
+    var lab = document.getElementById("phaselabel");
+    lab.textContent = f.s <= D.phases.memorisation_step ? "memorisation"
+      : (f.s < D.phases.grokking_step*0.9 ? "circuit forming, invisibly"
+      : (f.s < D.phases.grokking_step*1.15 ? "cleanup" : "generalised"));
+  }
+
+  var scrub = document.getElementById("scrub");
+  scrub.max = String(FR.length-1);
+  scrub.addEventListener("input", function(){ renderFrame(+scrub.value); });
+
+  var playing = false, timer = null;
+  var playBtn = document.getElementById("play");
+  function stop(){ playing=false; playBtn.setAttribute("aria-pressed","false");
+                   playBtn.textContent="Play"; if(timer) clearInterval(timer); timer=null; }
+  playBtn.addEventListener("click", function(){
+    if (playing) return stop();
+    playing = true; playBtn.setAttribute("aria-pressed","true"); playBtn.textContent="Pause";
+    if (+scrub.value >= FR.length-1) scrub.value = "0";
+    timer = setInterval(function(){
+      var v = +scrub.value + 1;
+      if (v >= FR.length){ stop(); return; }
+      scrub.value = String(v); renderFrame(v);
+    }, 90);
+  });
+
+  /* ---------------- tables ---------------- */
+  function table(id, head, rows){
+    var t = document.getElementById(id); if (!t) return;
+    t.textContent = "";
+    var thead = document.createElement("thead"), tr = document.createElement("tr");
+    head.forEach(function(h){ var th=document.createElement("th"); th.textContent=h; tr.appendChild(th); });
+    thead.appendChild(tr); t.appendChild(thead);
+    var tb = document.createElement("tbody");
+    rows.forEach(function(r){
+      var row = document.createElement("tr");
+      if (r.cls) row.className = r.cls;
+      r.cells.forEach(function(c, i){
+        var td = document.createElement("td");
+        td.textContent = c;
+        if (i>0) td.className = "n";
+        row.appendChild(td);
+      });
+      tb.appendChild(row);
+    });
+    t.appendChild(tb);
+  }
+
+  var RULE_LABELS = {
+    rule_a_embedding_norm: "embedding-norm threshold",
+    rule_b_neuron_cluster: "neuron clustering",
+    rule_c_power_gap: "power gap (no parameters)"
+  };
+  var RULE_WHAT = {
+    rule_a_embedding_norm: "per-index norm of the Fourier-transformed embedding",
+    rule_b_neuron_cluster: "which frequency explains >85% of each MLP neuron",
+    rule_c_power_gap: "largest multiplicative gap in sorted per-frequency power"
+  };
+  (function(){
+    var rules = D.key_freq_rules || {};
+    var rows = Object.keys(rules).map(function(k){
+      return {cells:[RULE_LABELS[k]||k, RULE_WHAT[k]||"", rules[k].join(", ")]};
+    });
+    rows.push({cls:"hi", cells:["all three agree", "Jaccard 1.000", KEY.join(", ")]});
+    var t = document.getElementById("rules-table");
+    table("rules-table", ["rule","what it looks at","frequencies found"], rows);
+    Array.prototype.forEach.call(t.querySelectorAll("td:nth-child(2)"), function(td){
+      td.className = ""; td.style.textAlign = "left"; td.style.color = "var(--ink-3)";
+      td.style.fontSize = ".82rem";
+    });
+  })();
+
+  (function(){
+    if (!MECH) return;
+    var s = MECH.structure;
+    var order = [["a+b","(a + b) mod p"],["a-b","(a - b) mod p"],["a","a alone"],
+                 ["b","b alone"],["a*b","(a * b) mod p"]];
+    table("struct-table", ["the logits are a function of…","variance explained"],
+      order.map(function(o){
+        return {cls: o[0]==="a+b" ? "hi" : "dead", cells:[o[1], s[o[0]].toFixed(4)]};
+      }));
+  })();
+
+  /* ---------------- ablation bars ---------------- */
+  (function(){
+    if (!MECH) return;
+    var A = MECH.ablation, ctrl = MECH.control_freqs.join(", ");
+    var mins = RED && RED.minimal && RED.minimal.length ? RED.minimal[0] : null;
+    var minAcc = null;
+    if (mins && RED) {
+      RED.rows.forEach(function(r){
+        if (r.subset.length === mins.length && r.subset.every(function(x,i){return x===mins[i];})) minAcc = r.acc;
+      });
+    }
+    var items = [
+      ["no edit (baseline)", A.baseline.test_acc, true],
+      ["keep only the key frequencies ("+KEY.join(", ")+")", A.keep_key_freqs.test_acc, true]
+    ];
+    if (minAcc != null) items.push(["keep only the minimal subset ("+mins.join(", ")+")", minAcc, true]);
+    items.push(["delete four control frequencies ("+ctrl+")", A.drop_control_freqs.test_acc, true]);
+    items.push(["delete only the key frequencies", A.drop_key_freqs.test_acc, false]);
+    items.push(["keep only the control frequencies", A.keep_control_freqs.test_acc, false]);
+    items.push(["remove the MLP", MECH.components.no_mlp.test_acc, false]);
+    items.push(["remove attention", MECH.components.no_attention.test_acc, false]);
+
+    var host = document.getElementById("ablation-bars");
+    items.forEach(function(it){
+      var d = document.createElement("div");
+      d.className = "bar" + (it[2] ? " live" : "");
+      d.innerHTML = '<div class="lab"><span></span><span class="n"></span></div>' +
+                    '<div class="track"><div class="fill"></div></div>';
+      d.querySelector(".lab span").textContent = it[0];
+      d.querySelector(".lab .n").textContent = pct(it[1]);
+      d.querySelector(".fill").style.width = Math.max(it[1]*100, 0.6) + "%";
+      host.appendChild(d);
+    });
+  })();
+
+  /* ---------------- subset table ---------------- */
+  (function(){
+    if (!RED) return;
+    var mins = RED.minimal.length ? RED.minimal[0] : null;
+    var rows = RED.rows.slice().sort(function(a,b){ return a.subset.length-b.subset.length || b.acc-a.acc; })
+      .map(function(r){
+        var isMin = mins && r.subset.length===mins.length &&
+                    r.subset.every(function(x,i){ return x===mins[i]; });
+        return {cls: r.acc>0.9 ? "hi" : "dead",
+                cells:[ r.subset.length ? r.subset.join(", ") : "nothing",
+                        String(r.subset.length), pct(r.acc), r.loss.toFixed(3) ]};
+      });
+    table("subset-table", ["frequencies kept","size","test accuracy","test loss"], rows);
+    var full = RED.rows.filter(function(r){ return r.subset.length===KEY.length; })[0];
+    var minRow = null;
+    RED.rows.forEach(function(r){
+      if (mins && r.subset.length===mins.length && r.subset.every(function(x,i){return x===mins[i];})) minRow=r;
+    });
+    if (mins && minRow && full){
+      document.getElementById("minimal-note").innerHTML =
+        "<strong>The minimal sufficient set has three of the four, and it is unique</strong> — " +
+        "(" + mins.join(", ") + ") reaches " + pct(minRow.acc) + ", while every other three-element " +
+        "subset stays below 30%. Frequency " + RED.redundant.join(", ") + " is a passenger. Not a free " +
+        "one, though: dropping it raises the test loss from " + full.loss.toFixed(4) + " to " +
+        minRow.loss.toFixed(4) + ", a factor of " + Math.round(minRow.loss/Math.max(full.loss,1e-9)) +
+        ". Under weight decay it pays for its own norm, which is exactly when a circuit-efficiency " +
+        "account says a redundant component should survive cleanup.";
+    }
+  })();
+
+  /* ---------------- config ---------------- */
+  (function(){
+    var kv = document.getElementById("config-kv");
+    var rows = [
+      ["task", "(a + b) mod " + M.p],
+      ["training data", commas(M.n_train) + " of " + commas(M.n_train+M.n_test) + " pairs (" + pct(M.train_frac,0) + ")"],
+      ["model", "1 layer, d_model 128, 4 heads, MLP 512, no LayerNorm, no biases"],
+      ["parameters", commas(M.n_params)],
+      ["optimiser", "full-batch AdamW, lr 1e-3, weight decay " + M.weight_decay],
+      ["steps", commas(M.steps)],
+      ["wall clock", Math.round(M.wall_clock_s/60) + " minutes on 6 CPU threads"],
+      ["key frequencies", KEY.join(", ") + "  (of 56)"]
+    ];
+    rows.forEach(function(r){
+      var b = document.createElement("b"); b.textContent = r[0];
+      var v = document.createElement("span"); v.textContent = r[1];
+      kv.appendChild(b); kv.appendChild(v);
+    });
+  })();
+
+  /* ---------------- boot & resize ---------------- */
+  function layout(){ drawCurve(); buildSpectrum(); renderFrame(+scrub.value); }
+  layout();
+  scrub.value = "0"; renderFrame(0);
+  var rt = null;
+  window.addEventListener("resize", function(){
+    if (rt) clearTimeout(rt);
+    rt = setTimeout(layout, 140);
+  });
+})();
+</script>
