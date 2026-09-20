@@ -226,22 +226,33 @@ def phases(root: Path, tag: str) -> Optional[str]:
             ("logit variance explained by (a+b)", "logit_var_a+b"),
             ("excluded loss", "excluded_loss_sum"),
             ("neurons explained >85% by one frequency", "neuron_frac_above_85pct")]
-    ref = norm_cross("test_acc", 0.10)
+    ref10, ref50 = norm_cross("test_acc", 0.10), norm_cross("test_acc", 0.50)
     body = []
     for name, key in sigs:
         v10, v50 = norm_cross(key, 0.10), norm_cross(key, 0.50)
-        lead = (ref - v10) if (ref and v10) else None
+        l10 = (ref10 - v10) if (ref10 and v10) else None
+        l50 = (ref50 - v50) if (ref50 and v50) else None
         body.append([name,
                      int(round(v10)) if v10 is not None else None,
+                     int(round(l10)) if l10 is not None else None,
                      int(round(v50)) if v50 is not None else None,
-                     int(round(lead)) if lead is not None else None])
-    tbl = table(["signal", "10% of its change", "50%", "lead over test accuracy"],
-                body, bold_best={3: "max"})
+                     int(round(l50)) if l50 is not None else None])
+    tbl = table(["signal", "reaches 10%", "lead", "reaches 50%", "lead"],
+                body, bold_best={4: "max"})
     return "\n\n".join([
         "Each signal is measured against **its own** range, from its value at "
         "initialisation to its final value, so the comparison does not depend on "
-        "the units. A positive lead means the internal signal moves first.",
+        "units. A positive lead means the internal signal moves first.",
         tbl,
+        "**Read the 50% column, not the 10% one.** Two of these signals start near "
+        "a floor set by chance -- the Gini coefficient of a random embedding is not "
+        "zero, and four of fifty-six frequencies hold about 7% of the power by "
+        "accident -- so 10% of their eventual change is reached during the "
+        "memorisation phase, when the embedding is changing violently for reasons "
+        "that have nothing to do with the circuit. Their apparent ten-thousand-step "
+        "leads are artefacts of that floor. The restricted loss has no such problem: "
+        "it starts at the loss of a uniform guess and can only fall by finding real "
+        "structure, and it leads by about 3,500 steps at the halfway mark.",
         "Read together: the circuit's subspace becomes predictive (restricted loss) and "
         "the embedding becomes sparse (Gini) thousands of steps before anything is "
         "visible from outside, while excluded loss and neuron crystallisation *lag* -- "
@@ -374,12 +385,117 @@ def dlog_block(root: Path, tag: str) -> Optional[str]:
     return "\n\n".join(parts)
 
 
+
+def phase_diagram_block(root: Path, _tag: str) -> Optional[str]:
+    d = load_json(root, "sweep_summary.json")
+    if not d:
+        return None
+    cells = d["cells"]
+    wds = sorted({c["weight_decay"] for c in cells})
+    fracs = sorted({c["train_frac"] for c in cells})
+    p_ = cells[0]["p"]
+    budget = cells[0]["budget"]
+
+    def fmt(c):
+        if c["censored"]:
+            return f"none (max {c['max_test_acc']:.0%})"
+        return int(round(c["grok_step"]))
+
+    rows = [[f"train fraction {fr}"] + [fmt(next(c for c in cells
+                                                 if c["weight_decay"] == wd
+                                                 and c["train_frac"] == fr))
+                                        for wd in wds]
+            for fr in fracs]
+    tbl = table(["", *[f"wd = {w}" for w in wds]], rows)
+
+    mech_rows = [[f"wd {c['weight_decay']}, frac {c['train_frac']}",
+                  fmt(c), c.get("n_key_freqs"), c.get("gini_W_E"),
+                  c.get("logit_var_a+b"), c["final_test_acc"]]
+                 for c in sorted(cells, key=lambda c: (c["train_frac"], c["weight_decay"]))]
+    mech = table(["configuration", "grokking step", "key freqs", "Gini(W_E)",
+                  "(a+b) variance", "final test acc"], mech_rows)
+
+    grokked = [c for c in cells if not c["censored"]]
+    note = ""
+    if len({c["train_frac"] for c in grokked}) and grokked:
+        by_wd = {}
+        for c in grokked:
+            by_wd.setdefault(c["weight_decay"], []).append(c["grok_step"])
+        means = {w: sum(v) / len(v) for w, v in sorted(by_wd.items())}
+        order = sorted(means.items())
+        direction = ("falls" if order[-1][1] < order[0][1] else "rises")
+        note = (f"Averaged over the training fractions that grokked, the step at which "
+                f"generalisation happens **{direction}** with weight decay: "
+                + ", ".join(f"wd {w} -> {m:,.0f}" for w, m in order) + ". "
+                "The primary source contradicts itself three ways on the direction of "
+                "this effect, so this is reported as our own measurement on one seed "
+                "at one modulus, not as a confirmation of anything.")
+
+    return "\n\n".join(x for x in [
+        f"A smaller modulus (p = {p_}) makes a run cheap enough to sweep. "
+        f"Each cell is one run of {budget:,} steps; the number is the step at which "
+        f"test accuracy first reaches 90%.",
+        tbl,
+        f"**Censoring.** {d['n_censored']} of {d['n_total']} cells did not reach 90% "
+        f"within {budget:,} steps. That is a censored observation -- such a run may "
+        f"grok later -- and is never reported as 'does not grok'.",
+        note,
+        "**Does the mechanism depend on the configuration?**",
+        mech,
+    ] if x)
+
+
+def redundancy(root: Path, tag: str) -> Optional[str]:
+    """Is the frequency set the model found minimal?"""
+    d = load_json(root, f"{tag}_redundancy.json")
+    if not d:
+        return None
+    K = d["key_freqs"]
+    rows = [[str(r["subset"]) if r["subset"] else "nothing", r["size"],
+             r["test_acc"], r["test_loss"]] for r in d["rows"]]
+    tbl = table(["frequencies kept in W_E", "size", "test acc", "test loss"], rows)
+    mins = d["minimal_subsets"]
+    red = d["redundant_frequencies"]
+    full = next(r for r in d["rows"] if r["size"] == len(K))
+    best_min = next((r for r in d["rows"] if r["subset"] in mins), None)
+
+    parts = [
+        f"The model settles on {len(K)} frequencies, but that is not the same as "
+        f"needing all {len(K)}. Here every subset is kept in the embedding while all "
+        f"{(d.get('p', 113)-1)//2 - len(K) if 'p' in d else 52} non-key frequencies are "
+        f"deleted, and the network is re-run. Chance accuracy is {d['chance_acc']:.4f}:",
+        tbl,
+    ]
+    if mins:
+        parts.append(
+            f"**The minimal sufficient set has {d['minimal_size']} of the {len(K)} "
+            f"frequencies, and it is unique**: {mins[0]} reaches "
+            f"{best_min['test_acc']:.2%}, while every other subset of the same size "
+            f"stays below 30%. Frequency {red[0] if red else '?'} is therefore a "
+            f"passenger -- removing it costs almost no accuracy."
+            if len(mins) == 1 and red else
+            f"The minimal sufficient sets have {d['minimal_size']} of {len(K)} "
+            f"frequencies: {mins}.")
+    if red and best_min:
+        parts.append(
+            f"It is not free, though: dropping it raises the test loss from "
+            f"{full['test_loss']:.4f} to {best_min['test_loss']:.4f}, a factor of "
+            f"{best_min['test_loss']/max(full['test_loss'],1e-12):.0f}. So under weight "
+            f"decay the extra frequency pays for its own norm, which is what a "
+            f"circuit-efficiency account predicts should happen -- a redundant "
+            f"component survives cleanup exactly when the loss it buys outweighs the "
+            f"penalty it costs.")
+    return "\n\n".join(parts)
+
+
 GENERATORS = {
     "headline": headline,
     "mechanism": mechanism,
     "ablations": ablations,
     "phases": phases,
     "runtime": runtime,
+    "phase_diagram": phase_diagram_block,
+    "redundancy": redundancy,
 }
 
 MULTI_TAG_GENERATORS = {

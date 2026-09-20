@@ -302,3 +302,58 @@ def spectrum_before_after(rows: List[Dict], key_freqs: Sequence[int],
                      color=t["text_primary"], fontsize=9)
     axes[-1].set_xlabel("frequency  k")
     return fig
+
+
+def phase_diagram(cells: List[Dict], x_key: str, y_key: str, value_key: str,
+                  mode: str = "light", title: str = "", value_label: str = "",
+                  censored_label: str = "not within budget", figsize=(5.0, 3.6),
+                  log_value: bool = True):
+    """A grid of configurations, coloured by a magnitude.
+
+    Magnitude, so one hue light-to-dark.  Cells with no value -- a run that did
+    not grok inside its step budget -- are drawn in the de-emphasis grey and
+    labelled, never dropped or filled with a sentinel number, because "censored
+    at 20,000 steps" is a different statement from "slow".
+    """
+    t = PALETTE[mode]
+    xs = sorted({c[x_key] for c in cells})
+    ys = sorted({c[y_key] for c in cells})
+    grid = np.full((len(ys), len(xs)), np.nan)
+    for c in cells:
+        v = c.get(value_key)
+        if v is not None:
+            grid[ys.index(c[y_key]), xs.index(c[x_key])] = v
+
+    fig, ax = plt.subplots(figsize=figsize)
+    cmap = sequential_cmap(mode).copy()
+    cmap.set_bad(t["deemph"])
+    data = np.log10(grid) if log_value else grid
+    im = ax.imshow(np.ma.masked_invalid(data), cmap=cmap, origin="lower",
+                   aspect="auto", interpolation="nearest")
+    ax.set_xticks(range(len(xs))); ax.set_xticklabels([str(v) for v in xs])
+    ax.set_yticks(range(len(ys))); ax.set_yticklabels([str(v) for v in ys])
+    ax.set_xlabel(x_key.replace("_", " "))
+    ax.set_ylabel(y_key.replace("_", " "))
+    ax.grid(visible=False)
+
+    finite = data[np.isfinite(data)]
+    mid = (finite.min() + finite.max()) / 2 if finite.size else 0
+    for i in range(len(ys)):
+        for j in range(len(xs)):
+            v = grid[i, j]
+            if np.isnan(v):
+                ax.text(j, i, censored_label, ha="center", va="center", fontsize=6.5,
+                        color=t["text_primary"])
+            else:
+                dark = data[i, j] > mid
+                ax.text(j, i, f"{v:,.0f}" if v >= 100 else f"{v:.3g}",
+                        ha="center", va="center", fontsize=8,
+                        color=(t["surface"] if dark else t["text_primary"]))
+    cb = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.03)
+    cb.outline.set_visible(False)
+    cb.ax.tick_params(length=2, colors=t["text_muted"])
+    cb.set_label((f"log10({value_label})" if log_value else value_label),
+                 color=t["text_secondary"])
+    if title:
+        ax.set_title(title, color=t["text_primary"])
+    return fig

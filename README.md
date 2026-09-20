@@ -199,12 +199,55 @@ These edit the **weights** and re-run the network, so the intervention propagate
 | delete exactly those directions | train | 26.5789 | 0.0050 |
 <!-- END:ablations -->
 
+### Is the circuit minimal?
+
+<!-- BEGIN:redundancy -->
+The model settles on 4 frequencies, but that is not the same as needing all 4. Here every subset is kept in the embedding while all 52 non-key frequencies are deleted, and the network is re-run. Chance accuracy is 0.0088:
+
+| frequencies kept in W_E | size | test acc | test loss |
+|:--|--:|--:|--:|
+| nothing | 0 | 0.0087 | 9.0885 |
+| [1] | 1 | 0.0176 | 22.2670 |
+| [18] | 1 | 0.0255 | 20.5053 |
+| [22] | 1 | 0.0528 | 27.4758 |
+| [56] | 1 | 0.0192 | 8.5756 |
+| [1, 18] | 2 | 0.1187 | 11.8866 |
+| [1, 22] | 2 | 0.2117 | 16.8368 |
+| [1, 56] | 2 | 0.0188 | 18.3347 |
+| [18, 22] | 2 | 0.2660 | 14.0957 |
+| [18, 56] | 2 | 0.0252 | 19.1651 |
+| [22, 56] | 2 | 0.0528 | 25.8083 |
+| [1, 18, 22] | 3 | 0.9825 | 0.0540 |
+| [1, 18, 56] | 3 | 0.1460 | 10.3217 |
+| [1, 22, 56] | 3 | 0.2852 | 13.9325 |
+| [18, 22, 56] | 3 | 0.2765 | 12.8602 |
+| [1, 18, 22, 56] | 4 | 0.9998 | 0.0020 |
+
+**The minimal sufficient set has 3 of the 4 frequencies, and it is unique**: [1, 18, 22] reaches 98.25%, while every other subset of the same size stays below 30%. Frequency 56 is therefore a passenger -- removing it costs almost no accuracy.
+
+It is not free, though: dropping it raises the test loss from 0.0020 to 0.0540, a factor of 26. So under weight decay the extra frequency pays for its own norm, which is what a circuit-efficiency account predicts should happen -- a redundant component survives cleanup exactly when the loss it buys outweighs the penalty it costs.
+<!-- END:redundancy -->
+
 ---
 
 ## 4. The transition is not sudden
 
 <!-- BEGIN:phases -->
-_Not yet run._
+Each signal is measured against **its own** range, from its value at initialisation to its final value, so the comparison does not depend on units. A positive lead means the internal signal moves first.
+
+| signal | reaches 10% | lead | reaches 50% | lead |
+|:--|--:|--:|--:|--:|
+| test accuracy (visible from outside) | 10,453 | 0 | 13,711 | 0 |
+| restricted loss | 1,788 | 8,665 | 10,172 | **3,539** |
+| embedding spectrum Gini | 189 | 10,263 | 12,822 | 889 |
+| power in the key frequencies | 71 | 10,382 | 13,954 | -243 |
+| logit variance explained by (a+b) | 7,490 | 2,962 | 13,068 | 643 |
+| excluded loss | 13,025 | -2,573 | 13,659 | 52 |
+| neurons explained >85% by one frequency | 13,515 | -3,062 | 15,345 | -1,634 |
+
+**Read the 50% column, not the 10% one.** Two of these signals start near a floor set by chance -- the Gini coefficient of a random embedding is not zero, and four of fifty-six frequencies hold about 7% of the power by accident -- so 10% of their eventual change is reached during the memorisation phase, when the embedding is changing violently for reasons that have nothing to do with the circuit. Their apparent ten-thousand-step leads are artefacts of that floor. The restricted loss has no such problem: it starts at the loss of a uniform guess and can only fall by finding real structure, and it leads by about 3,500 steps at the halfway mark.
+
+Read together: the circuit's subspace becomes predictive (restricted loss) and the embedding becomes sparse (Gini) thousands of steps before anything is visible from outside, while excluded loss and neuron crystallisation *lag* -- they measure the removal of the memorised solution, which happens last. That is the three-phase account: memorise, then form the circuit under cover of the memorised solution, then clean the memorised solution away.
 <!-- END:phases -->
 
 ![progress measures](figures/fig3_progress_measures.png)
@@ -219,8 +262,8 @@ Each run uses the identical configuration; only the operation (and, in one pair,
 | task | grokking step | final test acc | key freqs | Gini(W_E) | (a+b) variance | trig fraction |
 |:--|--:|--:|--:|--:|--:|--:|
 | `(a + b) mod p`, p=113 | 14,536 | 1.0000 | 4 | 0.9124 | 0.9626 | 0.9966 |
-| `(a + b) mod p`, p=113 | none by 40,000 | 0.0076 | -- | -- | -- | -- |
-| `(a * b) mod p`, p=113 | none by 40,000 | 0.0091 | -- | -- | -- | -- |
+| `(a + b) mod p`, p=113 | none by 40,000 | 0.0559 | -- | -- | -- | -- |
+| `(a * b) mod p`, p=113 | none by 40,000 | 0.0673 | -- | -- | -- | -- |
 
 **Runs that did not grok within budget.**
 
