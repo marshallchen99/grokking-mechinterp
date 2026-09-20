@@ -274,3 +274,42 @@ def test_discrete_log_is_an_isomorphism():
 def test_primitive_root_generates_whole_group(p):
     _, exp_table, g = discrete_log_table(p)
     assert sorted(exp_table.tolist()) == list(range(1, p))
+
+
+# ------------------------------------------------------------ determinism
+
+def test_single_threaded_training_is_bit_reproducible():
+    """Same seeds, one thread -> identical weights.
+
+    Worth pinning down, because it is NOT true with more than one thread:
+    PyTorch's multi-threaded CPU reductions do not fix their summation order,
+    so two runs of this same code at 6 threads diverge within a hundred steps.
+    Runs in this repository are therefore reproducible in distribution but not
+    bit-exact unless single-threaded, and the write-up says so.
+    """
+    import hashlib
+
+    from grokking.train import cross_entropy_f64
+
+    old = torch.get_num_threads()
+    torch.set_num_threads(1)
+    try:
+        def run():
+            d = make_dataset(p=P, seed=0)
+            m = OneLayerTransformer(ModelConfig(d_vocab=d.vocab_size, d_vocab_out=P, seed=0))
+            opt = torch.optim.AdamW(m.parameters(), lr=1e-3, betas=(0.9, 0.98),
+                                    weight_decay=1.0)
+            x, y = d.train()
+            x, y = x[:256], y[:256]
+            for _ in range(12):
+                loss = cross_entropy_f64(final_logits(m(x, last_only=True), P), y)
+                opt.zero_grad(set_to_none=True)
+                loss.backward()
+                opt.step()
+            with torch.no_grad():
+                return hashlib.sha256(
+                    b"".join(p.numpy().tobytes() for p in m.parameters())).hexdigest()
+
+        assert run() == run()
+    finally:
+        torch.set_num_threads(old)
