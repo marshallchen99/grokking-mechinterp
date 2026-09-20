@@ -28,6 +28,16 @@ from .data import ModularDataset
 from .model import ModelConfig, OneLayerTransformer, final_logits
 
 
+def cross_entropy_at(logits: torch.Tensor, labels: torch.Tensor,
+                     dtype: torch.dtype = torch.float64) -> torch.Tensor:
+    """Cross-entropy at a chosen precision -- float64 by default.
+
+    The dtype is a parameter rather than a constant so that the cost of the
+    float32 floor can be measured rather than asserted.
+    """
+    return torch.nn.functional.cross_entropy(logits.to(dtype), labels)
+
+
 def cross_entropy_f64(logits: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
     """Cross-entropy with the logits upcast to float64.
 
@@ -52,6 +62,7 @@ class TrainConfig:
     weight_decay: float = 1.0
     optimizer: str = "adamw"
     warmup_steps: int = 10
+    loss_dtype: str = "float64"
     log_every: int = 10
     n_log_checkpoints: int = 120
     dense_from: int = 5_000
@@ -91,6 +102,9 @@ def checkpoint_steps(total: int, n_log: int = 120, dense: tuple = (5_000, 20_000
     for s in range(lo, min(hi, total) + 1, step):
         S.add(s)
     return sorted(x for x in S if 0 <= x <= total)
+
+
+DTYPES = {"float64": torch.float64, "float32": torch.float32}
 
 
 @torch.no_grad()
@@ -145,6 +159,7 @@ class Trainer:
         self.sched = torch.optim.lr_scheduler.LambdaLR(
             self.opt, lambda step: min(step / w, 1.0))
 
+        self._loss_dtype = DTYPES[cfg.loss_dtype]
         self.ckpt_at = set(checkpoint_steps(
             cfg.steps, cfg.n_log_checkpoints,
             (cfg.dense_from, cfg.dense_to, cfg.dense_every)))
@@ -220,7 +235,7 @@ class Trainer:
 
             # ---- one full-batch gradient step ------------------------------
             logits = final_logits(self.model(self.train_x, last_only=True), self.n_answer)
-            loss = cross_entropy_f64(logits, self.train_y)
+            loss = cross_entropy_at(logits, self.train_y, self._loss_dtype)
             self.opt.zero_grad(set_to_none=True)
             loss.backward()
             self.opt.step()

@@ -1,0 +1,22 @@
+[
+ {
+  "tag": "C_add_f32",
+  "op": "add",
+  "steps": 25000,
+  "model_seed": 0,
+  "data_seed": 0,
+  "loss_dtype": "float32",
+  "threads": 5,
+  "dense_to": 25000
+ },
+ {
+  "tag": "C_add_nowarm",
+  "op": "add",
+  "steps": 25000,
+  "model_seed": 0,
+  "data_seed": 0,
+  "warmup_steps": 1,
+  "threads": 5,
+  "dense_to": 25000
+ }
+]
