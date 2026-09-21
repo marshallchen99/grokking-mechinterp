@@ -4,7 +4,7 @@
  "step_a": 0,
  "step_b": 0,
  "_provenance": {
-  "commit": "3d96319caff10e3ab22424f26acc59ef93efec3e",
+  "commit": "6712242f48cfa1302d68db0ac7ec8205310f98a1",
   "code_modified": false,
   "argv": [
    "scripts/analyze_controls_init.py",
@@ -131,6 +131,7 @@
   "index": 113,
   "checkpoints_checked": 133,
   "decay_per_step": 0.999,
-  "max_relative_deviation_from_pure_decay": 0.0005138831937828551
+  "bit_exact_pure_decay": 133,
+  "max_relative_deviation_from_float32_decay": 0.0
  }
 }

@@ -425,8 +425,8 @@ footer p{ font-size:.86rem; }
       The findings and measured numbers in sections 02 and 04&ndash;09 are rendered from the
       same generator as the repository README, and section 10 is the README's own
       hand-written closing section. Every number in the charts, readouts and labels is
-      computed from the same data. The title, the section headings and the short
-      introductions to sections 01, 03 and 04 are hand-written.
+      computed from the same data. The title, the paragraph under it, the section headings
+      and the short introductions to sections 01, 03 and 04 are hand-written.
     </p>
   </div></div>
 </footer>
@@ -438,6 +438,8 @@ footer p{ font-size:.86rem; }
   var D = JSON.parse(document.getElementById("data").textContent);
   var M = D.meta, FR = D.frames, MECH = D.mechanism, RED = D.redundancy;
   var KEY = D.key_freqs, KEYSET = {}; KEY.forEach(function(k){ KEYSET[k]=1; });
+  // README section -> the page section that holds the same text
+  var README_TO_PAGE = {"1":"02", "2":"04", "3":"05", "4":"06", "5":"07", "6":"08", "7":"09"};
   var THREADS = M.threads ? M.threads + " CPU threads" : "CPU (thread count not recorded)";
   // spectrum y-axis cap: the largest share any single frequency reaches in any frame
   var CAP = (function(){
@@ -646,6 +648,10 @@ footer p{ font-size:.86rem; }
     Array.prototype.forEach.call(nodes, function(el){
       var src = B[el.getAttribute("data-block")];
       if (!src) { el.innerHTML = "<p><em>Not yet run.</em></p>"; return; }
+      // the text numbers sections as the README does; point at this page's sections
+      src = src.replace(/\bsection (\d)\b/g, function(m, n){
+        return README_TO_PAGE[n] ? "section " + README_TO_PAGE[n] : m;
+      });
       var html = (window.marked && marked.parse) ? marked.parse(src, {gfm:true})
                                                   : "<pre>" + src.replace(/[<&]/g, function(c){return c==="<"?"&lt;":"&amp;";}) + "</pre>";
       el.innerHTML = html;
@@ -661,6 +667,9 @@ footer p{ font-size:.86rem; }
   (function(){
     Array.prototype.forEach.call(document.querySelectorAll("[data-meta]"), function(el){
       el.textContent = String(M[el.getAttribute("data-meta")]);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-meta-fmt]"), function(el){
+      el.textContent = commas(M[el.getAttribute("data-meta-fmt")]);
     });
     var nk = document.getElementById("nkeys"); if (nk) nk.textContent = String(KEY.length);
     var by = document.getElementById("byline");

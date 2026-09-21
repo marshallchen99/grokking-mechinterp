@@ -790,9 +790,16 @@
   "censored_members_dropped": [],
   "excluded_other_budget": [
    {
+    "tag": "R_p59_wd1.0_f0.5_s1",
+    "budget": 12000,
+    "grok": 921.8095242801445,
+    "reason": "different budget and no trajectory analysis"
+   },
+   {
     "tag": "S_p59_wd1.0_f0.5",
     "budget": 20000,
-    "grok": 815.1739145147209
+    "grok": 815.1739145147209,
+    "reason": "different budget"
    }
   ],
   "at_steps": {
@@ -1350,7 +1357,7 @@
   }
  },
  "_provenance": {
-  "commit": "3d96319caff10e3ab22424f26acc59ef93efec3e",
+  "commit": "6712242f48cfa1302d68db0ac7ec8205310f98a1",
   "code_modified": false,
   "argv": [
    "scripts/analyze_prediction.py",

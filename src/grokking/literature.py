@@ -9,10 +9,11 @@ than recalled.  A later audit (same day) checked what each paper is *said to
 report* against the paper's own text and tables, and corrected several
 characterisations; metadata checks alone had not caught them.
 
-Four references are to one group whose names arXiv lists family name first
-(Truong Xuan Khanh, ...).  They are written here the way the group's own
-bibliographies write them ("Xuan Khanh Truong, ..."), so they cite as
-Truong et al.; `CITE_SUFFIX` tells their 2026 papers apart.
+Three references are to one group whose names arXiv lists family name first
+(Truong Xuan Khanh, ...).  They are written here the way one of the group's
+own bibliographies (arXiv:2605.18845) writes them ("Xuan Khanh Truong, ..."),
+so they cite as Truong et al.; `CITE_SUFFIX` tells their 2026 papers apart.
+(Another of their papers, arXiv:2604.13123, cites the group as "Khanh et al.")
 
 Every value in this module comes from a paper, carries its reference, and may
 appear in the write-up only in a column headed "published".  Nothing here is
@@ -97,7 +98,8 @@ PUBLISHED: Dict[str, Fact] = {
         [0.40, 0.50], "relative increase in median time-to-generalisation per 1% less data",
         POWER_2022, "for the product in the group S5, near 25-30% training data"),
     "furuta_prime": Fact(
-        97, "the prime used for all of Furuta et al.'s experiments", FURUTA_2024,
+        97, "the prime of Furuta et al.'s main experiments, including every a^2+ab+b^2 "
+        "result", FURUTA_2024,
         "97 = 1 (mod 3), so a^2+ab+b^2 splits over F_97"),
     "furuta_sqx_scratch_frac": Fact(
         0.8, "smallest training fraction at which a^2+ab+b^2 groks when trained from scratch",
@@ -106,6 +108,17 @@ PUBLISHED: Dict[str, Fact] = {
         {"train_frac": 0.5, "test_acc": 0.56},
         "test accuracy of a^2+ab+b^2 trained from scratch at training fraction 0.5",
         FURUTA_2024, "p = 97; Table 5, which reports the accuracy reached where it does not grok"),
+    "howe_leads": Fact(
+        {"loss_rule": 50, "precursor": 975},
+        "median lead, in steps, of an oracle-tuned loss rule and of the previous-token-head "
+        "precursor, forecasting induction-head emergence per seed (both rank seeds at rho 0.977)",
+        HOWE_2026, "abstract and Sec. 1; the paper calls ranking by correlation alone 'wrong "
+        "as designed' because it rewards nowcasts"),
+    "omnigrok_modulus": Fact(
+        113, "modulus of Liu et al.'s test of t ~ 1/weight decay in a transformer", LIU_2022,
+        "Appendix C, Fig. 10a: Nanda et al.'s 1-layer transformer on (a+b) mod 113, "
+        "training fraction 0.3, d_model 128, 4 heads, d_mlp 512; t ~ 1/gamma per seed over "
+        "about two orders of magnitude"),
     "chen_prime_modulus": Fact(
         113, "a prime modulus among those Chen et al. train on, with 0 included", CHEN_2026),
     "power_headline_optimizer": Fact(
@@ -156,7 +169,8 @@ RELATED_WORK = {
         LIU_2022,
         "Initialisation scale controls the grokking delay; large init lengthens it. Also "
         "argues that with weight decay gamma the time to generalise goes like 1/gamma, and "
-        "shows it in a teacher-student model (their Fig. 2c)."),
+        "shows it in a teacher-student model (Fig. 2c) and, in Appendix C, in Nanda et al.'s "
+        "one-layer transformer on (a+b) mod 113, per seed."),
     "causal_irrep_ablation": (
         CHUGHTAI_2023,
         "Runs restricted loss, excluded loss and ablations of irreducible-representation "
@@ -170,8 +184,8 @@ RELATED_WORK = {
         "multiplication. Its abstract reports no ablations."),
     "zero_divisors": (
         CHEN_2026,
-        "Treats non-invertible elements as a separate algebraic region, on composite "
-        "moduli, and describes its evidence as correlational. Doshi et al. also single out "
+        "Treats non-invertible elements as a separate algebraic region, on the moduli "
+        "113, 143, 154 and 165, and describes its evidence as correlational. Doshi et al. also single out "
         "0 as warranting separate treatment."),
     "forecasting": (
         NOTSAWO_2023,
@@ -179,15 +193,17 @@ RELATED_WORK = {
         "signals is therefore prior art. Per-seed prediction at a fixed configuration is "
         "also published: Truong et al. 2026a (arXiv:2603.13331) predict each seed's delay "
         "from the norm at memorisation, 2026b (arXiv:2604.13123) from spectral entropy, and "
-        "Howe 2026 (arXiv:2609.19000) finds, for induction heads, that a loss rule ties a "
-        "mechanistic precursor in ranking seeds. The comparison of many signals here is a "
-        "small instance of the same question for grokking."),
+        "Howe 2026 (arXiv:2609.19000) forecasts grokking per seed on held-out runs and, for "
+        "induction heads, finds an oracle-tuned loss rule ties a mechanistic precursor at "
+        "ranking seeds only as a nowcast, arguing that rank correlation without lead time "
+        "rewards nowcasts. The comparison of many signals here, read at fixed steps, is a "
+        "small instance of the same question and shares that limitation."),
     "weight_decay_scaling": (
         LYU_2023,
         "Proves grokking time scales like 1/lambda in weight decay, counted from "
         "initialisation, in a large-initialisation limit. Liu et al. 2022 (Omnigrok) argued "
-        "and showed the same dependence first; Truong et al. 2026c (arXiv:2605.18845) fit a "
-        "delay law, counted from memorisation, under AdamW. The phase diagram here "
+        "and showed the same dependence first; Truong et al. 2026a (arXiv:2603.13331) derive "
+        "and 2026c (arXiv:2605.18845) fit a delay law, counted from memorisation, under AdamW. The phase diagram here "
         "reproduces it rather than settling an open question."),
 }
 

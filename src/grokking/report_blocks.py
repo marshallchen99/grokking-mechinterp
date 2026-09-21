@@ -48,7 +48,22 @@ FULL_ACC = 0.99
 NEURON_FRAC = 0.85       # the neuron-clustering rule's variance threshold
 HALFWAY = 0.50           # "half of a signal's total change"
 CI_LEVEL = 0.95          # confidence level of every interval in the report
-Z95 = 1.96               # its two-sided normal quantile
+
+
+def t_quantile(df: int, q: float) -> float:
+    """Student-t quantile by bisection on a numerically integrated CDF (no scipy)."""
+    c = math.exp(math.lgamma((df + 1) / 2) - math.lgamma(df / 2)) / math.sqrt(df * math.pi)
+
+    def cdf(t):                       # for t >= 0
+        n, h = 4000, t / 4000
+        area = sum(c * (1 + (i * h) ** 2 / df) ** (-(df + 1) / 2) * (0.5 if i in (0, n) else 1)
+                   for i in range(n + 1)) * h
+        return 0.5 + area
+    lo, hi = 0.0, 50.0
+    for _ in range(60):
+        mid = (lo + hi) / 2
+        lo, hi = (mid, hi) if cdf(mid) < q else (lo, mid)
+    return (lo + hi) / 2
 PLAIN_SIGNALS = ("train_loss", "test_loss", "test_acc", "weight_norm")   # no mechanism needed
 END_CHECKPOINTS = 8      # a progress signal's final level: median of this many last checkpoints
 OTHER_FRACS = (0.25, 0.75)   # the phase-lead comparison repeated at these fractions of the change
@@ -351,14 +366,15 @@ def readout(root: Path, _tag: str) -> Optional[str]:
                 "An earlier version attributed the difference to a per-answer bias that "
                 "float32 prevented from being cleaned up; a later one said that no gradient "
                 "acts on that component at any precision. Neither holds up. The component is "
-                "real, and float32 does keep it: rounding gives the float32 gradient a part "
-                "along the direction softmax ignores, and that part of W_U grows during the "
-                "float32 runs ("
+                "real, and float32 does keep it: the part of W_U along the direction softmax "
+                "ignores grows during the float32 runs ("
                 + "; ".join(f"`{t}` from {v['step0']:.2f} to {v['final']:.2f}, "
-                            f"{v['final_frac_of_W_U']:.0%} of W_U" for t, v in i32.items())
+                            f"{v['final_frac_of_W_U']:.0%} of W_U's norm" for t, v in i32.items())
                 + f") while it shrinks in the float64 ones (to between "
                 f"{min(v['final'] for v in i64.values()):.3f} and "
-                f"{max(v['final'] for v in i64.values()):.3f}). But it is exactly the "
+                f"{max(v['final'] for v in i64.values()):.3f}), consistent with float32 "
+                f"rounding giving the gradient a part along it that the exact gradient does "
+                f"not have; that gradient was not measured. Either way it is exactly the "
                 f"component removed before measuring, so it cannot change a prediction and "
                 f"does not explain the difference in this table.")
     return "\n\n".join(parts)
@@ -442,6 +458,11 @@ def ablations(root: Path, tag: str) -> Optional[str]:
         below = [k_ for k_, v in verdict.items() if v == "below"]
         within = [k_ for k_, v in verdict.items() if v == "within"]
         kept = [r[4] for r in nrows]
+        base_acc = fa["baseline"]["test_acc"]
+        mags = [(base_acc - npf[f"drop_freq_{k_}"]["test_acc"])
+                / (base_acc - min(sm[str(k_)]["test_acc"])) for k_ in below]
+        n_all = m["neurons"]["n_total"]
+        every_on_key = m["neurons"].get("all_on_key_freqs") and not m["neurons"].get("n_dead")
         parts += [
             "**Neuron surgery.** Each MLP neuron is assigned to the frequency that explains "
             "most of its variance. A cluster is mean-ablated by replacing its neurons' "
@@ -450,12 +471,17 @@ def ablations(root: Path, tag: str) -> Optional[str]:
             neuron,
             (f"Removing the cluster for {'frequency' if len(below) == 1 else 'each of frequencies'} "
              f"{', '.join(str(x) for x in below)} costs more test accuracy than removing as many "
-             f"random other neurons does in any of the {n_draws} draws" if below else
+             f"random other neurons does in any of the {n_draws} draws: "
+             f"{min(mags):.1f} to {max(mags):.1f} times the largest accuracy loss in any draw"
+             if below else
              "No cluster costs more than every random draw")
             + (f"; for {', '.join(str(x) for x in within)} it is within the random range"
                if within else "")
             + f". No single cluster is enough on its own (test accuracy {min(kept):.2%} to "
-              f"{max(kept):.2%} with only it kept). An earlier version of this table added the "
+              f"{max(kept):.2%} with only it kept)."
+            + (f" Every one of the {n_all} neurons belongs to some key frequency's cluster, so "
+               f"the random neurons come from the other clusters." if every_on_key else "")
+            + f" An earlier version of this table added the "
               f"removed neurons' average output at the model's input instead of at the MLP's "
               f"output, so it went through attention and the MLP a second time; its numbers, "
               f"and a caveat about test losses above a thousand, were artefacts of that bug.",
@@ -784,8 +810,12 @@ def operations(root: Path, tags: List[str]) -> Optional[str]:
                f"times, " + (f"{_frac_at_least(ratios, r_sub):.0%} differ"
                              if _frac_at_least(ratios, r_sub) else "none differs")
                + f" by that factor or more; but "
-               f"that configuration has a different modulus and training fraction, and seed "
-               f"noise here was not measured" if ratios else "")
+               f"that configuration has a different modulus and training fraction, and at this "
+               f"one seed noise was measured only by a single pair ("
+               + (f"`B_add_s1` against `{ADD_REFERENCE}`, "
+                  f"{max(got[ADD_REFERENCE], g1) / min(got[ADD_REFERENCE], g1):.2f}x)"
+                  if (g1 := _grok(root, "B_add_s1")) else "not available)")
+               if ratios else "")
             + f". With one seed per operation this is suggestive at most. Subtraction grokked "
             f"{sub_budget - st(got[sub_tag]):,} steps before its budget ran out, so its "
             f"mechanism was read much closer to the transition than addition's.")
@@ -992,21 +1022,29 @@ def loss_precision(root: Path, _tag: str) -> Optional[str]:
             continue
         late = [r["train_loss"] for r in h["history"] if r["step"] >= SETTLE_STEP]
         if late:
-            lv[dt].append((tag, statistics.median(late)))
+            # a loss logged in float32 is exactly a float32 number, every time
+            f32_logged = all(float(torch.tensor(v, dtype=torch.float32)) == v for v in late)
+            lv[dt].append((tag, statistics.median(late), f32_logged))
     if not (lv["float32"] and lv["float64"]):
         return None
     eps = float(torch.finfo(torch.float32).eps)
-    f32 = [v for _, v in lv["float32"]]
-    f64 = [v for _, v in lv["float64"]]
+    f32 = [v for _, v, _ in lv["float32"]]
+    f64 = [v for _, v, _ in lv["float64"]]
+    q = [t for t, _, f in lv["float32"] + lv["float64"] if f]
+    nq = [t for t, _, f in lv["float32"] if not f]
     return (
         f"**Loss in float64, except in the first run and its float32 control.** In float32, "
         f"`log_softmax` quantises at about {eps:.1e}. After step {SETTLE_STEP:,}, the "
-        f"training loss of the {len(f64)} float64 runs settles at a median of "
-        f"{min(f64):.1e} to {max(f64):.1e}, near that level; that of the {len(f32)} float32 "
-        f"runs ({', '.join(f'`{t}`' for t, _ in lv['float32'])}) stays around "
-        f"{min(f32):.1e} to {max(f32):.1e}, about {min(f32) / max(f64):.0f} times higher, and "
-        f"its readings are quantised whenever they come near {eps:.1e}. Section 5 compares "
-        f"the two precisions directly.")
+        f"training loss of the {len(f64)} float64-trained runs settles at a median of "
+        f"{min(f64):.1e} to {max(f64):.1e}, near that level; that of the {len(f32)} "
+        f"float32-trained runs ({', '.join(f'`{t}`' for t, _, _ in lv['float32'])}) stays around "
+        f"{min(f32):.1e} to {max(f32):.1e}, about {min(f32) / max(f64):.0f} times higher. "
+        + (f"Only {', '.join(f'`{t}`' for t in q)} also logged its loss in float32 (every "
+           f"logged value is exactly a float32 number), so only its curve is quantised near "
+           f"{eps:.1e}" if q else "No run logged its loss in float32")
+        + (f"; {', '.join(f'`{t}`' for t in nq)} logged in float64, so its higher level is a "
+           f"property of the float32-trained model, not of the measurement" if nq else "")
+        + ". Section 5 compares the two precisions directly.")
 
 
 def _seed_ratios(root: Path):
@@ -1018,6 +1056,12 @@ def _seed_ratios(root: Path):
         return None, None
     g = [r["grok"] for r in w["runs"]]
     return [abs(math.log(a / b)) for i, a in enumerate(g) for b in g[i + 1:]], w
+
+
+def _grok(root: Path, tag: str):
+    from .analysis.timing import crossing_step
+    h = load_history(root, tag)
+    return crossing_step(h["history"], "test_acc", GROK_ACC) if is_finished(h) else None
 
 
 def _frac_at_least(ratios, r):
@@ -1056,20 +1100,28 @@ def controls(root: Path, _tag: str) -> Optional[str]:
         eff = {"f32": g["C_add_f32"] / g["B_add_s0"], "warm": g["C_add_nowarm"] / g["B_add_s0"],
                "gap": g["main_add_s0"] / g["B_add_s0"]}
         c = w["config"]
+        hb = load_history(root, "B_add_s0")["data"]
+        pair = (f" The only seed pair of the reference configuration itself (`B_add_s1` against "
+                f"`B_add_s0`) differs by {max(g['B_add_s1'], g['B_add_s0']) / min(g['B_add_s1'], g['B_add_s0']):.2f}x."
+                if "B_add_s1" in g else "")
         parts.append(
             f"Changing only the loss precision moves the step by {st(g['C_add_f32']) - b:+,}; "
             f"reducing the warmup to a single step, whose learning rate is zero, by "
             f"{st(g['C_add_nowarm']) - b:+,}. With one run per arm, these have to be read "
-            f"against how far two seeds can differ by chance. The only configuration run with "
-            f"many seeds is a different one ({w['n']} seeds of `{c['op']}` at p = {c['p']}, "
-            f"training fraction {c['train_frac']}); there, "
+            f"against how far two runs can differ by chance." + pair + f" The only "
+            f"configuration run with many seeds is a different one ({w['n']} seeds of "
+            f"`{c['op']}` at p = {c['p']}, training fraction {c['train_frac']}, grokking "
+            f"between step {min(r['grok'] for r in w['runs']):,.0f} and "
+            f"{max(r['grok'] for r in w['runs']):,.0f}); there, "
             f"{_frac_at_least(ratios, eff['f32']):.0%} of seed pairs differ by a larger factor "
             f"than the precision change, {_frac_at_least(ratios, eff['warm']):.0%} by a larger "
             f"factor than the warmup change, and {_frac_at_least(ratios, eff['gap']):.0%} by "
             f"one at least as large as the whole gap between the first run and the corrected "
-            f"one ({eff['gap']:.2f}x). If seed noise at p = {load_history(root, 'B_add_s0')['data']['p']} "
-            f"is similar, these runs cannot say whether either change matters, or whether the "
-            f"gap itself is chance.")
+            f"one ({eff['gap']:.2f}x). The control arms share their split and initial weights "
+            f"with the reference run, so independent seeds overstate their noise; but noise at "
+            f"p = {hb['p']}, training fraction {hb['train_frac']}, was not measured beyond "
+            f"that one pair. These runs cannot say whether either change matters, or whether "
+            f"the gap itself is chance.")
     if init:
         ec = init.get("extra_column")
         parts.append(
@@ -1077,14 +1129,15 @@ def controls(root: Path, _tag: str) -> Optional[str]:
             f"{init['n_identical']} of their {init['n_tensors']} weight tensors bit for bit; "
             f"only W_U is drawn differently, because it is drawn last and its shape changed. "
             + (f"The extra column itself can matter only through floating-point rounding: it "
-               f"received no gradient, and at every "
-               f"one of {ec['checkpoints_checked']} checkpoints its weights equal their step-0 "
-               f"values times the pure weight-decay factor (largest relative deviation "
-               f"{ec['max_relative_deviation_from_pure_decay']:.1e}). " if ec else "")
-            + "What remains is W_U's initial draw, an interaction between float32 and no "
-            "warmup (never run jointly), and chance. These single runs cannot separate them, "
-            "and an earlier claim that the original was simply 'a slow draw' went beyond "
-            "them.")
+               f"received no gradient, and at {ec['bit_exact_pure_decay']} of "
+               f"{ec['checkpoints_checked']} checkpoints its weights equal, bit for bit, their "
+               f"step-0 values decayed by AdamW's weight decay alone. "
+               if ec and "bit_exact_pure_decay" in ec else "")
+            + "What remains is W_U's initial draw, the difference between no scheduler at all "
+            "and the control's one zero-rate warmup step (never run on its own), an "
+            "interaction between float32 and no warmup (never run jointly), and chance. These "
+            "single runs cannot separate them, and an earlier claim that the original was "
+            "simply 'a slow draw' went beyond them.")
     return "\n\n".join(parts)
 
 
@@ -1146,28 +1199,34 @@ def phase_diagram_block(root: Path, _tag: str) -> Optional[str]:
 
         s_total = slope([math.log(g) for _, g, _ in pts])
         s_delay = slope([math.log(g - m) for _, g, m in pts])
-        # uncertainty from seed noise measured directly: the many-seed configuration is
-        # one of these cells (same modulus, fraction and budget family)
+        # What a total falling exactly as 1/lambda would give for the delay, once the
+        # (nearly fixed) memorisation steps are subtracted: part of any steepening
+        # of the delay slope is this arithmetic, not a second finding.
+        c0 = math.exp(sum(math.log(g * w) for w, g, _ in pts) / len(pts))
+        s_arith = slope([math.log(c0 / w - m) for w, _, m in pts])
+        # replicates at the same fraction that did not grok are left out of the fit
+        cens = []
+        for hp in sorted(glob.glob(str(root / "results" / "R_*_history.json"))):
+            h = json.loads(Path(hp).read_text())
+            if (h["data"]["p"] == p_ and h["data"]["train_frac"] == top and is_finished(h)
+                    and crossing_step(h["history"], "test_acc", GROK_ACC) is None):
+                cens.append((h["train_cfg"]["weight_decay"], h["train_cfg"]["steps"]))
+        # Noise on each point, from the seed-to-seed spread measured at one of these
+        # cells.  The delay is the grokking step minus a nearly fixed memorisation
+        # step, so its log is noisier where the delay is short: sd * g / (g - m).
         _, wc = _seed_ratios(root)
         noise = None
         if wc and wc["config"]["p"] == p_ and wc["config"]["train_frac"] == top:
-            lg, ld = [], []
-            for r in wc["runs"]:
-                hh = load_history(root, r["tag"])
-                mm = crossing_step(hh["history"], "train_acc", MEMORISED_ACC)
-                lg.append(math.log(r["grok"]))
-                ld.append(math.log(r["grok"] - mm))
+            lg = [math.log(r["grok"]) for r in wc["runs"]]
+            mg = sum(lg) / len(lg)
+            sdg = (sum((x - mg) ** 2 for x in lg) / (len(lg) - 1)) ** 0.5
+            noise = (sdg, len(lg), wc["config"]["weight_decay"])
 
-            def sd(v):
-                m_ = sum(v) / len(v)
-                return (sum((x - m_) ** 2 for x in v) / (len(v) - 1)) ** 0.5
-            noise = (sd(lg), sd(ld), wc["n"], wc["config"]["weight_decay"])
-
-        def verdict(sl, se):
-            lo_, hi_ = sl - Z95 * se, sl + Z95 * se
-            rel = ("consistent with -1" if lo_ <= -1 <= hi_ else
-                   "steeper than -1" if hi_ < -1 else "shallower than -1")
-            return f"{sl:.2f} ({CI_LEVEL:.0%} interval {lo_:.2f} to {hi_:.2f}, {rel})"
+        def interval(sl, sds, df):
+            se = math.sqrt(sum(((x - mx) / sxx) ** 2 * v ** 2 for x, v in zip(xs, sds)))
+            tq = t_quantile(df, 1 - (1 - CI_LEVEL) / 2)
+            lo_, hi_ = sl - tq * se, sl + tq * se
+            return lo_, hi_, lo_ <= -1 <= hi_
 
         text = (
             f"Within the one training fraction where every cell grokked ({top}), the "
@@ -1178,23 +1237,43 @@ def phase_diagram_block(root: Path, _tag: str) -> Optional[str]:
             f"delay after memorisation times weight decay goes from {dprod[0]:,.0f} to "
             f"{dprod[-1]:,.0f}. Fitting log step against log weight decay over these "
             f"{len(full)} cells and the {n_rep} seed-1 replicates that grokked "
-            f"({len(pts)} points) ")
+            f"({len(pts)} points) gives a slope of {s_total:.2f} counted from step 0 and "
+            f"{s_delay:.2f} counted from the end of memorisation")
+        total_ok = delay_ok = None
         if noise:
-            sdg, sdd, n_s, w_s = noise
+            sdg, n_s, w_s = noise
+            lt, ht, total_ok = interval(s_total, [sdg] * len(pts), n_s - 1)
+            ld, hd, delay_ok = interval(s_delay, [sdg * g / (g - m) for _, g, m in pts], n_s - 1)
             text += (
-                f"gives, counted from step 0, a slope of "
-                f"{verdict(s_total, sdg / math.sqrt(sxx))}, and counted from the end of "
-                f"memorisation, {verdict(s_delay, sdd / math.sqrt(sxx))}. The intervals take the "
-                f"seed-to-seed spread measured at one of these cells ({n_s} seeds at weight "
-                f"decay {w_s}) as the noise on every point.")
-        else:
-            text += f"gives slopes of {s_total:.2f} from step 0 and {s_delay:.2f} from memorisation."
+                f". Taking the noise on each point from the seed-to-seed spread measured at "
+                f"one of these cells ({n_s} seeds at weight decay {w_s}), and allowing for the "
+                f"delay's log being noisier where the delay is short, the {CI_LEVEL:.0%} "
+                f"intervals are {lt:.2f} to {ht:.2f} and {ld:.2f} to {hd:.2f}; "
+                + ("both include -1" if total_ok and delay_ok else
+                   "the first includes -1 and the second does not" if total_ok else
+                   "the second includes -1 and the first does not" if delay_ok else
+                   "neither includes -1")
+                + f". Part of the gap between the two slopes is arithmetic: a total falling "
+                f"exactly as 1/lambda, minus these memorisation steps, would give a delay "
+                f"slope of {s_arith:.2f}")
+        text += "."
+        if cens:
+            text += (" " + "; ".join(f"The seed-1 run at weight decay {w} had not grokked by "
+                                     f"step {b:,} and is left out" for w, b in cens)
+                     + "; a later grokking step there would make both slopes steeper.")
         text += (
             f" {cite(LIU_2022)} argued that the time to generalise goes like 1/lambda and "
-            f"showed it in a teacher-student model; {cite(LYU_2023)} ({arxiv(LYU_2023)}) prove "
-            f"it in a large-initialisation limit, counting from initialisation; "
-            f"{cite(TRUONG_2026C)} fit a law for the delay after memorisation under AdamW. "
-            f"This reproduces that dependence; it does not discover it.")
+            f"showed it in a teacher-student model and, in their Appendix C, in this same "
+            f"one-layer transformer on (a+b) mod {PUBLISHED['omnigrok_modulus'].value}, per "
+            f"seed; {cite(LYU_2023)} ({arxiv(LYU_2023)}) prove it in a large-initialisation "
+            f"limit, counting from initialisation; {cite(TRUONG_2026A)} and "
+            f"{cite(TRUONG_2026C)} derive and fit a law for the delay after memorisation under "
+            f"AdamW. "
+            + ("Both measures agree with that dependence within the noise here; this "
+               "reproduces it, it does not discover it." if total_ok and delay_ok else
+               "The total agrees with that dependence within the noise here and reproduces "
+               "it; the delay does not settle the question either way." if total_ok else
+               "These points do not reproduce it cleanly."))
         parts.append(text)
     return "\n\n".join(parts)
 
@@ -1291,19 +1370,23 @@ def prediction(root: Path, _tag: str) -> Optional[str]:
         f"({arxiv(TRUONG_2026A)}) predict each seed's delay from the parameter norm at "
         f"memorisation, and {cite(TRUONG_2026B)} ({arxiv(TRUONG_2026B)}) forecast it from the "
         f"spectral entropy of the representation; {cite(TRUONG_2026C)} ({arxiv(TRUONG_2026C)}) "
-        f"fit the delay across hyperparameter settings. For a different emergence, induction "
-        f"heads, {cite(HOWE_2026)} ({arxiv(HOWE_2026)}) finds that a loss rule ranks seeds as "
-        f"well as a mechanistic precursor does. The question here is a small instance of the "
-        f"same kind: within one configuration of this task, where only the random draw "
-        f"differs, how do a dozen early signals compare at ranking runs by when they "
+        f"fit the delay across hyperparameter settings. {cite(HOWE_2026)} ({arxiv(HOWE_2026)}) "
+        f"forecasts grokking per seed on held-out runs and, for induction heads, finds that "
+        f"an oracle-tuned loss rule ranks seeds as well as a mechanistic precursor but only as "
+        f"a nowcast -- a median lead of {PUBLISHED['howe_leads'].value['loss_rule']} steps "
+        f"against {PUBLISHED['howe_leads'].value['precursor']:,} -- and argues "
+        f"that rank correlation without lead time rewards nowcasts. The question here is a "
+        f"small instance of the same kind, and shares that limitation: within one "
+        f"configuration of this task, where only the random draw differs, how do a dozen "
+        f"signals, read at fixed early steps, compare at ranking runs by when they "
         f"generalise?",
         f"{w['n']} runs share the task (`{c['op']}`), modulus ({c['p']}), training fraction "
         f"({c['train_frac']}), weight decay ({c['weight_decay']}) and budget "
         f"({c['budget']:,} steps). They grok between step {earliest:,.0f} and "
         f"{latest:,.0f}. A reading taken after some run has grokked measures the outcome, so "
         f"only readings before step {earliest:,.0f} are used."
-        + "".join(f" `{e['tag']}` has the same configuration but a {e['budget']:,}-step budget, "
-                  f"so a different checkpoint schedule, and is left out."
+        + "".join(f" `{e['tag']}` has the same configuration but is left out: "
+                  f"{e.get('reason') or 'different budget'} ({e['budget']:,}-step budget)."
                   for e in w.get("excluded_other_budget", [])),
     ]
     if acc:
@@ -1329,11 +1412,11 @@ def prediction(root: Path, _tag: str) -> Optional[str]:
                     if v.get("survives_bonferroni_all_computed")]
         dropped = [lab for lab, _ in surv if lab not in surv_all]
         parts.append(
-            f"That family of {b['n_tests']} tests was chosen after the results were seen. The "
-            f"first version corrected over all {ball['n_tests']} tests computed, at every "
-            f"step (|rho| of at least {ball['critical_rho_two_tailed']:.3f}); under that "
-            f"family {len(surv_all)} signals survive at step {int(last):,} instead of "
-            f"{len(surv)}"
+            f"That family of {b['n_tests']} tests was chosen after the results were seen; an "
+            f"earlier version corrected over all {ball['n_tests']} tests computed, at every "
+            f"step. Under that larger family (permutation threshold |rho| of at least "
+            f"{ball['critical_rho_two_tailed']:.3f}) {len(surv_all)} signals survive at step "
+            f"{int(last):,} instead of {len(surv)}"
             + (f", the {', '.join(dropped)} dropping out." if dropped else "."))
     first = w["at_steps"][steps[0]]
     clean = {k: v for k, v in first.items() if "(final)" not in v["label"]}
@@ -1363,7 +1446,8 @@ def prediction(root: Path, _tag: str) -> Optional[str]:
             f"{bs['abs_rho_difference']:+.2f}, with a {CI_LEVEL:.0%} bootstrap interval of "
             f"{lo_:+.2f} to {hi_:+.2f}. "
             + ("So in this one configuration neither kind ranks the runs detectably better "
-               "than the other; the data cannot show that they are equal either. "
+               "than the other; the data cannot show that they are equal either, and by then "
+               "every run's test accuracy is already rising, so these are nowcasts. "
                if lo_ <= 0 <= hi_ else
                ("The plain signal ranks the runs better. " if lo_ > 0 else
                 "The mechanistic signal ranks the runs better. "))
