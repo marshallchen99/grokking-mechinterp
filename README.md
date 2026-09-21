@@ -574,11 +574,12 @@ learning-rate schedule, an output column for the `=` token that is cut off
 before the loss, and its original checkpoint schedule; it logged its losses in
 float32, where a rerun logs them in float64) and the runs at p != 113, which
 keep their 113-wide output. The train/test split is rebuilt from each run's
-record and checked against `results/split_hashes.json`. `scripts/record_splits.py`
-writes that file only after checking, for every run, that its final checkpoint
-reproduces the train and test accuracy logged during training on the rebuilt
-split, so a torch version that shuffled differently would stop the analysis
-rather than silently use another split. Runs with more than one thread are not
+record and checked against `results/split_hashes.json`, so a torch version
+that shuffled differently would stop the analysis rather than silently use
+another split. `scripts/record_splits.py` wrote that file after checking, for
+every run, that the final checkpoint's train and test loss on the rebuilt split
+equal the losses logged during training, and that on a deliberately different
+split they do not; it never replaces a recorded fingerprint. Runs with more than one thread are not
 bit-for-bit reproducible (see Method notes), so a fresh run lands near these
 numbers.
 
@@ -633,7 +634,7 @@ a trained transformer: [Nguyen 2026](https://arxiv.org/abs/2606.17399).
 Non-invertible elements as a separate region:
 [Chen et al. 2026](https://arxiv.org/abs/2607.07066). The 1/lambda dependence of
 grokking time on weight decay: [Liu et al. 2022](https://arxiv.org/abs/2210.01117),
-who also test it on this same transformer and task,
+who also test it on Nanda et al.'s transformer and this task,
 [Lyu et al. 2023](https://arxiv.org/abs/2311.18817), and
 [Truong et al. 2026a](https://arxiv.org/abs/2603.13331) and
 [2026c](https://arxiv.org/abs/2605.18845). Predicting grokking from early

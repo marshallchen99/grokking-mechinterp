@@ -1210,7 +1210,8 @@ def phase_diagram_block(root: Path, _tag: str) -> Optional[str]:
             h = json.loads(Path(hp).read_text())
             if (h["data"]["p"] == p_ and h["data"]["train_frac"] == top and is_finished(h)
                     and crossing_step(h["history"], "test_acc", GROK_ACC) is None):
-                cens.append((h["train_cfg"]["weight_decay"], h["train_cfg"]["steps"]))
+                cens.append((h["train_cfg"]["weight_decay"], h["train_cfg"]["steps"],
+                             crossing_step(h["history"], "train_acc", MEMORISED_ACC)))
         # Noise on each point, from the seed-to-seed spread measured at one of these
         # cells.  The delay is the grokking step minus a nearly fixed memorisation
         # step, so its log is noisier where the delay is short: sd * g / (g - m).
@@ -1257,15 +1258,25 @@ def phase_diagram_block(root: Path, _tag: str) -> Optional[str]:
                 f"exactly as 1/lambda, minus these memorisation steps, would give a delay "
                 f"slope of {s_arith:.2f}")
         text += "."
-        if cens:
-            text += (" " + "; ".join(f"The seed-1 run at weight decay {w} had not grokked by "
-                                     f"step {b:,} and is left out" for w, b in cens)
-                     + "; a later grokking step there would make both slopes steeper.")
+        for w_c, b_c, m_c in cens:
+            # what the fit would do had it grokked right at its budget
+            xs_c = xs + [math.log(w_c)]
+            mx_c = sum(xs_c) / len(xs_c)
+
+            def slope_c(ys):
+                my = sum(ys) / len(ys)
+                return (sum((x - mx_c) * (y - my) for x, y in zip(xs_c, ys))
+                        / sum((x - mx_c) ** 2 for x in xs_c))
+            dt = slope_c([math.log(g) for _, g, _ in pts] + [math.log(b_c)]) - s_total
+            dd = slope_c([math.log(g - m) for _, g, m in pts] + [math.log(b_c - m_c)]) - s_delay
+            text += (f" The seed-1 run at weight decay {w_c} had not grokked by step {b_c:,} and "
+                     f"is left out. Had it grokked right then, the slopes would move by "
+                     f"{dt:+.2f} and {dd:+.2f}; the later it groks, the steeper both become.")
         text += (
             f" {cite(LIU_2022)} argued that the time to generalise goes like 1/lambda and "
-            f"showed it in a teacher-student model and, in their Appendix C, in this same "
-            f"one-layer transformer on (a+b) mod {PUBLISHED['omnigrok_modulus'].value}, per "
-            f"seed; {cite(LYU_2023)} ({arxiv(LYU_2023)}) prove it in a large-initialisation "
+            f"showed it in a teacher-student model and, in their Appendix C, in Nanda et al.'s "
+            f"one-layer transformer (the one followed here, with MLP biases) on (a+b) mod "
+            f"{PUBLISHED['omnigrok_modulus'].value}, per seed; {cite(LYU_2023)} ({arxiv(LYU_2023)}) prove it in a large-initialisation "
             f"limit, counting from initialisation; {cite(TRUONG_2026A)} and "
             f"{cite(TRUONG_2026C)} derive and fit a law for the delay after memorisation under "
             f"AdamW. "

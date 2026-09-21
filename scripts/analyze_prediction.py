@@ -242,9 +242,10 @@ def main():
     member_tags = {m["tag"] for m in members}
     analysed = {r["tag"] for r in runs}
     other_budget = [{"tag": r["tag"], "budget": r["budget"], "grok": r["grok"],
-                     "reason": ("different budget" if r["budget"] != cfg[4] else "")
-                     + (" and " if r["budget"] != cfg[4] and r["tag"] not in analysed else "")
-                     + ("no trajectory analysis" if r["tag"] not in analysed else "")}
+                     "reason": " and ".join(x for x in [
+                         "different budget" if r["budget"] != cfg[4] else "",
+                         "no trajectory analysis" if r["tag"] not in analysed else "",
+                         "did not grok" if r["grok"] is None else ""] if x)}
                     for r in finished if (r["op"], r["p"], r["frac"], r["wd"]) == cfg[:4]
                     and r["tag"] not in member_tags]
     if len(members) >= 4:
