@@ -227,24 +227,34 @@ footer p{ font-size:.86rem; }
 
 @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
 .fill, .ro .v{ transition: width .14s linear, color .14s linear; }
+
+/* ---------- rendered README blocks ---------- */
+.md{ margin-top:1.1rem; }
+.md p{ margin:0 0 1em; }
+.md h3{ margin:2rem 0 .8rem; }
+.md table{ margin:1.2rem 0; }
+.md code{ font-family:var(--mono); font-size:.86em; background:var(--panel-2);
+          padding:.05em .35em; border-radius:4px; }
+.md ul{ padding-left:1.2rem; color:var(--ink-2); }
+.md a{ word-break:break-word; }
+.md .tablewrap{ margin-top:.4rem; }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+
 
 <header class="hero">
   <div class="wrap">
     <div class="col">
-      <p class="eyebrow">Mechanistic interpretability &middot; reproduction</p>
-      <h1>A network that memorised for 14,379 steps, then <span class="hl">learned trigonometry</span></h1>
+      <p class="eyebrow">Mechanistic interpretability &middot; a reproduction</p>
+      <h1>A network that memorised first, and <span class="hl">learned trigonometry</span> later</h1>
       <p class="lede hero-sub">
-        A one-layer transformer is shown 30% of the addition table mod 113 and asked to
-        fill in the rest. It memorises what it was shown in 158 steps, sits at chance on
-        everything else for fourteen thousand more &mdash; and then, with nothing visible
-        changing, generalises. This page takes the finished network apart to show what
-        was forming in that silence.
+        A one-layer transformer is shown part of the addition table mod <span data-meta="p"></span>
+        and asked to fill in the rest. It memorises what it was shown almost at once, does
+        nothing useful on the rest for thousands of steps, and then generalises. This page
+        reproduces that and takes the finished network apart, using methods from the
+        published work it names as it goes.
       </p>
-      <div class="byline">
-        <span>226,176 parameters</span><span>3,830 training pairs</span>
-        <span>40,000 steps</span><span>82 minutes on 6 CPU threads</span>
-      </div>
+      <div class="byline" id="byline"></div>
     </div>
   </div>
 </header>
@@ -273,16 +283,13 @@ footer p{ font-size:.86rem; }
 <section>
   <div class="wrap"><div class="wide">
     <p class="eyebrow">02 &middot; the phenomenon</p>
-    <h2 style="max-width:var(--col)">Training accuracy is useless as a progress signal</h2>
+    <h2 style="max-width:var(--col)">Training accuracy says nothing about generalisation</h2>
     <figure>
       <div class="panel" style="padding:16px"><div id="curve"></div></div>
-      <figcaption>
-        Train (grey) and test (orange) accuracy, log step axis. Test loss does not merely
-        stay flat during the plateau &mdash; it rises to a peak of <span class="num">32.74</span>
-        at step <span class="num">1,680</span> as the memorised solution becomes more
-        confident and more wrong. Hover the chart to read any step.
-      </figcaption>
+      <figcaption>Train (grey) and test (orange) accuracy against training step, log axis.
+        Hover to read any step.</figcaption>
     </figure>
+    <div class="col" style="margin-left:0"><div class="md" data-block="headline"></div></div>
   </div></div>
 </section>
 
@@ -316,11 +323,10 @@ footer p{ font-size:.86rem; }
         </div>
       </div>
       <figcaption>
-        <strong>Restricted loss</strong> keeps only those four frequencies' contribution to the
-        output and throws away everything else, then measures the loss. It falls long before
-        the accuracy does: the generalising machinery is already there, buried under the
-        memorised solution. That is the whole point &mdash; the transition only looks sudden
-        from outside.
+        The coloured bars are the <span id="nkeys"></span> frequencies the <em>finished</em>
+        model uses. <strong>Restricted loss</strong> keeps only their contribution to the
+        output and discards everything else. It becomes low thousands of steps before test
+        accuracy moves: the generalising solution exists before it is visible.
       </figcaption>
     </figure>
   </div></div>
@@ -329,161 +335,84 @@ footer p{ font-size:.86rem; }
 <section>
   <div class="wrap"><div class="col">
     <p class="eyebrow">04 &middot; the algorithm</p>
-    <h2>It turned addition into rotation</h2>
+    <h2>Addition as rotation</h2>
     <p>
-      Nothing in the architecture suggests trigonometry. What the trained weights do is
-      represent each number as a point on a circle and exploit the fact that, on a circle,
-      addition is just turning further:
+      The trained weights represent each number as a point on a circle, at a handful of
+      frequencies, and add by turning further:
     </p>
-<pre class="f">  a  <b>-&gt;</b>  ( cos(w*a), sin(w*a) )        w = 2*pi*k/113, for four values of k
+<pre class="f">  a  <b>-&gt;</b>  ( cos(w*a), sin(w*a) )        w = 2*pi*k/p, for a few values of k
 
   <b>cos(w*(a+b))</b> = cos(w*a)cos(w*b) - sin(w*a)sin(w*b)     &lt;- attention + MLP
   <b>sin(w*(a+b))</b> = sin(w*a)cos(w*b) + cos(w*a)sin(w*b)
 
   logit(c)  proportional to   <b>sum over k of  cos( w_k * (a + b - c) )</b></pre>
     <p>
-      The last line is a matched filter. When <span class="num">c = a + b</span> every term
-      has phase zero and they peak together; for any other <span class="num">c</span> the
-      phases disagree and the terms cancel. Wraparound is free &mdash; the circle is already
-      periodic, so there is no "subtract 113 if too big" step anywhere in the network.
+      The last line peaks when every term has phase zero, at <span class="num">c = a + b</span>.
+      Wraparound is free because the circle is periodic.
     </p>
-    <h3 style="margin-top:2rem">Three ways of asking, one answer</h3>
-    <p>
-      Which frequencies is it using? Three rules with independent logic, applied to the
-      final checkpoint:
-    </p>
-    <div class="tablewrap"><table id="rules-table"></table></div>
-    <h3 style="margin-top:2rem">What the output is a function of</h3>
-    <p>
-      If the algorithm is right, the logits should depend on the inputs only through
-      <span class="num">(a+b)</span>. Chance for this column is
-      <span class="num">1/113 = 0.0088</span>:
-    </p>
-    <div class="tablewrap"><table id="struct-table"></table></div>
-    <p class="note">
-      The tools are calibrated before they are trusted. Run the same measurement on logits
-      built to be exactly <span class="num">sum_k cos(w_k(a+b-c))</span> and it reads
-      1.0000; on random logits it reads 0.0088. So these numbers are interpretable rather
-      than merely large.
-    </p>
+    <div class="md" data-block="mechanism"></div>
+    <h3>The readout</h3>
+    <div class="md" data-block="readout"></div>
   </div></div>
 </section>
 
 <section>
   <div class="wrap"><div class="col">
-    <p class="eyebrow">05 &middot; causal tests</p>
-    <h2>Cut it out and the model dies</h2>
-    <p>
-      Everything above is correlational: the weights <em>look like</em> the algorithm. These
-      edit the weights and re-run the whole network, so the intervention propagates the way
-      a real change would. The control rows are what make the result mean anything &mdash;
-      deleting any four of fifty-six frequencies removes some of the embedding's norm.
-    </p>
-    <div class="bars" id="ablation-bars"></div>
-    <h3 style="margin-top:2.2rem">Is the circuit minimal?</h3>
-    <p>
-      It settles on four frequencies, but that is not the same as needing four. Every
-      subset was kept in the embedding while all other frequencies were deleted:
-    </p>
-    <div class="tablewrap"><table id="subset-table"></table></div>
-    <p id="minimal-note" style="margin-top:1.2rem"></p>
-  </div></div>
-</section>
-
-
-<section>
-  <div class="wrap"><div class="col">
-    <p class="eyebrow">06 &middot; generality</p>
-    <h2>Change the operation and the same circuit appears, rotated</h2>
-    <p>
-      Identical configuration; only the operation changes. The last two columns are the
-      mechanism tests from section 04, so a row that groks with a low
-      <span class="num">(a+b)</span> score has found a <em>different</em> algorithm, not
-      the same one.
-    </p>
-    <div class="tablewrap"><table id="ops-table"></table></div>
-    <p style="margin-top:1.2rem" id="ops-note"></p>
+    <p class="eyebrow">05 &middot; is the model using it?</p>
+    <h2>Interventions on the weights</h2>
+    <div class="md" data-block="ablations"></div>
+    <h3>Which key frequency is dispensable</h3>
+    <div class="md" data-block="redundancy"></div>
+    <div class="md" data-block="disagreement"></div>
+    <h3>Identification from behaviour</h3>
+    <div class="md" data-block="load_bearing"></div>
   </div></div>
 </section>
 
 <section>
   <div class="wrap"><div class="col">
-    <p class="eyebrow">07 &middot; the same model, two coordinate systems</p>
-    <h2>Multiplication only looks structureless</h2>
-    <p>
-      The nonzero residues mod&nbsp;113 form a cyclic group of order 112 under
-      multiplication, so re-indexing them by discrete logarithm turns
-      <span class="num">a*b</span> into <span class="num">dlog(a) + dlog(b) mod 112</span>
-      &mdash; multiplication <em>is</em> addition, in the right coordinate. The reduction
-      itself is published; what is measured here is whether the circuit is load-bearing in
-      that basis.
-    </p>
-    <div class="tablewrap"><table id="dlog-table"></table></div>
-    <p style="margin-top:1.2rem" id="dlog-note"></p>
-    <h3 style="margin-top:2rem">And the element that is not in the group</h3>
-    <p id="zero-note"></p>
+    <p class="eyebrow">06 &middot; timing</p>
+    <h2>When the circuit forms</h2>
+    <div class="md" data-block="phases"></div>
   </div></div>
 </section>
 
 <section>
   <div class="wrap"><div class="col">
-    <p class="eyebrow">08 &middot; when it happens at all</p>
-    <h2>Weight decay is the dial</h2>
-    <p>
-      Twelve runs at a smaller modulus (<span class="num">p = 59</span>), each 20,000
-      steps. The number is the step at which test accuracy first reaches 90%; grey cells
-      did not get there inside the budget, which is a censored observation and not a
-      demonstration that they never would.
-    </p>
-    <div id="phasegrid" class="phasegrid"></div>
-    <p style="margin-top:1.3rem" id="phase-note"></p>
-    <h3 style="margin-top:2rem">Does that survive a change of seed?</h3>
-    <div class="tablewrap"><table id="repl-table"></table></div>
-    <p style="margin-top:1.2rem" id="repl-note"></p>
-    <h3 style="margin-top:2rem">Which correction mattered?</h3>
-    <div class="tablewrap"><table id="controls-table"></table></div>
-    <p style="margin-top:1.2rem" id="controls-note"></p>
+    <p class="eyebrow">07 &middot; other operations</p>
+    <h2>Subtraction, multiplication, a quadratic form</h2>
+    <div class="md" data-block="operations"></div>
+    <h3>Multiplication, and the discrete logarithm</h3>
+    <div class="md" data-block="dlog"></div>
+    <h3>A quadratic form</h3>
+    <div class="md" data-block="quadratic"></div>
+    <h3>Which correction mattered?</h3>
+    <div class="md" data-block="controls"></div>
   </div></div>
 </section>
 
 <section>
   <div class="wrap"><div class="col">
-    <p class="eyebrow">09 &middot; forecasting</p>
-    <h2>At step 500, before anything visible happens</h2>
-    <p id="pred-intro"></p>
-    <div class="tablewrap"><table id="pred-runs"></table></div>
-    <div class="tablewrap"><table id="pred-table"></table></div>
-    <p style="margin-top:1.2rem" id="pred-note"></p>
-    <p class="note" id="pred-caveat"></p>
+    <p class="eyebrow">08 &middot; weight decay</p>
+    <h2>Grokking time and weight decay</h2>
+    <div class="md" data-block="phase_diagram"></div>
+    <div class="md" data-block="replicates"></div>
   </div></div>
 </section>
 
 <section>
   <div class="wrap"><div class="col">
-    <p class="eyebrow">10 &middot; honesty</p>
-    <h2>What this is and is not</h2>
-    <p>
-      <strong>Nothing here is a new discovery.</strong> The phenomenon is Power et&nbsp;al. (2022);
-      the mechanism and the progress measures are Nanda et&nbsp;al. (2023). This is a
-      from-scratch reproduction &mdash; own model, own Fourier tooling, own analysis &mdash;
-      plus a few extensions.
-    </p>
-    <p>
-      <strong>The lead times are one run.</strong> Grokking time varies substantially across
-      seeds, and one run is not a distribution.
-    </p>
-    <p>
-      <strong>Runs are reproducible in distribution, not bit-exact.</strong> Single-threaded,
-      identical seeds give identical weights and the test suite asserts it. Multi-threaded
-      they do not: PyTorch's CPU reductions do not fix their summation order, and two runs
-      of the same code diverge in the loss by about 1e-4 within a hundred steps.
-    </p>
-    <p>
-      <strong>The loss is computed in float64.</strong> In float32, log-softmax quantises at
-      2<sup>-23</sup> = 1.2e-7, so once the model has memorised the reported training loss
-      bottoms out there. The entire phenomenon lives in the tens of thousands of steps after
-      the training loss is nominally zero, so a loss floor is exactly the wrong artefact to have.
-    </p>
+    <p class="eyebrow">09 &middot; early signals</p>
+    <h2>Which early signals track the transition</h2>
+    <div class="md" data-block="prediction"></div>
+  </div></div>
+</section>
+
+<section>
+  <div class="wrap"><div class="col">
+    <p class="eyebrow">10 &middot; provenance</p>
+    <h2>What is borrowed, and what went wrong</h2>
+    <div class="md" data-block="borrowed"></div>
   </div></div>
 </section>
 
@@ -492,8 +421,9 @@ footer p{ font-size:.86rem; }
     <p class="eyebrow">Run configuration</p>
     <div class="kv" id="config-kv"></div>
     <p style="margin-top:1.6rem; color:var(--ink-3); font-size:.82rem">
-      Every number on this page is read out of a results file produced by running the code on
-      one laptop CPU; none is typed by hand. Designed, implemented and written by an AI system (Claude) working at the author's direction; see the repository README for what that means.
+      The text of sections 02 and 04&ndash;10 is rendered from the same generator as the
+      repository README, so the two cannot disagree; every number in it is computed from a
+      results file.
     </p>
   </div></div>
 </footer>
@@ -691,361 +621,50 @@ footer p{ font-size:.86rem; }
     }, 90);
   });
 
-  /* ---------------- tables ---------------- */
-  function table(id, head, rows){
-    var t = document.getElementById(id); if (!t) return;
-    t.textContent = "";
-    var thead = document.createElement("thead"), tr = document.createElement("tr");
-    head.forEach(function(h){ var th=document.createElement("th"); th.textContent=h; tr.appendChild(th); });
-    thead.appendChild(tr); t.appendChild(thead);
-    var tb = document.createElement("tbody");
-    rows.forEach(function(r){
-      var row = document.createElement("tr");
-      if (r.cls) row.className = r.cls;
-      r.cells.forEach(function(c, i){
-        var td = document.createElement("td");
-        td.textContent = c;
-        if (i>0) td.className = "n";
-        row.appendChild(td);
+
+  /* ---------------- rendered README blocks ---------------- */
+  (function(){
+    var B = D.blocks || {};
+    if (D.borrowed) B.borrowed = D.borrowed;
+    var nodes = document.querySelectorAll(".md[data-block]");
+    Array.prototype.forEach.call(nodes, function(el){
+      var src = B[el.getAttribute("data-block")];
+      if (!src) { el.innerHTML = "<p><em>Not yet run.</em></p>"; return; }
+      var html = (window.marked && marked.parse) ? marked.parse(src, {gfm:true})
+                                                  : "<pre>" + src.replace(/[<&]/g, function(c){return c==="<"?"&lt;":"&amp;";}) + "</pre>";
+      el.innerHTML = html;
+      Array.prototype.forEach.call(el.querySelectorAll("table"), function(t){
+        var w = document.createElement("div"); w.className = "tablewrap";
+        t.parentNode.insertBefore(w, t); w.appendChild(t);
       });
-      tb.appendChild(row);
-    });
-    t.appendChild(tb);
-  }
-
-  var RULE_LABELS = {
-    rule_a_embedding_norm: "embedding-norm threshold",
-    rule_b_neuron_cluster: "neuron clustering",
-    rule_c_power_gap: "power gap (no parameters)"
-  };
-  var RULE_WHAT = {
-    rule_a_embedding_norm: "per-index norm of the Fourier-transformed embedding",
-    rule_b_neuron_cluster: "which frequency explains >85% of each MLP neuron",
-    rule_c_power_gap: "largest multiplicative gap in sorted per-frequency power"
-  };
-  (function(){
-    var rules = D.key_freq_rules || {};
-    var rows = Object.keys(rules).map(function(k){
-      return {cells:[RULE_LABELS[k]||k, RULE_WHAT[k]||"", rules[k].join(", ")]};
-    });
-    rows.push({cls:"hi", cells:["all three agree", "Jaccard 1.000", KEY.join(", ")]});
-    var t = document.getElementById("rules-table");
-    table("rules-table", ["rule","what it looks at","frequencies found"], rows);
-    Array.prototype.forEach.call(t.querySelectorAll("td:nth-child(2)"), function(td){
-      td.className = ""; td.style.textAlign = "left"; td.style.color = "var(--ink-3)";
-      td.style.fontSize = ".82rem";
+      Array.prototype.forEach.call(el.querySelectorAll("img"), function(i){ i.remove(); });
     });
   })();
 
+  /* ---------------- computed hero facts ---------------- */
   (function(){
-    if (!MECH) return;
-    var s = MECH.structure;
-    var order = [["a+b","(a + b) mod p"],["a-b","(a - b) mod p"],["a","a alone"],
-                 ["b","b alone"],["a*b","(a * b) mod p"]];
-    table("struct-table", ["the logits are a function of…","variance explained"],
-      order.map(function(o){
-        return {cls: o[0]==="a+b" ? "hi" : "dead", cells:[o[1], s[o[0]].toFixed(4)]};
-      }));
-  })();
-
-  /* ---------------- ablation bars ---------------- */
-  (function(){
-    if (!MECH) return;
-    var A = MECH.ablation, ctrl = MECH.control_freqs.join(", ");
-    var mins = RED && RED.minimal && RED.minimal.length ? RED.minimal[0] : null;
-    var minAcc = null;
-    if (mins && RED) {
-      RED.rows.forEach(function(r){
-        if (r.subset.length === mins.length && r.subset.every(function(x,i){return x===mins[i];})) minAcc = r.acc;
-      });
-    }
-    var items = [
-      ["no edit (baseline)", A.baseline.test_acc, true],
-      ["keep only the key frequencies ("+KEY.join(", ")+")", A.keep_key_freqs.test_acc, true]
-    ];
-    if (minAcc != null) items.push(["keep only the minimal subset ("+mins.join(", ")+")", minAcc, true]);
-    items.push(["delete four control frequencies ("+ctrl+")", A.drop_control_freqs.test_acc, true]);
-    items.push(["delete only the key frequencies", A.drop_key_freqs.test_acc, false]);
-    items.push(["keep only the control frequencies", A.keep_control_freqs.test_acc, false]);
-    items.push(["remove the MLP", MECH.components.no_mlp.test_acc, false]);
-    items.push(["remove attention", MECH.components.no_attention.test_acc, false]);
-
-    var host = document.getElementById("ablation-bars");
-    items.forEach(function(it){
-      var d = document.createElement("div");
-      d.className = "bar" + (it[2] ? " live" : "");
-      d.innerHTML = '<div class="lab"><span></span><span class="n"></span></div>' +
-                    '<div class="track"><div class="fill"></div></div>';
-      d.querySelector(".lab span").textContent = it[0];
-      d.querySelector(".lab .n").textContent = pct(it[1]);
-      d.querySelector(".fill").style.width = Math.max(it[1]*100, 0.6) + "%";
-      host.appendChild(d);
+    Array.prototype.forEach.call(document.querySelectorAll("[data-meta]"), function(el){
+      el.textContent = String(M[el.getAttribute("data-meta")]);
     });
-  })();
-
-  /* ---------------- subset table ---------------- */
-  (function(){
-    if (!RED) return;
-    var mins = RED.minimal.length ? RED.minimal[0] : null;
-    var rows = RED.rows.slice().sort(function(a,b){ return a.subset.length-b.subset.length || b.acc-a.acc; })
-      .map(function(r){
-        var isMin = mins && r.subset.length===mins.length &&
-                    r.subset.every(function(x,i){ return x===mins[i]; });
-        return {cls: r.acc>0.9 ? "hi" : "dead",
-                cells:[ r.subset.length ? r.subset.join(", ") : "nothing",
-                        String(r.subset.length), pct(r.acc), r.loss.toFixed(3) ]};
-      });
-    table("subset-table", ["frequencies kept","size","test accuracy","test loss"], rows);
-    var full = RED.rows.filter(function(r){ return r.subset.length===KEY.length; })[0];
-    var minRow = null;
-    RED.rows.forEach(function(r){
-      if (mins && r.subset.length===mins.length && r.subset.every(function(x,i){return x===mins[i];})) minRow=r;
-    });
-    if (mins && minRow && full){
-      document.getElementById("minimal-note").innerHTML =
-        "<strong>The minimal sufficient set has three of the four, and it is unique</strong> — " +
-        "(" + mins.join(", ") + ") reaches " + pct(minRow.acc) + ", while every other three-element " +
-        "subset stays below 30%. Frequency " + RED.redundant.join(", ") + " is a passenger. Not a free " +
-        "one, though: dropping it raises the test loss from " + full.loss.toFixed(4) + " to " +
-        minRow.loss.toFixed(4) + ", a factor of " + Math.round(minRow.loss/Math.max(full.loss,1e-9)) +
-        ". Under weight decay it pays for its own norm, which is exactly when a circuit-efficiency " +
-        "account says a redundant component should survive cleanup.";
-    }
-  })();
-
-  /* ---------------- operations ---------------- */
-  var OPLAB = {add:"(a + b) mod p", sub:"(a - b) mod p", mul:"(a * b) mod p",
-               sq_sum_cross:"(a\u00b2 + ab + b\u00b2) mod p"};
-  (function(){
-    var ops = D.operations || []; if (!ops.length) return;
-    var rows = ops.map(function(o){
-      var m = o.mech;
-      return {cls: o.grok ? "" : "dead",
-              cells:[ OPLAB[o.op] || o.op, "p = "+o.p,
-                      o.grok ? commas(o.grok) : "none by "+commas(o.budget),
-                      m ? String(m.nkeys) : "\u2014",
-                      m ? m.gini.toFixed(3) : "\u2014",
-                      m ? m.sumvar.toFixed(4) : "\u2014",
-                      m ? m.diffvar.toFixed(4) : "\u2014" ]};
-    });
-    table("ops-table", ["task","modulus","grokking step","key freqs","Gini(W_E)",
-                        "(a+b) variance","(a-b) variance"], rows);
-    var sub = ops.filter(function(o){return o.op==="sub";})[0];
-    var add = ops.filter(function(o){return o.op==="add";})[0];
-    var sq  = ops.filter(function(o){return o.op==="sq_sum_cross";});
-    var bits = [];
-    if (sub && sub.mech && add && add.mech){
-      bits.push("<strong>Subtraction builds the mirror image.</strong> Same sparse "+
-        "spectrum, same four frequencies, same trigonometric construction \u2014 but its "+
-        "output is a function of (a\u2212b) to "+sub.mech.diffvar.toFixed(4)+
-        " and of (a+b) to "+sub.mech.sumvar.toFixed(4)+", exactly reversed from addition. "+
-        "It also takes about "+Math.round(sub.grok/add.grok)+" times as long to get there.");
-    }
-    if (sq.length===2){
-      bits.push("<strong>The quadratic form does not grok at either prime.</strong> "+
-        "a\u00b2+ab+b\u00b2 factors into linear forms over F_p exactly when p \u2261 1 "+
-        "(mod 3), which holds at p = 109 and fails at p = 113. If factorability mattered "+
-        "for learnability the two should differ; within a 30,000-step budget neither "+
-        "reaches 90%, so this run detects no difference \u2014 a null result, and a "+
-        "censored one.");
-    }
-    document.getElementById("ops-note").innerHTML = bits.join("<br><br>");
-  })();
-
-  /* ---------------- discrete log ---------------- */
-  (function(){
-    var d = D.dlog; if (!d) return;
-    function row(name, o, cls){
-      return {cls:cls, cells:[name, String(o.nkeys), o.gini.toFixed(4),
-                              pct(o.power,1), o.sumvar.toFixed(4), o.jaccard.toFixed(3)]};
-    }
-    table("dlog-table", ["basis","key frequencies","Gini(W_E)","power in them",
-                         "variance explained by the sum","rules agree"],
-      [row("ordinary (0\u2026112)", d.ordinary, "dead"),
-       row("discrete log (g = "+d.g+", n = "+d.n+")", d.star, "hi")]);
-    var c = d.causal || {};
-    var txt = "In the ordinary coordinate every one of the 56 frequencies looks "+
-      "equally important, the three identification rules disagree completely, and the "+
-      "output has no more dependence on a+b than chance. Re-index the very same weights "+
-      "by discrete logarithm and "+d.star.nkeys+" frequencies carry "+
-      pct(d.star.power,1)+" of the power, the rules agree exactly, and the trigonometric "+
-      "construction is back.";
-    if (c.restricted_sum_all && c.excluded_sum_train){
-      txt += " <strong>And it is load-bearing:</strong> keeping only those "+d.star.nkeys+
-        " frequencies leaves the model at "+pct(c.restricted_sum_all.acc)+
-        " accuracy; deleting exactly those three drops it to "+
-        pct(c.excluded_sum_train.acc,2)+" \u2014 chance is "+pct(M.chance,2)+".";
-    }
-    document.getElementById("dlog-note").innerHTML = txt;
-    var z = d.zero;
-    document.getElementById("zero-note").innerHTML =
-      "Zero has no multiplicative inverse, so it sits outside the group the character "+
-      "story is about. The network's answer is not a detector sub-circuit: no neuron "+
-      "correlates with <span class=\"num\">a = 0</span> above "+
-      z.max_neuron_corr_a_is_zero.toFixed(3)+". Instead it <strong>shrinks the embedding "+
-      "of 0 until it barely exists</strong> \u2014 norm "+z.zero_row_norm.toFixed(4)+
-      " against a mean of "+z.mean_other_row_norm.toFixed(4)+" for the other rows, a "+
-      "z-score of "+z.zero_row_norm_zscore.toFixed(1)+" and the smallest of all 113. "+
-      "With almost nothing added to the residual stream, the default output takes over, "+
-      "and the default is the right answer: the model is correct on all 225 pairs "+
-      "involving a zero.";
-  })();
-
-  /* ---------------- phase diagram ---------------- */
-  (function(){
-    var cells = D.sweep; if (!cells || !cells.length) return;
-    var wds = [], frs = [];
-    cells.forEach(function(c){
-      if (wds.indexOf(c.weight_decay)<0) wds.push(c.weight_decay);
-      if (frs.indexOf(c.train_frac)<0) frs.push(c.train_frac);
-    });
-    wds.sort(function(a,b){return a-b;}); frs.sort(function(a,b){return b-a;});
-    var host = document.getElementById("phasegrid");
-    host.style.gridTemplateColumns = "auto repeat("+wds.length+", minmax(0,1fr))";
-    function add(cls, txt, style){
-      var e = document.createElement("div"); e.className = cls; e.textContent = txt;
-      if (style) e.setAttribute("style", style);
-      host.appendChild(e);
-    }
-    add("h","");
-    wds.forEach(function(w){ add("h","wd "+w); });
-    var got = cells.filter(function(c){ return !c.censored; }).map(function(c){ return c.grok_step; });
-    var lo = Math.log10(Math.min.apply(null,got)), hi = Math.log10(Math.max.apply(null,got));
-    frs.forEach(function(f){
-      add("h row", "frac "+f);
-      wds.forEach(function(w){
-        var c = cells.filter(function(x){ return x.weight_decay===w && x.train_frac===f; })[0];
-        if (!c || c.censored){ add("cell cen","not within budget"); return; }
-        var t = (Math.log10(c.grok_step)-lo)/Math.max(hi-lo,1e-9);
-        var bg = "color-mix(in srgb, var(--signal) "+Math.round(18+72*t)+"%, var(--panel))";
-        add("cell", commas(c.grok_step),
-            "background:"+bg+"; color:"+(t>0.45?"#fff":"var(--ink)"));
-      });
-    });
-    var best = cells.filter(function(c){ return !c.censored && c.train_frac===frs[0]; })
-                    .sort(function(a,b){ return a.weight_decay-b.weight_decay; });
-    if (best.length>1){
-      document.getElementById("phase-note").innerHTML =
-        "Along the top row the effect is monotone and large: raising weight decay from "+
-        best[0].weight_decay+" to "+best[best.length-1].weight_decay+" cuts the grokking "+
-        "step from "+commas(best[0].grok_step)+" to "+commas(best[best.length-1].grok_step)+
-        ", a factor of "+Math.round(best[0].grok_step/best[best.length-1].grok_step)+
-        ". At a smaller training fraction it decides whether grokking happens at all "+
-        "inside the budget. The primary source for this setup contradicts itself three "+
-        "ways on the direction of this effect, so this is reported as a measurement, not "+
-        "a confirmation.";
-    }
-    var ctl = D.controls || [];
-    if (ctl.length >= 2){
-      var LAB = {main_add_s0:"float32 loss, no warmup, a dead \u201c=\u201d column in W_U",
-                 B_add_s0:"the corrected configuration",
-                 C_add_f32:"corrected, but the loss back in float32 \u2014 only that",
-                 C_add_nowarm:"corrected, but no warmup \u2014 only that",
-                 B_add_s1:"corrected, different seed"};
-      table("controls-table", ["run","what differs","grokking step"],
-        ctl.map(function(c){
-          return {cls: c.tag==="main_add_s0" ? "dead" : "",
-                  cells:[c.tag, LAB[c.tag]||"", c.grok ? commas(c.grok) : "none"]};
-        }));
-      var by = {}; ctl.forEach(function(c){ by[c.tag]=c.grok; });
-      if (by.B_add_s0 && by.C_add_f32){
-        document.getElementById("controls-note").innerHTML =
-          "The first run of this project used float32 cross-entropy, no warmup, and an "+
-          "unembedding column that can never be correct. Fixing all three at once halved "+
-          "the grokking step \u2014 an observation it is tempting to attribute to the most "+
-          "interesting of the three. <strong>It was none of them.</strong> Putting the "+
-          "loss back in float32 alone moves the step by "+
-          (by.C_add_f32-by.B_add_s0>0?"+":"")+commas(by.C_add_f32-by.B_add_s0)+
-          "; removing the warmup costs "+commas(by.C_add_nowarm-by.B_add_s0)+
-          ". Dropping the dead column changes the shape of a weight matrix and so the "+
-          "entire random draw, meaning the two runs never shared an initialisation. The "+
-          "honest reading is that the original was a slow draw. Float64 is still the right "+
-          "choice \u2014 in float32 the reported training loss bottoms out at 1.2e-7 and "+
-          "everything below that is an artefact \u2014 but being right about the "+
-          "measurement is not the same as causing the speedup.";
-      }
-    }
-  })();
-
-  /* ---------------- replicates + prediction ---------------- */
-  (function(){
-    var R = D.replicates || [];
-    if (R.length){
-      var wds=[], seeds=[];
-      R.forEach(function(r){ if(wds.indexOf(r.wd)<0) wds.push(r.wd);
-                             if(seeds.indexOf(r.seed)<0) seeds.push(r.seed); });
-      wds.sort(function(a,b){return a-b;}); seeds.sort(function(a,b){return a-b;});
-      if (seeds.length >= 2){
-        table("repl-table", ["", ].concat(seeds.map(function(s){return "seed "+s;})),
-          wds.map(function(w){
-            return {cells:["weight decay "+w].concat(seeds.map(function(sd){
-              var m = R.filter(function(r){return r.wd===w && r.seed===sd;})[0];
-              if (!m) return "\u2014";
-              return m.grok ? commas(m.grok) : "none by "+commas(m.budget);
-            }))};
-          }));
-        document.getElementById("repl-note").innerHTML =
-          "Every cell of the grid above is one run, which is the weakest thing about "+
-          "it. Repeating the row where all four grokked, with a different seed for both "+
-          "the split and the initialisation, gives the same strict ordering \u2014 more "+
-          "weight decay, earlier grokking, at every step. One seed could do that by "+
-          "accident; two is harder to dismiss, though it is still two.";
-      }
-    }
-
-    var P = D.prediction; if (!P) return;
-    var c = P.config;
-    document.getElementById("pred-intro").innerHTML =
-      "Section 03 shows the progress measures moving before the accuracy does "+
-      "<em>within one run</em>. Whether they forecast an <em>unseen</em> run is a much "+
-      "stronger claim. These "+P.n+" runs share the task, the modulus (p = "+c.p+"), the "+
-      "training fraction ("+c.train_frac+") and the weight decay ("+c.weight_decay+"). "+
-      "What differs is the random draw \u2014 and the grokking step still spans more "+
-      "than a factor of two:";
-    table("pred-runs", ["run","grokking step"],
-      P.runs.map(function(r){ return {cells:[r.tag, commas(r.grok)]}; }));
-    var steps = Object.keys(P.at_steps).sort(function(a,b){return +a-+b;});
-    var keys = [];
-    steps.forEach(function(s){ Object.keys(P.at_steps[s]).forEach(function(k){
-      if (keys.indexOf(k)<0) keys.push(k); }); });
-    table("pred-table", ["signal"].concat(steps.map(function(s){return "at step "+commas(+s);})),
-      keys.map(function(k){
-        var lab = null;
-        steps.forEach(function(s){ if(P.at_steps[s][k]) lab = P.at_steps[s][k].label; });
-        return {cls: k==="test_acc" ? "dead" : (k==="weight_norm" ? "" : "hi"),
-                cells:[lab].concat(steps.map(function(s){
-                  var v = P.at_steps[s][k];
-                  return v ? (v.rho>=0?"+":"")+v.rho.toFixed(2) : "\u2014"; }))};
-      }));
-    document.getElementById("pred-note").innerHTML =
-      "Rank correlation between a signal read early and the step at which the run "+
-      "eventually generalises; negative means a higher reading predicts an earlier "+
-      "transition. <strong>At step 500 \u2014 six to fourteen thousand steps before "+
-      "anything happens \u2014 several internal signals rank these runs almost "+
-      "perfectly, while the one quantity an observer can actually see, the test "+
-      "accuracy, does not rank them at all.</strong>";
-    document.getElementById("pred-caveat").innerHTML =
-      "How much to believe: n = "+P.n+", and eight signals were checked at four time "+
-      "points, so no single coefficient here survives a correction for multiple "+
-      "comparisons. What is worth something is that every internal signal points the "+
-      "same way at every time point while the external one does not. And the "+
-      "deflationary reading deserves equal billing \u2014 the plain weight norm does as "+
-      "well as any mechanistic measure, so on this evidence forecasting grokking may "+
-      "not require interpretability at all.";
+    var nk = document.getElementById("nkeys"); if (nk) nk.textContent = String(KEY.length);
+    var by = document.getElementById("byline");
+    [commas(M.n_params) + " parameters", commas(M.n_train) + " training pairs",
+     commas(M.steps) + " steps", Math.round(M.wall_clock_s/60) + " minutes on 6 CPU threads"]
+      .forEach(function(t){ var s = document.createElement("span"); s.textContent = t; by.appendChild(s); });
   })();
 
   /* ---------------- config ---------------- */
   (function(){
     var kv = document.getElementById("config-kv");
     var rows = [
-      ["task", "(a + b) mod " + M.p],
+      ["task", "(" + M.op + ") mod " + M.p],
       ["training data", commas(M.n_train) + " of " + commas(M.n_train+M.n_test) + " pairs (" + pct(M.train_frac,0) + ")"],
       ["model", "1 layer, d_model 128, 4 heads, MLP 512, no LayerNorm, no biases"],
       ["parameters", commas(M.n_params)],
       ["optimiser", "full-batch AdamW, lr 1e-3, weight decay " + M.weight_decay],
       ["steps", commas(M.steps)],
       ["wall clock", Math.round(M.wall_clock_s/60) + " minutes on 6 CPU threads"],
-      ["key frequencies", KEY.join(", ") + "  (of 56)"]
+      ["key frequencies", KEY.join(", ") + "  (of " + ((M.p - 1) / 2) + ")"]
     ];
     rows.forEach(function(r){
       var b = document.createElement("b"); b.textContent = r[0];

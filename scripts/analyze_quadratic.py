@@ -20,7 +20,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from grokking.analysis.core import checkpoint_paths, load_snapshot   # noqa: E402
-from grokking.data import make_dataset                               # noqa: E402
+from grokking.data import make_dataset
+from grokking.runinfo import run_config, run_dataset  # noqa: E402                               # noqa: E402
 
 
 def main():
@@ -37,7 +38,7 @@ def main():
     for tag in args.tags:
         mani = json.loads((root / "checkpoints" / tag / "manifest.json").read_text())
         p = mani["data"]["p"]
-        d = make_dataset(p=p, op="sq_sum_cross", train_frac=args.train_frac, seed=0)
+        d = run_dataset(root, tag)   # the run's own split, not a hard-coded seed
         snap = load_snapshot(checkpoint_paths(root / "checkpoints" / tag)[-1][1], d)
         pred = snap.logits.argmax(-1)
         test = ~d.train_mask()
@@ -70,6 +71,22 @@ def main():
                }
         rec["sign_flip_enrichment"] = (
             float(((pred == flip) & ~coincide)[test].float().mean()) * p)
+
+        # The form is symmetric in (a, b) but the split is over ORDERED pairs,
+        # so a held-out (a, b) often has its transpose (b, a) in the training
+        # set.  A model that memorised the training pairs and learned only that
+        # the table is symmetric answers exactly those correctly and nothing
+        # else -- which would put test accuracy near the fraction of test pairs
+        # whose transpose was seen.  Check that before calling it anything more.
+        train = d.train_mask()
+        seen_T = train.T & test                    # (a,b) held out, (b,a) trained on
+        rec["frac_test_with_transpose_in_train"] = float(seen_T.sum() / test.sum())
+        rec["acc_transpose_in_train"] = float((pred == true)[seen_T].float().mean())
+        rec["acc_transpose_held_out"] = float((pred == true)[test & ~train.T].float().mean())
+        rec["predictions_symmetric"] = float((pred == pred.T).float().mean())
+        rec["explained_by_memorisation_plus_symmetry"] = (
+            rec["frac_test_with_transpose_in_train"] * rec["acc_transpose_in_train"]
+            + (1 - rec["frac_test_with_transpose_in_train"]) * rec["acc_transpose_held_out"])
         out.append(rec)
         print(f"p={p} ({rec['p_mod_3']} mod 3, form "
               f"{'splits' if rec['form_splits'] else 'irreducible'}): "
@@ -78,6 +95,10 @@ def main():
             print(f"    prediction matches {n:30s} {v:.4f}", flush=True)
         print(f"    one of the two forms: {rec['either_form']:.4f}; "
               f"sign-flip enrichment over chance: {rec['sign_flip_enrichment']:.1f}x", flush=True)
+        print(f"    test pairs whose transpose was trained on: "
+              f"{rec['frac_test_with_transpose_in_train']:.3f} -> accuracy "
+              f"{rec['acc_transpose_in_train']:.4f}; the rest {rec['acc_transpose_held_out']:.4f}",
+              flush=True)
         print(f"    accuracy where the two forms coincide: "
               f"{rec['acc_where_forms_coincide']:.4f} ({rec['n_coincide']} pairs)", flush=True)
 

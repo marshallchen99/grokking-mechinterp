@@ -138,7 +138,7 @@ def trig_identity_report(logits: torch.Tensor, F: torch.Tensor, p: int,
 
 
 def readout_budget(logits: torch.Tensor, F: torch.Tensor, p: int, freqs: List[int],
-                   sign: int = +1) -> Dict[str, float]:
+                   sign: int = +1, recentre: bool = True) -> Dict[str, float]:
     """Where the third step of the algorithm's energy actually goes.
 
     `trig_identity_report` checks the first two steps -- that each frequency's
@@ -160,11 +160,24 @@ def readout_budget(logits: torch.Tensor, F: torch.Tensor, p: int, freqs: List[in
     and whatever is left over. `sign=-1` reads the (a-b) amplitudes instead,
     which is the direction a subtraction model uses; reading a model in the
     wrong direction returns noise, and that is itself diagnostic.
+
+    `recentre` removes, for every input pair, the mean of the logits over the
+    answer c before anything else.  That component adds the same value to
+    every class, so softmax -- and therefore the loss and every prediction --
+    is exactly invariant to it; no gradient ever acts on it, and counting it as
+    part of the readout mislabels an irrelevant direction as structure.  An
+    earlier version of this function did count it, reported it as a
+    "per-answer bias", and built a mechanism on it; the mechanism was wrong.
+    With recentring on, `dc` is zero by construction and is kept only so the
+    output shape is stable.
     """
     from .spectra import block_indices
     from ..fourier import frequency_of_index
 
-    C = fourier_2d(logits.to(F.dtype), F)
+    lg = logits.to(F.dtype)
+    if recentre:
+        lg = lg - lg.mean(dim=-1, keepdim=True)   # softmax-invariant, remove it
+    C = fourier_2d(lg, F)
     keys = set(freqs)
     tot = own = dc = cross = 0.0
     for k in freqs:

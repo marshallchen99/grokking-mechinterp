@@ -1,0 +1,116 @@
+{
+ "a": "main_add_s0",
+ "b": "B_add_s0",
+ "tensors": {
+  "W_E": {
+   "shape_a": [
+    114,
+    128
+   ],
+   "shape_b": [
+    114,
+    128
+   ],
+   "identical": true
+  },
+  "W_pos": {
+   "shape_a": [
+    3,
+    128
+   ],
+   "shape_b": [
+    3,
+    128
+   ],
+   "identical": true
+  },
+  "W_Q": {
+   "shape_a": [
+    4,
+    128,
+    32
+   ],
+   "shape_b": [
+    4,
+    128,
+    32
+   ],
+   "identical": true
+  },
+  "W_K": {
+   "shape_a": [
+    4,
+    128,
+    32
+   ],
+   "shape_b": [
+    4,
+    128,
+    32
+   ],
+   "identical": true
+  },
+  "W_V": {
+   "shape_a": [
+    4,
+    128,
+    32
+   ],
+   "shape_b": [
+    4,
+    128,
+    32
+   ],
+   "identical": true
+  },
+  "W_O": {
+   "shape_a": [
+    4,
+    32,
+    128
+   ],
+   "shape_b": [
+    4,
+    32,
+    128
+   ],
+   "identical": true
+  },
+  "W_in": {
+   "shape_a": [
+    128,
+    512
+   ],
+   "shape_b": [
+    128,
+    512
+   ],
+   "identical": true
+  },
+  "W_out": {
+   "shape_a": [
+    512,
+    128
+   ],
+   "shape_b": [
+    512,
+    128
+   ],
+   "identical": true
+  },
+  "W_U": {
+   "shape_a": [
+    128,
+    114
+   ],
+   "shape_b": [
+    128,
+    113
+   ],
+   "identical": false,
+   "shared_columns_identical": false
+  }
+ },
+ "n_tensors": 9,
+ "n_identical": 8
+}

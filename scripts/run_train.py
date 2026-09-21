@@ -51,7 +51,8 @@ def main():
     data = make_dataset(p=args.p, op=args.op, train_frac=args.train_frac,
                         seed=args.data_seed)
     mcfg = ModelConfig(
-        d_vocab=data.vocab_size, d_model=args.d_model, n_heads=args.n_heads,
+        d_vocab=data.vocab_size, d_vocab_out=data.p,   # never a column for '='
+        d_model=args.d_model, n_heads=args.n_heads,
         d_head=args.d_model // args.n_heads, d_mlp=args.d_mlp, seed=args.model_seed,
     )
     model = OneLayerTransformer(mcfg)

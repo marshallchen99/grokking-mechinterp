@@ -313,3 +313,51 @@ def test_single_threaded_training_is_bit_reproducible():
         assert run() == run()
     finally:
         torch.set_num_threads(old)
+
+
+# ------------------------------------------------ the data-seed regression
+
+def test_analysis_uses_the_runs_own_split(tmp_path):
+    """A run trained on seed 7 must be analysed on seed 7's split.
+
+    This was once wrong: the analysis scripts took the seed as a flag that
+    defaulted to 0, so a non-zero-seed run was silently evaluated on another
+    split, where about half its training pairs are really held-out pairs.
+    """
+    import json
+
+    from grokking.runinfo import run_config, run_dataset
+
+    (tmp_path / "results").mkdir()
+    (tmp_path / "results" / "r7_history.json").write_text(json.dumps(
+        {"data": {"p": P, "op": "add", "train_frac": 0.3, "seed": 7}, "history": []}))
+    assert run_config(tmp_path, "r7")["seed"] == 7
+    got = run_dataset(tmp_path, "r7").train_idx
+    assert torch.equal(got, make_dataset(p=P, seed=7).train_idx)
+    assert not torch.equal(got, make_dataset(p=P, seed=0).train_idx)
+
+
+def test_missing_history_is_an_error_not_a_default(tmp_path):
+    from grokking.runinfo import run_config
+
+    (tmp_path / "results").mkdir()
+    with pytest.raises(FileNotFoundError):
+        run_config(tmp_path, "nope")
+
+
+def test_no_analysis_script_builds_its_own_split():
+    """Every analysis script must get its dataset from runinfo, not from flags."""
+    import re
+
+    scripts = Path(__file__).resolve().parents[1] / "scripts"
+    for name in ("analyze_run.py", "analyze_mechanism.py",
+                 "analyze_redundancy.py", "analyze_quadratic.py"):
+        src = (scripts / name).read_text()
+        assert "run_dataset(" in src, name
+        assert not re.search(r"make_dataset\([^)]*seed=(args\.data_seed|0)\b", src), name
+
+
+def test_training_sets_the_output_width_to_p():
+    """No dead output columns at any modulus, not just at p = 113."""
+    src = (Path(__file__).resolve().parents[1] / "scripts" / "run_train.py").read_text()
+    assert "d_vocab_out=data.p" in src

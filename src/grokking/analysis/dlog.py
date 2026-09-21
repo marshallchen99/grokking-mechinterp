@@ -153,3 +153,95 @@ def zero_element_report(snapshot) -> Dict[str, float]:
         out[f"max_neuron_corr_{name}"] = float(r.abs().max())
         out[f"n_neurons_corr_{name}_above_0.5"] = int((r.abs() > 0.5).sum())
     return out
+
+
+
+# ----------------------------------------------------- weight-level surgery
+
+@torch.no_grad()
+def ablate_dlog_frequencies(model, p: int, freqs, keep: bool = True):
+    """Edit the embedding in the multiplicative-character basis.
+
+    The nonzero residues' embedding rows are re-indexed by discrete logarithm,
+    transformed in the Fourier basis over Z_{p-1}, filtered, transformed back
+    and written into the same rows.  The rows for 0 (not in the group) and for
+    "=" are left untouched.  This is a genuine intervention: the edited network
+    is re-run end to end, unlike a projection of its output logits.
+    """
+    import copy
+
+    from ..fourier import fourier_1d, make_fourier_basis
+    from .spectra import block_indices
+
+    m = copy.deepcopy(model)
+    m.eval()
+    _, exp_table, _ = discrete_log_table(p)
+    n = p - 1
+    Fn, _ = make_fourier_basis(n, dtype=torch.float64)
+    rows = m.W_E.data[exp_table].to(torch.float64)        # (n, d_model), by exponent
+    coeffs = fourier_1d(rows, Fn, dim=0)
+    mask = torch.zeros(n, dtype=torch.bool)
+    mask[0] = True                                          # the mean
+    for k in freqs:
+        ck, sk = block_indices(k, n)
+        mask[ck] = mask[sk] = True
+    if not keep:
+        mask = ~mask
+        mask[0] = True
+    coeffs = coeffs * mask[:, None]
+    m.W_E.data[exp_table] = (Fn.T @ coeffs).to(m.W_E.dtype)
+    return m
+
+
+def zero_element_interventions(model, data, n_random: int = 20) -> Dict[str, object]:
+    """Is the small norm of 0's embedding what makes the model output 0?
+
+    Accuracy on the pairs containing a zero, after each edit to row 0 alone.
+    If shrinking the row were the mechanism, restoring its norm should break it.
+    """
+    import copy
+
+    from ..model import final_logits
+
+    p = data.p
+    W = model.W_E.detach()
+    norms = W[1:p].norm(dim=1)
+    mean_norm = float(norms.mean())
+    lab = data.labels.view(p, p)
+    zero = torch.zeros(p, p, dtype=torch.bool)
+    zero[0, :] = True
+    zero[:, 0] = True
+
+    def acc_after(edit):
+        m = copy.deepcopy(model)
+        m.eval()
+        with torch.no_grad():
+            edit(m.W_E.data)
+            pred = final_logits(m(data.inputs, last_only=True), p).argmax(-1).view(p, p)
+        return float((pred == lab)[zero].float().mean())
+
+    # One random direction is one draw from a wide spread (a single draw has
+    # given 0.20 and 0.99 in two different hands), so report the distribution.
+    spread = []
+    for sd in range(n_random):
+        g = torch.Generator().manual_seed(sd)
+        v = torch.randn(W.shape[1], generator=g, dtype=W.dtype)
+        v = v / v.norm() * mean_norm
+        spread.append(acc_after(lambda w, v=v: w[0].copy_(v)))
+    spread.sort()
+    r0 = W[0].clone()
+    out = {
+        "unedited": acc_after(lambda w: None),
+        "row0_zeroed": acc_after(lambda w: w[0].zero_()),
+        "row0_rescaled_to_mean_norm": acc_after(lambda w: w[0].mul_(mean_norm / float(r0.norm()))),
+        "row0_doubled": acc_after(lambda w: w[0].mul_(2.0)),
+        "row0_replaced_by_mean_of_others": acc_after(lambda w: w[0].copy_(W[1:p].mean(0))),
+        "row0_scaled_x10": acc_after(lambda w: w[0].mul_(10.0)),
+    }
+    out["random_direction_mean_norm"] = {
+        "n": n_random, "min": spread[0], "median": spread[len(spread) // 2],
+        "max": spread[-1], "all": spread}
+    out["row0_norm"] = float(r0.norm())
+    out["mean_other_norm"] = mean_norm
+    out["row0_is_smallest"] = bool(float(r0.norm()) < float(norms.min()))
+    return out

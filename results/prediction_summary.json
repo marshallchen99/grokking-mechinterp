@@ -367,8 +367,8 @@
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "auc": 0.8993506493506493,
-     "rho": -0.6387520525451561,
+     "auc": 0.8831168831168831,
+     "rho": -0.78544061302682,
      "n_grok": 28,
      "n_censored": 11
     },
@@ -402,17 +402,45 @@
     },
     "train_loss": {
      "label": "train loss",
-     "auc": 0.1266233766233766,
-     "rho": -0.2572523262178435,
+     "auc": 0.4448051948051948,
+     "rho": 0.5517241379310346,
      "n_grok": 28,
      "n_censored": 11
     },
     "test_acc": {
-     "label": "test accuracy (the visible one)",
-     "auc": 0.8084415584415584,
-     "rho": -0.6250684181718665,
+     "label": "test accuracy (visible from outside)",
+     "auc": 0.7435064935064936,
+     "rho": -0.6765188834154352,
      "n_grok": 28,
      "n_censored": 11
+    },
+    "test_loss": {
+     "label": "test loss (visible from outside)",
+     "auc": 0.788961038961039,
+     "rho": 0.8516694033935415,
+     "n_grok": 28,
+     "n_censored": 11
+    },
+    "restricted_loss_sum_all_live": {
+     "label": "restricted loss, leak-free",
+     "auc": null,
+     "rho": 0.5294117647058825,
+     "n_grok": 17,
+     "n_censored": 0
+    },
+    "excluded_loss_sum_live": {
+     "label": "excluded loss, leak-free",
+     "auc": null,
+     "rho": -0.7083333333333335,
+     "n_grok": 17,
+     "n_censored": 0
+    },
+    "emb_key_frac_live": {
+     "label": "power in key frequencies, leak-free",
+     "auc": null,
+     "rho": -0.34313725490196084,
+     "n_grok": 17,
+     "n_censored": 0
     }
    }
   },
@@ -428,8 +456,8 @@
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "auc": 0.8311688311688312,
-     "rho": -0.6606458675424194,
+     "auc": 0.8084415584415584,
+     "rho": -0.8472906403940887,
      "n_grok": 28,
      "n_censored": 11
     },
@@ -463,17 +491,45 @@
     },
     "train_loss": {
      "label": "train loss",
-     "auc": 0.12337662337662338,
-     "rho": -0.18664477285166942,
+     "auc": 0.4837662337662338,
+     "rho": 0.6135741652983033,
      "n_grok": 28,
      "n_censored": 11
     },
     "test_acc": {
-     "label": "test accuracy (the visible one)",
-     "auc": 0.8181818181818182,
-     "rho": -0.8133552271483308,
+     "label": "test accuracy (visible from outside)",
+     "auc": 0.7824675324675324,
+     "rho": -0.8561653289428334,
      "n_grok": 28,
      "n_censored": 11
+    },
+    "test_loss": {
+     "label": "test loss (visible from outside)",
+     "auc": 0.8506493506493507,
+     "rho": 0.9430760810071156,
+     "n_grok": 28,
+     "n_censored": 11
+    },
+    "restricted_loss_sum_all_live": {
+     "label": "restricted loss, leak-free",
+     "auc": null,
+     "rho": 0.8431372549019609,
+     "n_grok": 17,
+     "n_censored": 0
+    },
+    "excluded_loss_sum_live": {
+     "label": "excluded loss, leak-free",
+     "auc": null,
+     "rho": -0.7794117647058825,
+     "n_grok": 17,
+     "n_censored": 0
+    },
+    "emb_key_frac_live": {
+     "label": "power in key frequencies, leak-free",
+     "auc": null,
+     "rho": -0.769607843137255,
+     "n_grok": 17,
+     "n_censored": 0
     }
    }
   },
@@ -489,8 +545,8 @@
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "auc": 0.827922077922078,
-     "rho": -0.5134099616858239,
+     "auc": 0.8051948051948052,
+     "rho": -0.7843459222769569,
      "n_grok": 28,
      "n_censored": 11
     },
@@ -524,17 +580,45 @@
     },
     "train_loss": {
      "label": "train loss",
-     "auc": 0.1266233766233766,
-     "rho": -0.1691297208538588,
+     "auc": 0.5032467532467533,
+     "rho": 0.6365626710454297,
      "n_grok": 28,
      "n_censored": 11
     },
     "test_acc": {
-     "label": "test accuracy (the visible one)",
-     "auc": 0.8181818181818182,
-     "rho": -0.9672916472135464,
+     "label": "test accuracy (visible from outside)",
+     "auc": 0.814935064935065,
+     "rho": -0.9645545457783071,
      "n_grok": 28,
      "n_censored": 11
+    },
+    "test_loss": {
+     "label": "test loss (visible from outside)",
+     "auc": 0.8668831168831169,
+     "rho": 0.9666119321291736,
+     "n_grok": 28,
+     "n_censored": 11
+    },
+    "restricted_loss_sum_all_live": {
+     "label": "restricted loss, leak-free",
+     "auc": null,
+     "rho": 0.8823529411764707,
+     "n_grok": 17,
+     "n_censored": 0
+    },
+    "excluded_loss_sum_live": {
+     "label": "excluded loss, leak-free",
+     "auc": null,
+     "rho": -0.536764705882353,
+     "n_grok": 17,
+     "n_censored": 0
+    },
+    "emb_key_frac_live": {
+     "label": "power in key frequencies, leak-free",
+     "auc": null,
+     "rho": -0.5857843137254902,
+     "n_grok": 17,
+     "n_censored": 0
     }
    }
   },
@@ -550,8 +634,8 @@
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "auc": 0.8603896103896104,
-     "rho": -0.36562671045429673,
+     "auc": 0.8409090909090909,
+     "rho": -0.4991789819376027,
      "n_grok": 28,
      "n_censored": 11
     },
@@ -585,17 +669,45 @@
     },
     "train_loss": {
      "label": "train loss",
-     "auc": 0.11363636363636363,
-     "rho": 0.04980842911877395,
+     "auc": 0.474025974025974,
+     "rho": 0.6097427476737822,
      "n_grok": 28,
      "n_censored": 11
     },
     "test_acc": {
-     "label": "test accuracy (the visible one)",
-     "auc": 0.827922077922078,
-     "rho": -0.9188815358517066,
+     "label": "test accuracy (visible from outside)",
+     "auc": 0.8246753246753247,
+     "rho": -0.923334020580243,
      "n_grok": 28,
      "n_censored": 11
+    },
+    "test_loss": {
+     "label": "test loss (visible from outside)",
+     "auc": 0.9090909090909091,
+     "rho": 0.9282977558839629,
+     "n_grok": 28,
+     "n_censored": 11
+    },
+    "restricted_loss_sum_all_live": {
+     "label": "restricted loss, leak-free",
+     "auc": null,
+     "rho": 0.5857843137254902,
+     "n_grok": 17,
+     "n_censored": 0
+    },
+    "excluded_loss_sum_live": {
+     "label": "excluded loss, leak-free",
+     "auc": null,
+     "rho": 0.48774509803921573,
+     "n_grok": 17,
+     "n_censored": 0
+    },
+    "emb_key_frac_live": {
+     "label": "power in key frequencies, leak-free",
+     "auc": null,
+     "rho": -0.6936274509803922,
+     "n_grok": 17,
+     "n_censored": 0
     }
    }
   }
@@ -605,9 +717,10 @@
    "op": "add",
    "p": 59,
    "train_frac": 0.5,
-   "weight_decay": 1.0
+   "weight_decay": 1.0,
+   "budget": 6000
   },
-  "n": 17,
+  "n": 16,
   "runs": [
    {
     "tag": "F_seed16",
@@ -620,10 +733,6 @@
    {
     "tag": "F_seed10",
     "grok": 804.6842277737119
-   },
-   {
-    "tag": "S_p59_wd1.0_f0.5",
-    "grok": 815.1739145147209
    },
    {
     "tag": "F_seed23",
@@ -682,139 +791,326 @@
    "200": {
     "restricted_loss_sum_all": {
      "label": "restricted loss",
-     "rho": 0.6642156862745099
+     "rho": 0.7176470588235294,
+     "p_two_tailed": 0.0017475356355898782,
+     "survives_bonferroni": false
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "rho": -0.3308823529411765
+     "rho": -0.5970588235294118,
+     "p_two_tailed": 0.014609736552832674,
+     "survives_bonferroni": false
     },
     "emb_gini": {
      "label": "embedding Gini",
-     "rho": -0.573529411764706
+     "rho": -0.611764705882353,
+     "p_two_tailed": 0.011788408818375415,
+     "survives_bonferroni": false
     },
     "emb_key_frac": {
      "label": "power in key frequencies",
-     "rho": -0.42647058823529416
+     "rho": -0.40588235294117647,
+     "p_two_tailed": 0.11879170970966418,
+     "survives_bonferroni": false
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained",
-     "rho": -0.482843137254902
+     "rho": -0.5764705882352941,
+     "p_two_tailed": 0.019415146348230928,
+     "survives_bonferroni": false
     },
     "weight_norm": {
      "label": "weight norm",
-     "rho": 0.6446078431372549
+     "rho": 0.6735294117647059,
+     "p_two_tailed": 0.004232740648734996,
+     "survives_bonferroni": false
     },
     "train_loss": {
      "label": "train loss",
-     "rho": 0.5857843137254902
+     "rho": 0.5852941176470589,
+     "p_two_tailed": 0.017225291964346582,
+     "survives_bonferroni": false
     },
     "test_acc": {
-     "label": "test accuracy (the visible one)",
-     "rho": 0.17156862745098042
+     "label": "test accuracy (visible from outside)",
+     "rho": -0.0029411764705882353,
+     "p_two_tailed": 0.9913748053264289,
+     "survives_bonferroni": false
+    },
+    "test_loss": {
+     "label": "test loss (visible from outside)",
+     "rho": 0.49117647058823527,
+     "p_two_tailed": 0.053350449804773485,
+     "survives_bonferroni": false
+    },
+    "restricted_loss_sum_all_live": {
+     "label": "restricted loss, leak-free",
+     "rho": 0.43529411764705883,
+     "p_two_tailed": 0.09195237973455048,
+     "survives_bonferroni": false
+    },
+    "excluded_loss_sum_live": {
+     "label": "excluded loss, leak-free",
+     "rho": -0.65,
+     "p_two_tailed": 0.006415708626730294,
+     "survives_bonferroni": false
+    },
+    "emb_key_frac_live": {
+     "label": "power in key frequencies, leak-free",
+     "rho": -0.40588235294117647,
+     "p_two_tailed": 0.11879170970966418,
+     "survives_bonferroni": false
     }
    },
    "500": {
     "restricted_loss_sum_all": {
      "label": "restricted loss",
-     "rho": 0.8357843137254903
+     "rho": 0.8088235294117647,
+     "p_two_tailed": 0.00014847563553715967,
+     "survives_bonferroni": true
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "rho": -0.3970588235294118
+     "rho": -0.7676470588235295,
+     "p_two_tailed": 0.000516883687056319,
+     "survives_bonferroni": true
     },
     "emb_gini": {
      "label": "embedding Gini",
-     "rho": -0.7107843137254903
+     "rho": -0.7235294117647059,
+     "p_two_tailed": 0.0015344816933646757,
+     "survives_bonferroni": false
     },
     "emb_key_frac": {
      "label": "power in key frequencies",
-     "rho": -0.7279411764705883
+     "rho": -0.7676470588235295,
+     "p_two_tailed": 0.000516883687056319,
+     "survives_bonferroni": true
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained",
-     "rho": -0.6789215686274511
+     "rho": -0.6882352941176471,
+     "p_two_tailed": 0.003203909675733599,
+     "survives_bonferroni": false
     },
     "weight_norm": {
      "label": "weight norm",
-     "rho": 0.7990196078431374
+     "rho": 0.788235294117647,
+     "p_two_tailed": 0.00028646576967273165,
+     "survives_bonferroni": true
     },
     "train_loss": {
      "label": "train loss",
-     "rho": 0.8578431372549021
+     "rho": 0.8411764705882353,
+     "p_two_tailed": 4.442905471937368e-05,
+     "survives_bonferroni": true
     },
     "test_acc": {
-     "label": "test accuracy (the visible one)",
-     "rho": -0.2671568627450981
+     "label": "test accuracy (visible from outside)",
+     "rho": -0.5165564312363659,
+     "p_two_tailed": 0.040496291221975594,
+     "survives_bonferroni": false
+    },
+    "test_loss": {
+     "label": "test loss (visible from outside)",
+     "rho": 0.8647058823529412,
+     "p_two_tailed": 1.544234421204744e-05,
+     "survives_bonferroni": true
+    },
+    "restricted_loss_sum_all_live": {
+     "label": "restricted loss, leak-free",
+     "rho": 0.8117647058823529,
+     "p_two_tailed": 0.00013432241366939814,
+     "survives_bonferroni": true
+    },
+    "excluded_loss_sum_live": {
+     "label": "excluded loss, leak-free",
+     "rho": -0.7352941176470589,
+     "p_two_tailed": 0.0011716159166847184,
+     "survives_bonferroni": false
+    },
+    "emb_key_frac_live": {
+     "label": "power in key frequencies, leak-free",
+     "rho": -0.7676470588235295,
+     "p_two_tailed": 0.000516883687056319,
+     "survives_bonferroni": true
     }
    },
    "1000": {
     "restricted_loss_sum_all": {
      "label": "restricted loss",
-     "rho": 0.8700980392156864
+     "rho": 0.8470588235294118,
+     "p_two_tailed": 3.468047384396286e-05,
+     "survives_bonferroni": true
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "rho": 0.2524509803921569
+     "rho": -0.5735294117647058,
+     "p_two_tailed": 0.02019104422248529,
+     "survives_bonferroni": false
     },
     "emb_gini": {
      "label": "embedding Gini",
-     "rho": -0.8897058823529413
+     "rho": -0.8676470588235294,
+     "p_two_tailed": 1.3348684465871763e-05,
+     "survives_bonferroni": true
     },
     "emb_key_frac": {
      "label": "power in key frequencies",
-     "rho": -0.4779411764705883
+     "rho": -0.5088235294117647,
+     "p_two_tailed": 0.04413523035805188,
+     "survives_bonferroni": false
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained",
-     "rho": -0.9093137254901962
+     "rho": -0.8941176470588236,
+     "p_two_tailed": 3.0113105423769117e-06,
+     "survives_bonferroni": true
     },
     "weight_norm": {
      "label": "weight norm",
-     "rho": 0.9534313725490198
+     "rho": 0.9441176470588235,
+     "p_two_tailed": 3.933929674858517e-08,
+     "survives_bonferroni": true
     },
     "train_loss": {
      "label": "train loss",
-     "rho": 0.9436274509803922
+     "rho": 0.9676470588235294,
+     "p_two_tailed": 9.132895489166965e-10,
+     "survives_bonferroni": true
     },
     "test_acc": {
-     "label": "test accuracy (the visible one)",
-     "rho": -0.965686274509804
+     "label": "test accuracy (visible from outside)",
+     "rho": -0.9588235294117647,
+     "p_two_tailed": 4.825541220896836e-09,
+     "survives_bonferroni": true
+    },
+    "test_loss": {
+     "label": "test loss (visible from outside)",
+     "rho": 0.9558823529411765,
+     "p_two_tailed": 7.760275230678367e-09,
+     "survives_bonferroni": true
+    },
+    "restricted_loss_sum_all_live": {
+     "label": "restricted loss, leak-free",
+     "rho": 0.8647058823529412,
+     "p_two_tailed": 1.544234421204744e-05,
+     "survives_bonferroni": true
+    },
+    "excluded_loss_sum_live": {
+     "label": "excluded loss, leak-free",
+     "rho": -0.4441176470588235,
+     "p_two_tailed": 0.08482276423224995,
+     "survives_bonferroni": false
+    },
+    "emb_key_frac_live": {
+     "label": "power in key frequencies, leak-free",
+     "rho": -0.5088235294117647,
+     "p_two_tailed": 0.04413523035805188,
+     "survives_bonferroni": false
     }
    },
    "2000": {
     "restricted_loss_sum_all": {
      "label": "restricted loss",
-     "rho": 0.7916666666666667
+     "rho": 0.788235294117647,
+     "p_two_tailed": 0.00028646576967273165,
+     "survives_bonferroni": true
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "rho": 0.6151960784313726
+     "rho": 0.2823529411764706,
+     "p_two_tailed": 0.289349867097758,
+     "survives_bonferroni": false
     },
     "emb_gini": {
      "label": "embedding Gini",
-     "rho": -0.9338235294117648
+     "rho": -0.9294117647058824,
+     "p_two_tailed": 1.940119236173696e-07,
+     "survives_bonferroni": true
     },
     "emb_key_frac": {
      "label": "power in key frequencies",
-     "rho": -0.6127450980392157
+     "rho": -0.6323529411764706,
+     "p_two_tailed": 0.008577586888952167,
+     "survives_bonferroni": false
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained",
-     "rho": -0.8455882352941178
+     "rho": -0.8323529411764706,
+     "p_two_tailed": 6.328126301398187e-05,
+     "survives_bonferroni": true
     },
     "weight_norm": {
      "label": "weight norm",
-     "rho": 0.9485294117647061
+     "rho": 0.9558823529411765,
+     "p_two_tailed": 7.760275230678367e-09,
+     "survives_bonferroni": true
     },
     "train_loss": {
      "label": "train loss",
-     "rho": 0.8088235294117648
+     "rho": 0.8441176470588235,
+     "p_two_tailed": 3.9302437680823236e-05,
+     "survives_bonferroni": true
     },
     "test_acc": {
-     "label": "test accuracy (the visible one)",
-     "rho": -0.7685742413801144
+     "label": "test accuracy (visible from outside)",
+     "rho": -0.7982824700322464,
+     "p_two_tailed": 0.00020978929603830047,
+     "survives_bonferroni": true
+    },
+    "test_loss": {
+     "label": "test loss (visible from outside)",
+     "rho": 0.7941176470588235,
+     "p_two_tailed": 0.0002391909996836796,
+     "survives_bonferroni": true
+    },
+    "restricted_loss_sum_all_live": {
+     "label": "restricted loss, leak-free",
+     "rho": 0.5029411764705882,
+     "p_two_tailed": 0.04706315324203159,
+     "survives_bonferroni": false
+    },
+    "excluded_loss_sum_live": {
+     "label": "excluded loss, leak-free",
+     "rho": 0.7852941176470588,
+     "p_two_tailed": 0.00031285401371555007,
+     "survives_bonferroni": true
+    },
+    "emb_key_frac_live": {
+     "label": "power in key frequencies, leak-free",
+     "rho": -0.6323529411764706,
+     "p_two_tailed": 0.008577586888952167,
+     "survives_bonferroni": false
     }
    }
+  },
+  "test_acc_at_step": {
+   "200": {
+    "min": 0.15106260776519775,
+    "max": 0.4853532314300537,
+    "chance": 0.01694915254237288
+   },
+   "500": {
+    "min": 0.30040207505226135,
+    "max": 0.5939115285873413,
+    "chance": 0.01694915254237288
+   },
+   "1000": {
+    "min": 0.4974152743816376,
+    "max": 1.0,
+    "chance": 0.01694915254237288
+   },
+   "2000": {
+    "min": 0.7627800107002258,
+    "max": 1.0,
+    "chance": 0.01694915254237288
+   }
+  },
+  "bonferroni": {
+   "n_tests": 48,
+   "alpha": 0.0010416666666666667,
+   "critical_rho_two_tailed": 0.7402408857884167
   }
  }
 }

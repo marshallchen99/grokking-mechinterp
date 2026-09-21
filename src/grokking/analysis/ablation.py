@@ -126,10 +126,12 @@ def frequency_ablation_study(model: OneLayerTransformer, data, F: torch.Tensor,
                              key_freqs: List[int]) -> Dict[str, Dict[str, float]]:
     """The headline causal experiment, plus the controls that make it mean something.
 
-    A random-frequency control matters here: deleting ANY five of fifty-six
-    frequencies removes some of the embedding's norm, so "performance dropped"
-    is only interesting if it drops much further for the key five than for five
-    arbitrary ones.
+    Two controls.  The evenly spaced control frequencies carry very little of
+    the embedding's power, so deleting them removes almost no norm; on their
+    own they cannot rule out "the model dies because its embedding got
+    smaller".  The norm-restored row closes that gap: delete the key
+    frequencies, then rescale what is left back to the original Frobenius norm.
+    If the model still dies, it was the frequencies, not the norm.
     """
     p = data.p
     all_freqs = list(range(1, p // 2 + 1))
@@ -151,6 +153,25 @@ def frequency_ablation_study(model: OneLayerTransformer, data, F: torch.Tensor,
     out["keep_control_freqs"] = evaluate_model(
         ablate_embedding_frequencies(model, F, p, ctrl, keep=True), data)
     out["_control_freqs"] = {"freqs": ctrl}
+
+    dropped = ablate_embedding_frequencies(model, F, p, key_freqs, keep=False)
+    with torch.no_grad():
+        orig = model.W_E.data[:p].norm()
+        now = dropped.W_E.data[:p].norm()
+        if float(now) > 0:
+            dropped.W_E.data[:p] *= orig / now
+    out["drop_key_freqs_norm_restored"] = evaluate_model(dropped, data)
+
+    # how much of the embedding's power each set actually holds
+    coeffs = fourier_1d(model.W_E.detach()[:p].to(F.dtype), F, dim=0)
+    per_idx = coeffs.pow(2).sum(dim=1)
+    total = float(per_idx[1:].sum())
+
+    def share(fs):
+        idx = [i for k in fs for i in set(block_indices(k, p))]
+        return float(per_idx[idx].sum()) / total if total else 0.0
+
+    out["_power_share"] = {"key": share(key_freqs), "control": share(ctrl)}
     return out
 
 

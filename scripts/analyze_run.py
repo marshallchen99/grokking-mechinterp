@@ -38,12 +38,27 @@ from grokking.analysis.structure import (                            # noqa: E40
     additive_structure, trig_identity_report,
 )
 from grokking.data import make_dataset                               # noqa: E402
-from grokking.fourier import make_fourier_basis                      # noqa: E402
+from grokking.fourier import make_fourier_basis
+from grokking.runinfo import run_config, run_dataset                      # noqa: E402
 
 
 def analyse_one(snap, F, key_freqs, p, with_neurons=True):
     spec = embedding_spectrum(snap.model.W_E.detach(), F, p)
     row = progress_measures(snap, F, key_freqs, emb_spectrum=spec)
+
+    # The measures above use the FINAL checkpoint's key frequencies -- right for
+    # asking when the final circuit appears, wrong for forecasting, where it
+    # smuggles in information from after the transition.  So the key-frequency-
+    # dependent measures are also computed with the frequencies this checkpoint
+    # itself would pick (the parameter-free gap rule on its own embedding).
+    live = embedding_spectrum(snap.model.W_E.detach(), F, p, method="gap").key_freqs
+    row["key_freqs_live"] = live
+    if live:
+        from grokking.analysis.progress import excluded_loss, restricted_loss
+        row["restricted_loss_sum_all_live"] = restricted_loss(snap, F, live, mode="sum", split="all")["loss"]
+        row["excluded_loss_sum_live"] = excluded_loss(snap, F, live, mode="sum", split="train")["loss"]
+        pw = spec.power_per_freq[1:]
+        row["emb_key_frac_live"] = float(sum(pw[k - 1] for k in live) / pw.sum())
 
     struct = additive_structure(snap.logits, p)
     for k, v in struct.items():
@@ -109,8 +124,9 @@ def main():
 
     torch.set_num_threads(args.threads)
     root = Path(args.root)
-    data = make_dataset(p=args.p, op=args.op, train_frac=args.train_frac,
-                        seed=args.data_seed)
+    data = run_dataset(root, args.tag)   # the run's own split, never a default
+    cfg_ = run_config(root, args.tag)
+    args.p, args.op, args.train_frac = cfg_["p"], cfg_["op"], cfg_["train_frac"]
     F, _ = make_fourier_basis(args.p, dtype=torch.float64)
 
     paths = checkpoint_paths(root / "checkpoints" / args.tag)
