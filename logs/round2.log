@@ -19,3 +19,25 @@
 [  1765s] START F_seed20  (5 queued)
 [  1965s] OK        F_seed18  (635s)
 [  1965s] START F_seed21  (4 queued)
+[  2355s] OK        F_seed16  (1250s)
+[  2355s] START F_seed22  (3 queued)
+[  2525s] OK        F_seed21  (560s)
+[  2525s] START F_seed23  (2 queued)
+[  2530s] OK        F_seed19  (1030s)
+[  2530s] START F_seed24  (1 queued)
+[  2695s] OK        F_seed20  (930s)
+[  2695s] START F_seed25  (0 queued)
+[  3050s] OK        F_seed23  (525s)
+[  3055s] OK        F_seed24  (525s)
+[  3145s] OK        F_seed25  (450s)
+[  3175s] OK        F_seed22  (820s)
+
+16 jobs finished in 3175s; 0 failed
+=== quadratic form, 60k budget 10:46:15 ===
+[     0s] START Q_sqx_p59  (1 queued)
+[     0s] START Q_sqx_p61  (0 queued)
+[  3790s] OK        Q_sqx_p61  (3790s)
+[  3795s] OK        Q_sqx_p59  (3795s)
+
+2 jobs finished in 3795s; 0 failed
+ROUND 2 DONE 11:49:31

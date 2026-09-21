@@ -1,6 +1,6 @@
 {
- "n_runs": 21,
- "n_censored": 9,
+ "n_runs": 39,
+ "n_censored": 11,
  "runs": [
   {
    "tag": "B_add_s0",
@@ -73,6 +73,168 @@
    "grok": 9764.111179082387,
    "censored": false,
    "budget": 25000
+  },
+  {
+   "tag": "F_seed10",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 804.6842277737119,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "F_seed11",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 1282.111104705462,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "F_seed12",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 1335.8000539609407,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "F_seed13",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 2265.8000539609407,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "F_seed14",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 1558.8999647178466,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "F_seed15",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 778.8947425912373,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "F_seed16",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 759.9230812213132,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "F_seed17",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 1452.3750064857572,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "F_seed18",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 2223.062515808931,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "F_seed19",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 1024.541670810327,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "F_seed20",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 1237.9500132308763,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "F_seed21",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 1159.214258183112,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "F_seed22",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 1295.7499978380997,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "F_seed23",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 912.760005645168,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "F_seed24",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 1518.384625823189,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "F_seed25",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": 1399.1538136100578,
+   "censored": false,
+   "budget": 6000
+  },
+  {
+   "tag": "Q_sqx_p59",
+   "p": 59,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": null,
+   "censored": true,
+   "budget": 60000
+  },
+  {
+   "tag": "Q_sqx_p61",
+   "p": 61,
+   "wd": 1.0,
+   "frac": 0.5,
+   "grok": null,
+   "censored": true,
+   "budget": 60000
   },
   {
    "tag": "S_p59_wd0.1_f0.25",
@@ -194,246 +356,246 @@
  ],
  "at_steps": {
   "200": {
-   "n": 21,
+   "n": 39,
    "features": {
     "restricted_loss_sum_all": {
      "label": "restricted loss",
-     "auc": 0.6666666666666666,
-     "rho": 0.6013986013986014,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.8831168831168831,
+     "rho": 0.7996715927750412,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "auc": 0.7129629629629629,
-     "rho": -0.7132867132867133,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.8993506493506493,
+     "rho": -0.6387520525451561,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "emb_gini": {
      "label": "embedding Gini",
-     "auc": 0.8148148148148148,
-     "rho": -0.6573426573426573,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.9285714285714286,
+     "rho": -0.8664477285166942,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "emb_key_frac": {
      "label": "power in key frequencies",
-     "auc": 0.5925925925925926,
-     "rho": -0.6503496503496503,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.7012987012987013,
+     "rho": -0.6075533661740559,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained",
-     "auc": 0.7777777777777778,
-     "rho": -0.6643356643356644,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.9090909090909091,
+     "rho": -0.8423645320197045,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "weight_norm": {
      "label": "weight norm",
-     "auc": 0.25,
-     "rho": 0.5944055944055944,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.538961038961039,
+     "rho": 0.7443897099069514,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "train_loss": {
      "label": "train loss",
-     "auc": 0.3055555555555556,
-     "rho": 0.21678321678321677,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.1266233766233766,
+     "rho": -0.2572523262178435,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "test_acc": {
      "label": "test accuracy (the visible one)",
-     "auc": 0.6759259259259259,
-     "rho": -0.6853146853146853,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.8084415584415584,
+     "rho": -0.6250684181718665,
+     "n_grok": 28,
+     "n_censored": 11
     }
    }
   },
   "500": {
-   "n": 21,
+   "n": 39,
    "features": {
     "restricted_loss_sum_all": {
      "label": "restricted loss",
-     "auc": 0.6388888888888888,
-     "rho": 0.6503496503496503,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.8733766233766234,
+     "rho": 0.9042145593869733,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "auc": 0.5555555555555556,
-     "rho": -0.7132867132867133,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.8311688311688312,
+     "rho": -0.6606458675424194,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "emb_gini": {
      "label": "embedding Gini",
-     "auc": 0.8333333333333334,
-     "rho": -0.6783216783216783,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.935064935064935,
+     "rho": -0.9102353585112207,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "emb_key_frac": {
      "label": "power in key frequencies",
-     "auc": 0.6203703703703703,
-     "rho": -0.6433566433566433,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.775974025974026,
+     "rho": -0.8314176245210729,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained",
-     "auc": 0.8148148148148148,
-     "rho": -0.6783216783216783,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.922077922077922,
+     "rho": -0.902025177887247,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "weight_norm": {
      "label": "weight norm",
-     "auc": 0.2962962962962963,
-     "rho": 0.6083916083916084,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.6071428571428571,
+     "rho": 0.7799671592775042,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "train_loss": {
      "label": "train loss",
-     "auc": 0.28703703703703703,
-     "rho": 0.34265734265734266,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.12337662337662338,
+     "rho": -0.18664477285166942,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "test_acc": {
      "label": "test accuracy (the visible one)",
-     "auc": 0.6666666666666666,
-     "rho": -0.7062937062937062,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.8181818181818182,
+     "rho": -0.8133552271483308,
+     "n_grok": 28,
+     "n_censored": 11
     }
    }
   },
   "1000": {
-   "n": 21,
+   "n": 39,
    "features": {
     "restricted_loss_sum_all": {
      "label": "restricted loss",
-     "auc": 0.6666666666666666,
-     "rho": 0.6993006993006993,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.8831168831168831,
+     "rho": 0.935960591133005,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "auc": 0.5555555555555556,
-     "rho": -0.7062937062937062,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.827922077922078,
+     "rho": -0.5134099616858239,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "emb_gini": {
      "label": "embedding Gini",
-     "auc": 0.8425925925925926,
-     "rho": -0.6783216783216783,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.9383116883116883,
+     "rho": -0.9501915708812262,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "emb_key_frac": {
      "label": "power in key frequencies",
-     "auc": 0.6481481481481481,
-     "rho": -0.6433566433566433,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.7824675324675324,
+     "rho": -0.8429118773946361,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained",
-     "auc": 0.8425925925925926,
-     "rho": -0.6783216783216783,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.9318181818181818,
+     "rho": -0.9534756431308157,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "weight_norm": {
      "label": "weight norm",
-     "auc": 0.3148148148148148,
-     "rho": 0.6573426573426573,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.6655844155844156,
+     "rho": 0.9272030651340998,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "train_loss": {
      "label": "train loss",
-     "auc": 0.28703703703703703,
-     "rho": 0.32167832167832167,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.1266233766233766,
+     "rho": -0.1691297208538588,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "test_acc": {
      "label": "test accuracy (the visible one)",
-     "auc": 0.6666666666666666,
-     "rho": -0.6853146853146853,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.8181818181818182,
+     "rho": -0.9672916472135464,
+     "n_grok": 28,
+     "n_censored": 11
     }
    }
   },
   "2000": {
-   "n": 21,
+   "n": 39,
    "features": {
     "restricted_loss_sum_all": {
      "label": "restricted loss",
-     "auc": 0.7222222222222222,
-     "rho": 0.7062937062937062,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.9025974025974026,
+     "rho": 0.8976464148877943,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "auc": 0.6388888888888888,
-     "rho": -0.6013986013986014,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.8603896103896104,
+     "rho": -0.36562671045429673,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "emb_gini": {
      "label": "embedding Gini",
-     "auc": 0.8240740740740741,
-     "rho": -0.6783216783216783,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.9318181818181818,
+     "rho": -0.9600437876299946,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "emb_key_frac": {
      "label": "power in key frequencies",
-     "auc": 0.6759259259259259,
-     "rho": -0.6363636363636364,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.8376623376623377,
+     "rho": -0.885057471264368,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained",
-     "auc": 0.8333333333333334,
-     "rho": -0.6573426573426573,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.935064935064935,
+     "rho": -0.9376026272577997,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "weight_norm": {
      "label": "weight norm",
-     "auc": 0.39814814814814814,
-     "rho": 0.6083916083916084,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.724025974025974,
+     "rho": 0.9529282977558841,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "train_loss": {
      "label": "train loss",
-     "auc": 0.23148148148148148,
-     "rho": 0.3076923076923077,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.11363636363636363,
+     "rho": 0.04980842911877395,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "test_acc": {
      "label": "test accuracy (the visible one)",
-     "auc": 0.6759259259259259,
-     "rho": -0.6970238359966545,
-     "n_grok": 12,
-     "n_censored": 9
+     "auc": 0.827922077922078,
+     "rho": -0.9188815358517066,
+     "n_grok": 28,
+     "n_censored": 11
     }
    }
   }
@@ -441,168 +603,216 @@
  "within_config": {
   "config": {
    "op": "add",
-   "p": 113,
-   "train_frac": 0.3,
+   "p": 59,
+   "train_frac": 0.5,
    "weight_decay": 1.0
   },
-  "n": 5,
+  "n": 17,
   "runs": [
    {
-    "tag": "B_add_s1",
-    "grok": 6228.447357720727
+    "tag": "F_seed16",
+    "grok": 759.9230812213132
    },
    {
-    "tag": "C_add_f32",
-    "grok": 6733.770871027539
+    "tag": "F_seed15",
+    "grok": 778.8947425912373
    },
    {
-    "tag": "B_add_s0",
-    "grok": 7083.366674954712
+    "tag": "F_seed10",
+    "grok": 804.6842277737119
    },
    {
-    "tag": "C_add_nowarm",
-    "grok": 9764.111179082387
+    "tag": "S_p59_wd1.0_f0.5",
+    "grok": 815.1739145147209
    },
    {
-    "tag": "main_add_s0",
-    "grok": 14536.4358862264
+    "tag": "F_seed23",
+    "grok": 912.760005645168
+   },
+   {
+    "tag": "F_seed19",
+    "grok": 1024.541670810327
+   },
+   {
+    "tag": "F_seed21",
+    "grok": 1159.214258183112
+   },
+   {
+    "tag": "F_seed20",
+    "grok": 1237.9500132308763
+   },
+   {
+    "tag": "F_seed11",
+    "grok": 1282.111104705462
+   },
+   {
+    "tag": "F_seed22",
+    "grok": 1295.7499978380997
+   },
+   {
+    "tag": "F_seed12",
+    "grok": 1335.8000539609407
+   },
+   {
+    "tag": "F_seed25",
+    "grok": 1399.1538136100578
+   },
+   {
+    "tag": "F_seed17",
+    "grok": 1452.3750064857572
+   },
+   {
+    "tag": "F_seed24",
+    "grok": 1518.384625823189
+   },
+   {
+    "tag": "F_seed14",
+    "grok": 1558.8999647178466
+   },
+   {
+    "tag": "F_seed18",
+    "grok": 2223.062515808931
+   },
+   {
+    "tag": "F_seed13",
+    "grok": 2265.8000539609407
    }
   ],
   "at_steps": {
    "200": {
     "restricted_loss_sum_all": {
      "label": "restricted loss",
-     "rho": 0.5999999999999999
+     "rho": 0.6642156862745099
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "rho": -0.8999999999999998
+     "rho": -0.3308823529411765
     },
     "emb_gini": {
      "label": "embedding Gini",
-     "rho": -0.7999999999999998
+     "rho": -0.573529411764706
     },
     "emb_key_frac": {
      "label": "power in key frequencies",
-     "rho": -0.9999999999999998
+     "rho": -0.42647058823529416
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained",
-     "rho": -0.8999999999999998
+     "rho": -0.482843137254902
     },
     "weight_norm": {
      "label": "weight norm",
-     "rho": 0.8999999999999998
+     "rho": 0.6446078431372549
     },
     "train_loss": {
      "label": "train loss",
-     "rho": -0.6999999999999998
+     "rho": 0.5857843137254902
     },
     "test_acc": {
      "label": "test accuracy (the visible one)",
-     "rho": -0.29999999999999993
+     "rho": 0.17156862745098042
     }
    },
    "500": {
     "restricted_loss_sum_all": {
      "label": "restricted loss",
-     "rho": 0.5999999999999999
+     "rho": 0.8357843137254903
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "rho": -0.9999999999999998
+     "rho": -0.3970588235294118
     },
     "emb_gini": {
      "label": "embedding Gini",
-     "rho": -0.8999999999999998
+     "rho": -0.7107843137254903
     },
     "emb_key_frac": {
      "label": "power in key frequencies",
-     "rho": -0.8999999999999998
+     "rho": -0.7279411764705883
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained",
-     "rho": -0.8999999999999998
+     "rho": -0.6789215686274511
     },
     "weight_norm": {
      "label": "weight norm",
-     "rho": 0.9999999999999998
+     "rho": 0.7990196078431374
     },
     "train_loss": {
      "label": "train loss",
-     "rho": -0.6999999999999998
+     "rho": 0.8578431372549021
     },
     "test_acc": {
      "label": "test accuracy (the visible one)",
-     "rho": -0.3999999999999999
+     "rho": -0.2671568627450981
     }
    },
    "1000": {
     "restricted_loss_sum_all": {
      "label": "restricted loss",
-     "rho": 0.6999999999999998
+     "rho": 0.8700980392156864
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "rho": -0.9999999999999998
+     "rho": 0.2524509803921569
     },
     "emb_gini": {
      "label": "embedding Gini",
-     "rho": -0.8999999999999998
+     "rho": -0.8897058823529413
     },
     "emb_key_frac": {
      "label": "power in key frequencies",
-     "rho": -0.8999999999999998
+     "rho": -0.4779411764705883
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained",
-     "rho": -0.8999999999999998
+     "rho": -0.9093137254901962
     },
     "weight_norm": {
      "label": "weight norm",
-     "rho": 0.8999999999999998
+     "rho": 0.9534313725490198
     },
     "train_loss": {
      "label": "train loss",
-     "rho": -0.4999999999999999
+     "rho": 0.9436274509803922
     },
     "test_acc": {
      "label": "test accuracy (the visible one)",
-     "rho": -0.09999999999999998
+     "rho": -0.965686274509804
     }
    },
    "2000": {
     "restricted_loss_sum_all": {
      "label": "restricted loss",
-     "rho": 0.8999999999999998
+     "rho": 0.7916666666666667
     },
     "excluded_loss_sum": {
      "label": "excluded loss",
-     "rho": -0.6999999999999998
+     "rho": 0.6151960784313726
     },
     "emb_gini": {
      "label": "embedding Gini",
-     "rho": -0.8999999999999998
+     "rho": -0.9338235294117648
     },
     "emb_key_frac": {
      "label": "power in key frequencies",
-     "rho": -0.9999999999999998
+     "rho": -0.6127450980392157
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained",
-     "rho": -0.6999999999999998
+     "rho": -0.8455882352941178
     },
     "weight_norm": {
      "label": "weight norm",
-     "rho": 0.19999999999999996
+     "rho": 0.9485294117647061
     },
     "train_loss": {
      "label": "train loss",
-     "rho": -0.5999999999999999
+     "rho": 0.8088235294117648
     },
     "test_acc": {
      "label": "test accuracy (the visible one)",
-     "rho": -0.29999999999999993
+     "rho": -0.7685742413801144
     }
    }
   }

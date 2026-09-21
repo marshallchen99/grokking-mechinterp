@@ -1,0 +1,19 @@
+82 checkpoints, steps 0 .. 6000
+key frequencies from the FINAL checkpoint (step 6000):
+    rule_a_embedding_norm    [8, 10, 11, 14, 28]
+    rule_b_neuron_cluster    [8, 10, 11, 14]
+    rule_c_power_gap         [8, 10, 11, 14, 28]
+    -> used                  [8, 10, 11, 14, 28]   Jaccard 0.800 agree=False
+    NOTE: rules disagree; the union is used and this must be stated in the write-up
+  key frequencies carry 0.9703 of embedding power; Gini(W_E) 0.8467; 0.8457 of neurons above 0.85 explained
+  [1/82] step      0 test_acc 0.022 restr 4.08e+00 excl 4.088 a+b 0.0003 (0s)
+  [11/82] step     13 test_acc 0.017 restr 4.09e+00 excl 4.091 a+b 0.0002 (1s)
+  [21/82] step     94 test_acc 0.323 restr 3.45e+00 excl 5.108 a+b 0.0566 (2s)
+  [31/82] step    377 test_acc 0.724 restr 5.73e-01 excl 9.374 a+b 0.3800 (3s)
+  [41/82] step    900 test_acc 0.775 restr 6.23e-03 excl 12.828 a+b 0.6736 (4s)
+  [51/82] step   1600 test_acc 0.962 restr 2.21e-06 excl 12.803 a+b 0.8563 (5s)
+  [61/82] step   2400 test_acc 1.000 restr 3.83e-08 excl 8.074 a+b 0.9383 (6s)
+  [71/82] step   3300 test_acc 1.000 restr 2.37e-08 excl 6.117 a+b 0.9708 (7s)
+  [81/82] step   4924 test_acc 1.000 restr 2.27e-08 excl 6.080 a+b 0.9722 (8s)
+  [82/82] step   6000 test_acc 1.000 restr 2.31e-08 excl 6.100 a+b 0.9721 (8s)
+wrote /mnt/d/Portfolio/grokking-mechinterp/results/F_seed14_analysis.json  (8s)

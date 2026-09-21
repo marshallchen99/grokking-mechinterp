@@ -1,0 +1,49 @@
+{
+  "tag": "F_seed23",
+  "op": "add",
+  "p": 59,
+  "n_train": 1740,
+  "n_test": 1741,
+  "n_params": 219136,
+  "model": {
+    "d_vocab": 60,
+    "d_vocab_out": 113,
+    "n_ctx": 3,
+    "d_model": 128,
+    "n_heads": 4,
+    "d_head": 32,
+    "d_mlp": 512,
+    "act": "relu",
+    "causal": true,
+    "init_std": 0.0,
+    "init_range": 0.8,
+    "seed": 23
+  },
+  "train": {
+    "steps": 6000,
+    "lr": 0.001,
+    "betas": [
+      0.9,
+      0.98
+    ],
+    "eps": 1e-08,
+    "weight_decay": 1.0,
+    "optimizer": "adamw",
+    "warmup_steps": 10,
+    "loss_dtype": "float64",
+    "log_every": 10,
+    "n_log_checkpoints": 45,
+    "dense_from": 100,
+    "dense_to": 4000,
+    "dense_every": 100,
+    "seed": 0
+  }
+}
+step      0 | train 4.0811/0.014 | test 4.0861/0.017 | |w| 33.1 | 0s
+step   1000 | train 0.0000/1.000 | test 0.2530/0.950 | |w| 40.0 | 89s
+step   2000 | train 0.0000/1.000 | test 0.0456/0.994 | |w| 29.7 | 170s
+step   3000 | train 0.0000/1.000 | test 0.0438/0.994 | |w| 27.5 | 256s
+step   4000 | train 0.0000/1.000 | test 0.0405/0.995 | |w| 27.1 | 341s
+step   5000 | train 0.0000/1.000 | test 0.0363/0.997 | |w| 26.9 | 426s
+step   6000 | train 0.0000/1.000 | test 0.0319/0.997 | |w| 26.8 | 514s
+DONE {"step": 6000, "train_loss": 0.0, "train_acc": 1.0, "test_loss": 0.03188, "test_acc": 0.99655, "weight_norm": 26.84565, "elapsed": 513.91849}

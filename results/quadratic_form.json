@@ -1,0 +1,44 @@
+[
+ {
+  "tag": "Q_sqx_p59",
+  "p": 59,
+  "p_mod_3": 2,
+  "form_splits": false,
+  "train_acc": 1.0,
+  "test_acc": 0.49511775374412537,
+  "chance": 0.01694915254237288,
+  "forms_differ_on": 0.9663889408111572,
+  "matches": {
+   "true  a^2+ab+b^2": 0.49511775374412537,
+   "sign-flipped b  a^2-ab+b^2": 0.20045951008796692,
+   "(a+b)^2": 0.02986789122223854,
+   "a^2+b^2": 0.02240091934800148,
+   "a*b": 0.013210798613727093
+  },
+  "sign_flip_enrichment": 10.708787649869919,
+  "acc_where_forms_coincide": 0.515625,
+  "n_coincide": 64,
+  "either_form": 0.6766226291656494
+ },
+ {
+  "tag": "Q_sqx_p61",
+  "p": 61,
+  "p_mod_3": 1,
+  "form_splits": true,
+  "train_acc": 1.0,
+  "test_acc": 0.4970445930957794,
+  "chance": 0.01639344262295082,
+  "forms_differ_on": 0.9674818515777588,
+  "matches": {
+   "true  a^2+ab+b^2": 0.4970445930957794,
+   "sign-flipped b  a^2-ab+b^2": 0.2047286331653595,
+   "(a+b)^2": 0.02579258382320404,
+   "a^2+b^2": 0.024180548265576363,
+   "a*b": 0.025255238637328148
+  },
+  "sign_flip_enrichment": 11.21010185778141,
+  "acc_where_forms_coincide": 0.6610169410705566,
+  "n_coincide": 59,
+  "either_form": 0.6808167695999146
+ }
+]
