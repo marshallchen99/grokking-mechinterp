@@ -49,18 +49,25 @@ def main():
     if A["W_U"].shape[1] > p:
         ha = json.loads((root / "results" / f"{args.a}_history.json").read_text())
         decay = 1.0 - ha["train_cfg"]["lr"] * ha["train_cfg"]["weight_decay"]
-        col0 = A["W_U"][:, p].double()
-        worst = 0.0
         ckpts = checkpoint_paths(root / "checkpoints" / args.a)
-        for s, path in ckpts[1:]:
-            col = torch.load(path, weights_only=True)["state_dict"]["W_U"][:, p].double()
-            pred = col0 * decay ** s
-            worst = max(worst, float(((col - pred).norm() / pred.norm()).item()))
-        out["extra_column"] = {"index": p, "checkpoints_checked": len(ckpts) - 1,
+        want = {s: path for s, path in ckpts[1:]}
+        # replay AdamW's decoupled decay in float32, exactly as the optimiser applies it
+        col = A["W_U"][:, p].clone()
+        exact, worst, step = 0, 0.0, 0
+        for s in sorted(want):
+            while step < s:
+                col.mul_(decay)
+                step += 1
+            got = torch.load(want[s], weights_only=True)["state_dict"]["W_U"][:, p]
+            exact += bool(torch.equal(got, col))
+            worst = max(worst, float(((got.double() - col.double()).norm()
+                                      / col.double().norm()).item()))
+        out["extra_column"] = {"index": p, "checkpoints_checked": len(want),
                                "decay_per_step": decay,
-                               "max_relative_deviation_from_pure_decay": worst}
-        print(f"extra column {p}: max relative deviation from pure decay {worst:.2e} "
-              f"over {len(ckpts) - 1} checkpoints")
+                               "bit_exact_pure_decay": exact,
+                               "max_relative_deviation_from_float32_decay": worst}
+        print(f"extra column {p}: equal bit for bit to pure float32 decay at {exact} of "
+              f"{len(want)} checkpoints (max relative deviation {worst:.1e})")
     (root / "results" / "controls_init.json").write_text(json.dumps(out, indent=1))
     for n, r in rows.items():
         print(f"  {n:6s} {str(r['shape_a']):14s} {str(r['shape_b']):14s} identical={r['identical']}"

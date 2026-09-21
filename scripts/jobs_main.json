@@ -8,6 +8,9 @@
   "loss_dtype": "float32",
   "warmup_steps": 0,
   "d_vocab_out": 114,
-  "threads": 6
+  "threads": 6,
+  "n_log_checkpoints": 159,
+  "dense_from": 0,
+  "dense_to": -1
  }
 ]

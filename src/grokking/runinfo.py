@@ -44,7 +44,10 @@ def recorded_split_hash(root: Path, tag: str):
     if "split_hash" in h.get("data", {}):
         return h["data"]["split_hash"]
     table = Path(root) / "results" / SPLIT_HASHES
-    return json.loads(table.read_text()).get(tag) if table.exists() else None
+    if not table.exists():
+        return None
+    entry = json.loads(table.read_text()).get("runs", {}).get(tag)
+    return entry["split_hash"] if entry else None
 
 
 def run_dataset(root: Path, tag: str) -> ModularDataset:

@@ -157,12 +157,16 @@ def main():
     args = ap.parse_args()
     root = Path(args.root)
 
-    runs = []
+    runs, finished = [], []
     for hp in sorted(glob.glob(str(root / "results" / f"{args.pattern}_history.json"))):
         tag = Path(hp).name[: -len("_history.json")]
         h = json.loads(Path(hp).read_text())
         if not is_finished(h):
             continue
+        finished.append({"tag": tag, "op": h["data"]["op"], "p": h["data"]["p"],
+                         "frac": h["data"]["train_frac"], "wd": h["train_cfg"]["weight_decay"],
+                         "budget": h["train_cfg"]["steps"],
+                         "grok": crossing_step(h["history"], "test_acc", 0.90)})
         ap_ = root / "results" / f"{tag}_analysis.json"
         if not ap_.exists():
             continue
@@ -234,10 +238,15 @@ def main():
     cfg, members = best
     censored_members = [m["tag"] for m in members if m["censored"]]
     members = [m for m in members if not m["censored"]]
-    # runs of the same configuration left out only because their budget differs
-    other_budget = [{"tag": r["tag"], "budget": r["budget"], "grok": r["grok"]}
-                    for r in runs if (r["op"], r["p"], r["frac"], r["wd"]) == cfg[:4]
-                    and r["budget"] != cfg[4]]
+    # every finished run of the same configuration that is not in the group, and why
+    member_tags = {m["tag"] for m in members}
+    analysed = {r["tag"] for r in runs}
+    other_budget = [{"tag": r["tag"], "budget": r["budget"], "grok": r["grok"],
+                     "reason": ("different budget" if r["budget"] != cfg[4] else "")
+                     + (" and " if r["budget"] != cfg[4] and r["tag"] not in analysed else "")
+                     + ("no trajectory analysis" if r["tag"] not in analysed else "")}
+                    for r in finished if (r["op"], r["p"], r["frac"], r["wd"]) == cfg[:4]
+                    and r["tag"] not in member_tags]
     if len(members) >= 4:
         members.sort(key=lambda m: m["grok"])
         within = {"config": {"op": cfg[0], "p": cfg[1], "train_frac": cfg[2],

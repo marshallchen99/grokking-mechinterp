@@ -377,6 +377,8 @@ def test_mean_ablation_replaces_only_the_dropped_neurons():
     mixed = torch.where(keep, post, mean)
     want = (cache["resid_mid"][:, -1] + mixed @ m.W_out) @ m.W_U
     assert torch.allclose(logits2[:, -1], want, atol=1e-5)
+    # the fast path is the one every reported ablation number goes through
+    assert torch.allclose(m2(d.inputs, last_only=True)[:, -1], want, atol=1e-5)
 
 
 def test_mean_ablating_nothing_is_the_identity():
@@ -397,13 +399,28 @@ def test_embedding_surgery_keeping_everything_is_the_identity():
     assert torch.allclose(kept.W_E[: d.p], m.W_E[: d.p], atol=1e-6)
     none_dropped = ablate_embedding_frequencies(m, F, d.p, [], keep=False)
     assert torch.allclose(none_dropped.W_E[: d.p], m.W_E[: d.p], atol=1e-6)
-    # deleting a frequency removes exactly its two basis directions
+    # deleting a frequency removes exactly its two basis directions, and nothing else
     gone = ablate_embedding_frequencies(m, F, d.p, [5], keep=False)
     from grokking.analysis.spectra import block_indices
     from grokking.fourier import fourier_1d
     c = fourier_1d(gone.W_E.detach()[: d.p].double(), F, dim=0)
+    c0 = fourier_1d(m.W_E.detach()[: d.p].double(), F, dim=0)
     ck, sk = block_indices(5, d.p)
     assert float(c[[ck, sk]].abs().max()) < 1e-6
+    rest = [i for i in range(d.p) if i not in (ck, sk)]
+    assert torch.allclose(c[rest], c0[rest], atol=1e-6)
+
+
+def test_component_ablations_remove_what_they_say():
+    from grokking.analysis.ablation import ablate_head, ablate_mlp
+    m, d = _small_model_and_data()
+    _, cache = m.run_with_cache(d.inputs)
+    no_mlp = ablate_mlp(m)(d.inputs)
+    assert torch.allclose(no_mlp, cache["resid_mid"] @ m.W_U, atol=1e-5)
+    _, c1 = ablate_head(m, [1]).run_with_cache(d.inputs)
+    z = cache["attn_z"].clone()
+    z[:, 1] = 0.0
+    assert torch.allclose(c1["attn_out"], torch.einsum("bhtd,hdm->btm", z, m.W_O), atol=1e-5)
 
 
 def test_readout_budget_on_known_logits(basis):
@@ -454,14 +471,20 @@ def test_a_changed_split_is_refused(tmp_path):
 
 
 def test_every_shipped_split_is_the_one_trained_on():
+    """Each rebuilt split matches its recorded fingerprint, and each fingerprint was
+    checked against the run's own training log (scripts/record_splits.py)."""
     import json
     from grokking.runinfo import run_dataset
     root = Path(__file__).resolve().parents[1]
-    table = json.loads((root / "results" / "split_hashes.json").read_text())
-    hists = sorted((root / "results").glob("*_history.json"))
-    assert {h.name[: -len("_history.json")] for h in hists} == set(table)
-    for tag in table:
+    table = json.loads((root / "results" / "split_hashes.json").read_text())["runs"]
+    for tag, entry in table.items():
+        assert entry.get("matches") is True, tag
         run_dataset(root, tag)          # raises on a mismatch
+    # a run added later (e.g. the README's `--tag repro`) must carry its own fingerprint
+    for h in sorted((root / "results").glob("*_history.json")):
+        tag = h.name[: -len("_history.json")]
+        if tag not in table:
+            assert "split_hash" in json.loads(h.read_text())["data"], tag
 
 
 def test_page_is_the_template_with_the_data():

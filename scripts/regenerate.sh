@@ -12,7 +12,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 R=${ROOT_DIR:-$PWD}   # where results/ and checkpoints/ live (default: this checkout)
 mkdir -p "$R/logs"
-T=${THREADS:-2}   # the shipped mechanism files reproduce byte for byte at 2 threads
+T=${THREADS:-2}        # the shipped mechanism, redundancy, quadratic and sweep files: 2 threads
+TT=${TRAJ_THREADS:-4}  # the shipped trajectory files: 4 threads
 
 step() {   # step <log name> <command...>
   local log="$R/logs/$1.log"; shift
@@ -22,14 +23,16 @@ step() {   # step <log name> <command...>
 
 if [ "${1:-}" != "--report" ]; then
   [ -d "$R/checkpoints" ] || { echo "no checkpoints/ -- only --report is possible"; exit 1; }
+  echo "=== splits  $(date +%T) ==="
+  step splits python3 scripts/record_splits.py --root "$R"
   echo "=== trajectories  $(date +%T) ==="
   NEURON_RUNS=" main_add_s0 B_add_s0 "        # the runs whose neuron measures are reported
   for f in "$R"/results/*_history.json; do
     tag=$(basename "$f" _history.json)
     case "$tag" in R_*) continue ;; esac   # seed replicates: only their training curves are used
     case "$NEURON_RUNS" in
-      *" $tag "*) step "traj_$tag" python3 scripts/analyze_run.py --root "$R" --tag "$tag" --threads "$T" ;;
-      *)          step "traj_$tag" python3 scripts/analyze_run.py --root "$R" --tag "$tag" --threads "$T" --no-neurons ;;
+      *" $tag "*) step "traj_$tag" python3 scripts/analyze_run.py --root "$R" --tag "$tag" --threads "$TT" ;;
+      *)          step "traj_$tag" python3 scripts/analyze_run.py --root "$R" --tag "$tag" --threads "$TT" --no-neurons ;;
     esac
   done
 

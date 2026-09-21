@@ -1,7 +1,11 @@
 #!/bin/bash
-# Train the runs in one or more job files, then regenerate everything.
+# Train the runs in one or more job files, analyse their trajectories, and
+# re-render the README, figures and page.
 #
 #   ./scripts/run_pipeline.sh jobs_sweep.json jobs_repl.json
+#
+# The summary files built across runs (mechanism, sweep, forecasting, ...) are
+# rebuilt by ./scripts/regenerate.sh, which needs every run's checkpoints.
 #
 # Sequence, not concurrency: on this machine a single training run saturates
 # around six threads and adding more processes lowers total throughput, because
@@ -19,6 +23,11 @@ THREADS=${THREADS:-5}
 for spec in "$@"; do
   echo "=== $spec  $(date +%T) ==="
   python3 scripts/run_many.py --jobs "scripts/$spec" --parallel "$PARALLEL" --threads "$THREADS"
+  for tag in $(python3 -c "import json,sys; print(' '.join(j['tag'] for j in json.load(open(sys.argv[1]))))" "scripts/$spec"); do
+    echo "  analysing $tag"
+    python3 scripts/analyze_run.py --tag "$tag" --threads 4 --no-neurons > "logs/traj_$tag.log" 2>&1 \
+      || { echo "FAILED (see logs/traj_$tag.log)"; exit 1; }
+  done
 done
 
-exec ./scripts/regenerate.sh
+exec ./scripts/regenerate.sh --report
