@@ -610,6 +610,7 @@ src/grokking/
   report.py        markdown table machinery
   report_blocks.py every number that reaches the README comes through here
 scripts/           runnable entry points
+  run_pipeline.sh  run job files in sequence, then analyse what they produced
 tests/             correctness tests for everything the results depend on
 ```
 
