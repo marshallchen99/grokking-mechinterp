@@ -1,5 +1,12 @@
 """Published numbers, quarantined.
 
+Every reference string below was checked against the arXiv metadata API
+(export.arxiv.org) on 2026-09-21: authors, title and identifier.  Venues are
+given only where the arXiv record or the proceedings confirm them.  An earlier
+version carried an author list for Notsawo et al. that was reconstructed from
+memory and wrong in three of six names; that is why this is checked rather
+than recalled.
+
 Every value in this module comes from a paper, carries its reference, and may
 appear in the write-up only in a column headed "published".  Nothing here is
 ever used as a target, a calibration, or a default.  Numbers produced by this
@@ -27,17 +34,17 @@ class Fact:
     note: str = ""
 
 
-NANDA_2023 = "Nanda, Chan, Lieberum, Smith, Steinhardt, 'Progress measures for grokking via mechanistic interpretability', ICLR 2023, arXiv:2301.05217"
+NANDA_2023 = "Nanda, Chan, Lieberum, Smith, Steinhardt, 'Progress measures for grokking via mechanistic interpretability', arXiv:2301.05217"
 POWER_2022 = "Power, Burda, Edwards, Babuschkin, Misra, 'Grokking: Generalization Beyond Overfitting on Small Algorithmic Datasets', arXiv:2201.02177"
 LIU_2022 = "Liu, Michaud, Tegmark, 'Omnigrok: Grokking Beyond Algorithmic Data', arXiv:2210.01117"
 VARMA_2023 = "Varma, Shah, Kenton, Kramar, Kumar, 'Explaining grokking through circuit efficiency', arXiv:2309.02390"
-CHUGHTAI_2023 = "Chughtai, Chan, Nanda, 'A Toy Model of Universality', arXiv:2302.03025"
+CHUGHTAI_2023 = "Chughtai, Chan, Nanda, 'A Toy Model of Universality: Reverse Engineering How Networks Learn Group Operations', ICML 2023 (PMLR 202), arXiv:2302.03025"
 DOSHI_2024 = "Doshi, He, Das, Gromov, 'Grokking Modular Polynomials', arXiv:2406.03495"
-FURUTA_2024 = "Furuta et al., 'Interpreting Grokked Transformers in Complex Modular Arithmetic', TMLR 2024"
-NOTSAWO_2023 = "Notsawo, Zhou, Ahmadi, Beaini, Dumas, Mitliagkas, 'Predicting Grokking Long Before it Happens', ICLR 2024, arXiv:2306.13253"
+FURUTA_2024 = "Furuta, Minegishi, Iwasawa, Matsuo, 'Towards Empirical Interpretation of Internal Circuits and Properties in Grokked Transformers on Modular Polynomials', TMLR 2024, arXiv:2402.16726"
+NOTSAWO_2023 = "Notsawo, Zhou, Pezeshki, Rish, Dumas, 'Predicting Grokking Long Before it Happens: A look into the loss landscape of models which grok', arXiv:2306.13253"
 LYU_2023 = "Lyu, Jin, Li, Du, Lee, Hu, 'Dichotomy of Early and Late Phase Implicit Biases Can Provably Induce Grokking', ICLR 2024, arXiv:2311.18817"
 NGUYEN_2026 = "Nguyen, 'The Discrete-Log Clock: How a Transformer Learns Modular Multiplication', Mechanistic Interpretability Workshop at ICML 2026, arXiv:2606.17399"
-CHEN_2026 = "Chen, Hasan, Srinivasan, Bandi, Alper, 'Multiplication Beyond Groups: Stratified Fourier Mechanisms in Transformer Circuits', arXiv:2607.07066"
+CHEN_2026 = "Chen, Hasan, Srinivasan, Bandi, Alper, 'Multiplication Beyond Groups: Stratified Fourier Mechanisms in Transformer Circuits', Mechanistic Interpretability Workshop at ICML 2026, arXiv:2607.07066"
 KHANH_2026 = "Khanh, Hoa, Trung, Duc, 'First-Passage Prediction of Grokking Delay: A Calibrated Law under AdamW with Causal Validation', arXiv:2605.18845"
 
 PUBLISHED: Dict[str, Fact] = {
@@ -97,7 +104,7 @@ RELATED_WORK = {
     "discrete_log_for_multiplication": (
         DOSHI_2024,
         "Gives an analytic construction for modular multiplication that explicitly "
-        "uses the discrete logarithm, and a learnability criterion for forms "
+        "uses the discrete logarithm, and a learnability hypothesis (Hyp. 5.1) for forms "
         "h(g1(a) + g2(b)) mod p. The reduction is therefore published prior art: "
         "this repository tests it causally, it does not claim it."),
     "group_representations": (

@@ -193,7 +193,8 @@ def ablate_dlog_frequencies(model, p: int, freqs, keep: bool = True):
     return m
 
 
-def zero_element_interventions(model, data, n_random: int = 20) -> Dict[str, object]:
+def zero_element_interventions(model, data, n_random: int = 20,
+                               probe_rows=(5, 17, 60), scale: float = 10.0) -> Dict[str, object]:
     """Is the small norm of 0's embedding what makes the model output 0?
 
     Accuracy on the pairs containing a zero, after each edit to row 0 alone.
@@ -236,11 +237,46 @@ def zero_element_interventions(model, data, n_random: int = 20) -> Dict[str, obj
         "row0_rescaled_to_mean_norm": acc_after(lambda w: w[0].mul_(mean_norm / float(r0.norm()))),
         "row0_doubled": acc_after(lambda w: w[0].mul_(2.0)),
         "row0_replaced_by_mean_of_others": acc_after(lambda w: w[0].copy_(W[1:p].mean(0))),
-        "row0_scaled_x10": acc_after(lambda w: w[0].mul_(10.0)),
+        "row0_scaled_x10": acc_after(lambda w: w[0].mul_(scale)),
     }
+    # "Is 0 a default answer?" has to be tested on NONZERO inputs, not asserted.
+    # Remove the multiplicative signal from one input, or from both, and see what
+    # the model answers on pairs that contain no zero at all.
+    def predictions_after(edit):
+        m = copy.deepcopy(model)
+        m.eval()
+        with torch.no_grad():
+            edit(m.W_E.data)
+            return final_logits(m(data.inputs, last_only=True), p).argmax(-1).view(p, p)
+
+    nz = torch.ones(p, p, dtype=torch.bool)
+    nz[0, :] = False
+    nz[:, 0] = False
+    mean_row = W[1:p].mean(0)
+    single = {}
+    for a in probe_rows:
+        for how, edit in (("zeroed", lambda w, a=a: w[a].zero_()),
+                          ("mean", lambda w, a=a: w[a].copy_(mean_row))):
+            pr = predictions_after(edit)
+            row = pr[a, 1:]                       # (a, b) for every nonzero b
+            single.setdefault(how, []).append(float((row == 0).float().mean()))
+    both = predictions_after(lambda w: w[:p].zero_())
+    vals, counts = torch.unique(both[nz], return_counts=True)
+    top = int(vals[counts.argmax()])
+    out["one_input_without_signal"] = {
+        "probe_rows": list(probe_rows),
+        "frac_predicted_0_zeroed": sum(single["zeroed"]) / len(single["zeroed"]),
+        "frac_predicted_0_mean": sum(single["mean"]) / len(single["mean"])}
+    out["both_inputs_without_signal"] = {
+        "most_common_prediction": top,
+        "its_share": float(counts.max()) / int(nz.sum()),
+        "frac_predicted_0": float((both[nz] == 0).float().mean())}
+
     out["random_direction_mean_norm"] = {
-        "n": n_random, "min": spread[0], "median": spread[len(spread) // 2],
+        "n": n_random, "min": spread[0],
+        "median": (spread[(n_random - 1) // 2] + spread[n_random // 2]) / 2,
         "max": spread[-1], "all": spread}
+    out["scale_factor"] = scale
     out["row0_norm"] = float(r0.norm())
     out["mean_other_norm"] = mean_norm
     out["row0_is_smallest"] = bool(float(r0.norm()) < float(norms.min()))

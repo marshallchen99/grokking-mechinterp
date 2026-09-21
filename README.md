@@ -13,10 +13,10 @@ for subtraction, multiplication and a quadratic form. It is a reproduction.
 Where something here goes beyond the published work, the section says so;
 where it does not, the section names the paper.
 
-Everything runs on a laptop CPU. No data is downloaded. Every table and every
-number inside a sentence below is produced by `scripts/make_report.py` from the
-results files; regenerating from the shipped results reproduces this file byte
-for byte.
+Everything runs on a laptop CPU. No data is downloaded. Every measured number
+below, in the tables and in the sentences around them, is produced by
+`scripts/make_report.py` from the shipped results files; a test re-renders
+every section from those files and checks it matches this README exactly.
 
 ---
 
@@ -60,11 +60,11 @@ the first long before the second.
 | test accuracy reaches 90% | 14,536 | generalisation |
 | test accuracy reaches 99% | 14,937 |  |
 
-For **14,379 steps** training accuracy stays at or near 99% while test accuracy does nothing useful. Two qualifications the curve makes visible: training accuracy is not flat -- it drops below 99% 7 times in short loss spikes, as low as 93.5% at step 1,680 -- and test accuracy is near chance only until about step 10,007, after which it climbs gradually for thousands of steps before the final rise.
+For **14,379 steps** training accuracy stays at or near 99% while the model stays far from generalising. Neither curve is flat on that stretch. Training accuracy drops below 99% 7 times in short loss spikes, as low as 93.5% at step 1,680. Test accuracy is above chance almost from the start and creeps up slowly -- 2.8% a few hundred steps in, 6.9% by step 8,006 -- and only passes 10% at step 10,007.
 
 Test loss rises during memorisation and peaks at **32.74** at step 1,680, which is on one of those spikes (training accuracy 93.5% at the same step).
 
-Setup: `(add) mod 113`, 3,830 of 12,769 pairs used for training (30%), a 226,176-parameter one-layer transformer, full-batch AdamW with weight decay 1.0, 40,000 steps, CPU only. The phenomenon is Power et al. (2022); this configuration is Nanda et al. (2023)'s.
+Setup: `(add) mod 113`, 3,830 of 12,769 pairs used for training (30%), a 226,176-parameter one-layer transformer, full-batch AdamW with weight decay 1.0, 40,000 steps, CPU only. The architecture and optimiser follow Nanda et al. (2023); the phenomenon is Power et al. (2022). This first run also had a float32 loss, no learning-rate warmup, and an output column for the '=' token; section 5 tests whether those mattered.
 <!-- END:headline -->
 
 ![grokking curve](figures/fig1_grokking_curve.png)
@@ -140,16 +140,16 @@ The mechanism's third step is the readout: the amplitudes of cos(w(a+b)) and sin
 
 | run | configuration | direction read | at the predicted frequency | at another key frequency | left over |
 |:--|--:|--:|--:|--:|--:|
-| `B_add_s0` | float64 loss, 10-step warmup | (a+b) | 0.9980 | 2.06e-04 | 0.0018 |
-| `B_add_s1` | as above, different seed | (a+b) | **0.9990** | 1.29e-04 | 8.38e-04 |
-| `C_add_nowarm` | float64 loss, no warmup | (a+b) | 0.9978 | 4.14e-04 | 0.0018 |
-| `C_add_f32` | float32 loss, 10-step warmup | (a+b) | 0.8765 | 0.0329 | 0.0906 |
-| `main_add_s0` | float32 loss, no warmup, extra W_U column | (a+b) | 0.8936 | 0.0219 | 0.0846 |
-| `B_sub_s0` | subtraction, float64 loss | (a-b) | 0.9903 | 0.0015 | 0.0082 |
+| `B_add_s0` | add, float32 loss, 10-step warmup | (a+b) | 0.9980 | 2.06e-04 | 0.0018 |
+| `B_add_s1` | add, float64 loss, 10-step warmup | (a+b) | **0.9990** | 1.29e-04 | 8.38e-04 |
+| `C_add_nowarm` | add, float64 loss, warmup_steps = 1 | (a+b) | 0.9978 | 4.14e-04 | 0.0018 |
+| `C_add_f32` | add, float32 loss, 10-step warmup | (a+b) | 0.8765 | 0.0329 | 0.0906 |
+| `main_add_s0` | add, float32 loss, no LR schedule, extra W_U column | (a+b) | 0.8936 | 0.0219 | 0.0846 |
+| `B_sub_s0` | sub, float64 loss, 10-step warmup | (a-b) | 0.9903 | 0.0015 | 0.0082 |
 
 In the float64 addition runs the readout is essentially exact (0.998 to 0.999 at the predicted frequency). Subtraction reads 0.990 in the (a-b) direction it actually uses, and 0.366 if read in the (a+b) direction -- a model read in the wrong coordinate looks unstructured.
 
-The two float32 runs are measurably less clean (0.876 to 0.894), with the remainder split between other key frequencies and energy none of them explain. **The cause is not established.** It is two runs against three, and the float32 run differs from its float64 twin only in loss precision, so precision is the natural suspect -- but no mechanism was tested. An earlier version of this section attributed the difference to a per-answer bias that float32 prevented from being cleaned up. That was wrong: the component it measured was the softmax-invariant one removed above, which no loss gradient acts on at any precision, and in the float32 run it grew after grokking rather than failing to decay.
+The 2 float32 runs are measurably less clean (0.876 to 0.894), with the remainder split between other key frequencies and energy none of them explain. **The cause is not established.** It is 2 runs against 3, and the pairs are not matched on everything: the float32 control `C_add_f32` was read at step 25,000 and its float64 twin `B_add_s0` at step 40,000, so budget differs as well as precision (though `C_add_nowarm`, float64 and read at step 25,000, is as clean as the others). An earlier version of this section attributed the difference to a per-answer bias that float32 prevented from being cleaned up. That was wrong: the component it measured was the softmax-invariant one removed above, which no loss gradient acts on at any precision.
 <!-- END:readout -->
 
 ---
@@ -241,21 +241,21 @@ Among subsets of the key set, the only 3-frequency subset that reaches 90% is [1
 <!-- END:redundancy -->
 
 <!-- BEGIN:disagreement -->
-| run | weakest key frequency in the embedding | frequency the rules disagree on | frequency that can be deleted |
+| run | weakest key frequency in the embedding | frequency the rules disagree on | key frequencies that can each be deleted alone |
 |:--|--:|--:|--:|
 | `main_add_s0` | 56 | none | 56 |
-| `B_add_s0` | 16 | 16 | 16 |
+| `B_add_s0` | 16 | 16 | 16, 38 |
 | `B_add_s1` | 26 | 26 | 26 |
 | `B_sub_s0` | 17 | 17 | 17 |
 | `C_add_f32` | 38 | none | 38 |
 
-In 5 of 5 runs the one key frequency that can be deleted without losing generalisation is the one with the least embedding power, and in 3 of the 3 runs where the identification rules disagree, they disagree about that same frequency. An earlier version presented rule disagreement as a *prediction* of redundancy. It is not independent evidence: the deletion test edits the embedding, and two of the rules threshold that same embedding, so the weakest component being both the marginal one and the dispensable one is close to what you would expect.
+'Can be deleted alone' means the rest of the key set, with every other frequency also removed, still reaches 90% test accuracy. In 4 of 5 runs exactly one key frequency qualifies, and it is the weakest. In `B_add_s0` 2 qualify (16, 38), and the weakest, 16, is one of them. In 3 of the 3 runs where the identification rules disagree, they disagree about the weakest frequency. An earlier version presented rule disagreement as a *prediction* of redundancy. It is not independent evidence: the deletion test edits the embedding, and two of the rules threshold that same embedding, so the weakest component being both the marginal one and the dispensable one is close to what you would expect.
 <!-- END:disagreement -->
 
 ### Identification from behaviour
 
 <!-- BEGIN:load_bearing -->
-The rules above read the model's representation. This reads its behaviour: remove one frequency's two output directions at a time and measure the training loss. It still works in the same Fourier basis, so it is not independent machinery, and taking 'the top k' borrows k from the rules; but it involves no threshold of its own.
+The rules above read the model's representation. This reads its behaviour: remove one frequency's two (a+b) Fourier directions from the logits at a time and measure the training loss. It still works in the same Fourier basis, so it is not independent machinery, and taking 'the top k' borrows k from the rules; but it involves no threshold of its own.
 
 | frequency removed | train loss afterwards |
 |:--|--:|
@@ -266,7 +266,7 @@ The rules above read the model's representation. This reads its behaviour: remov
 | 44 | 1.24e-05 |
 | 47 | 2.50e-06 |
 
-At the boundary -- the weakest key frequency against the strongest of the rest -- the separation is a factor of 482 (2.7 orders of magnitude); against the median of the rest it is 4.3 orders. The top 4 by this measure are [1, 18, 22, 56], the same set the rules find.
+At the boundary -- the weakest key frequency against the strongest of the rest -- the separation is a factor of 482 (2.7 orders of magnitude). Most non-key frequencies cost nothing measurable: removing them leaves the training loss at its unablated value of 2.95e-07. The top 4 by this measure are [1, 18, 22, 56], the same set the rules find.
 <!-- END:load_bearing -->
 
 ---
@@ -285,9 +285,9 @@ The progress measures and the three-phase account are Nanda et al. (2023)'s. Eac
 | excluded loss | 13,659 | 52 |
 | neurons explained >85% by one frequency | 15,345 | -1,634 |
 
-**Resolution.** Checkpoints near the transition are about 887 steps apart, so a lead smaller than that is inside the measurement's resolution and should not be read as a lead. The restricted loss's lead (3,539 steps) is the one that clearly exceeds it. It is also not a monotone curve: it first rises, to 7.85 at step 2,925, before falling -- so 'it can only fall by finding structure' would be wrong.
+**Resolution.** Checkpoints near the transition are about 887 steps apart, so a lead smaller than that is not distinguishable from zero. Against that: ahead by more than the spacing: restricted loss, embedding spectrum Gini; within it: logit variance explained by (a+b), excluded loss; behind by more than it: neurons explained >85% by one frequency. The restricted loss is also not monotone: it first rises, to 7.85 at step 2,925, before it falls.
 
-Read together: the key frequencies' subspace becomes predictive well before test accuracy moves, while the excluded loss and neuron specialisation lag -- they track the removal of the memorised solution. That is the ordering Nanda et al. describe. It is one run.
+The ordering -- the key frequencies' subspace becoming predictive before test accuracy moves, the removal of the memorised solution coming later -- is the one Nanda et al. (2023) describe. This is one run.
 <!-- END:phases -->
 
 ![progress measures](figures/fig3_progress_measures.png)
@@ -297,23 +297,23 @@ Read together: the key frequencies' subspace becomes predictive well before test
 ## 5. Other operations
 
 <!-- BEGIN:operations -->
-One seed per operation, same configuration otherwise. Both variance columns are measured in the ordinary basis, which is the right coordinate for addition and subtraction and the wrong one for multiplication (see below): a low score there means 'not structured in this basis', not 'a different algorithm'. The survey of which modular operations grok is Furuta et al. (2024)'s.
+Same model and optimiser, one seed per operation; the step budgets differ (see the column), so the mechanism is read at different points after grokking. The last column is the variance of the logits explained by the task's own combination of the inputs -- (a+b), (a-b) or (a*b) -- in the ordinary basis. 'Key freqs' is '--' where the identification rules find no common set, which for multiplication means the ordinary basis is the wrong place to look (next subsection). The survey of which modular operations grok is Furuta et al. (2024)'s.
 
-| task | grokking step | budget | final test acc | key freqs | Gini(W_E) | (a+b) variance | (a-b) variance |
-|:--|--:|--:|--:|--:|--:|--:|--:|
-| `(a + b) mod p`, p=113 | 7,083 | 40,000 | 1.0 | 5 | 0.9225 | 0.9874 | 0.0016 |
-| `(a - b) mod p`, p=113 | 27,242 | 30,000 | 1.0 | 4 | 0.9467 | 9.19e-05 | 0.9994 |
-| `(a * b) mod p`, p=113 | 7,571 | 40,000 | 1.0 | 56 | 0.0176 | 0.0087 | 0.0086 |
-| `(a^2 + ab + b^2) mod p`, p=113 | none by 30,000 | 30,000 | 0.1138 | -- | -- | -- | -- |
-| `(a^2 + ab + b^2) mod p`, p=109 | none by 30,000 | 30,000 | 0.0893 | -- | -- | -- | -- |
+| run | task | p | grokking step | budget | final test acc | key freqs | Gini(W_E) | variance explained by own combination |
+|:--|--:|--:|--:|--:|--:|--:|--:|--:|
+| `B_add_s0` | `(a + b) mod p` | 113 | 7,083 | 40,000 | 1.0 | 5 | 0.9225 | 0.9874 |
+| `B_sub_s0` | `(a - b) mod p` | 113 | 27,242 | 30,000 | 1.0 | 4 | 0.9467 | 0.9994 |
+| `B_mul_s0` | `(a * b) mod p` | 113 | 7,571 | 40,000 | 1.0 | -- | 0.0176 | 0.9731 |
+| `B_sqx_p113` | `(a^2 + ab + b^2) mod p` | 113 | none by 30,000 | 30,000 | 0.1138 | -- | -- | -- |
+| `B_sqx_p109` | `(a^2 + ab + b^2) mod p` | 109 | none by 30,000 | 30,000 | 0.0893 | -- | -- | -- |
 
-Subtraction builds the mirror circuit: its output tracks (a-b) and not (a+b). It also grokked later (27,242 against 7,083 steps), but with one seed each, and seeds of a single configuration elsewhere in this project spanning a factor of 3.0 in grokking step, that is not evidence that subtraction is slower. It grokked 2,758 steps before its budget ran out, so its mechanism was read much closer to the transition than addition's.
+Subtraction builds the mirror circuit: its output tracks (a-b). It grokked at step 27,242 against 7,083 for `B_add_s0`, but with one seed each, and seeds of one configuration elsewhere in this project spanning a factor of 3.0, that is not evidence subtraction is slower. It grokked 2,758 steps before its budget ran out.
 
 **Censored runs.**
 
-- `(a^2 + ab + b^2) mod p` at p=113 did not reach 90% within 30,000 steps -- a censored observation, not a demonstration that it never would.
+- `B_sqx_p113` did not reach 90% within 30,000 steps -- censored, not shown never to grok.
 
-- `(a^2 + ab + b^2) mod p` at p=109 did not reach 90% within 30,000 steps -- a censored observation, not a demonstration that it never would.
+- `B_sqx_p109` did not reach 90% within 30,000 steps -- censored, not shown never to grok.
 <!-- END:operations -->
 
 ![operations](figures/fig5_operations.png)
@@ -333,14 +333,14 @@ The nonzero residues mod p form a cyclic group of order p-1 under multiplication
 | edit | test acc |
 |:--|--:|
 | none | 1.0 |
-| keep only the key frequencies [15, 33, 53] | 0.9997 |
+| keep only the key frequencies [15, 33, 53] (and the mean) | 0.9997 |
 | delete only the key frequencies | 0.0087 |
 | delete 3 control frequencies [1, 19, 37] | 1.0 |
-| keep only the control frequencies | 0.0090 |
+| keep only the control frequencies (and the mean) | 0.0090 |
 
 **The absorbing element.** Zero has no multiplicative inverse, so it is outside the group. Prior work excludes it or treats it as a separate stratum (Doshi et al. (2024); Chen et al. (2026), observationally and on composite moduli). Here the model is correct on the pairs containing a zero, no neuron behaves like a detector for it (strongest correlation with `a == 0`: 0.035), and its embedding row has the smallest norm of all (0.51 against a mean of 1.05). But the small norm is not the mechanism. Editing that one row and re-running the model:
 
-| edit to the embedding of 0 | accuracy on pairs containing a 0 |
+| edit to the embedding of 0 | accuracy, all 225 pairs containing a 0 (train and test) |
 |:--|--:|
 | none | 1.0 |
 | set to zero | 0.9956 |
@@ -348,38 +348,47 @@ The nonzero residues mod p form a cyclic group of order p-1 under multiplication
 | doubled | 1.0 |
 | replaced by the mean of the other rows | 0.9956 |
 | replaced by a random direction at the mean norm (median of 20) | 0.9822 |
-| scaled by 10 | 0.0 |
+| scaled by 10.0 | 0.0 |
 
-Restoring its norm changes nothing. What the row contains barely matters -- zeroed, averaged or replaced by most random directions, the model still answers 0 (random directions give 0.20 to 1.00, median 0.98) -- until the edit is large enough to dominate the residual stream. The behaviour looks like a default: class 0 wins whenever the input carries no strong multiplicative signal.
+Restoring its norm changes nothing, and what the row contains barely matters: zeroed, averaged, or replaced by a random direction (median 0.98 over 20 directions, range 0.20 to 1.00), the model still answers 0, until the edit is large enough to dominate the residual stream.
+
+So what does make it answer 0? Remove the multiplicative signal from one *nonzero* input instead -- zero or average the embedding of a nonzero residue (5, 17, 60) -- and the model answers 0 on 99.1% of that residue's pairs. Remove it from both inputs and it answers 59 on 100% of pairs, and 0 on 0%. The model treats an input that carries no multiplicative signal as a zero factor -- what 0 means in multiplication -- whether or not the input is actually 0. Which weights implement that was not identified.
 <!-- END:dlog -->
 
 ### A quadratic form
 
 <!-- BEGIN:quadratic -->
-`a^2 + ab + b^2` factors into linear forms over F_p exactly when p = 1 (mod 3). If that governed learnability, p = 61 and p = 59 should behave differently.
+Furuta et al. (2024) and Doshi et al. (2024) (their Hypothesis 5.1) relate whether a modular polynomial is learnable to whether it factorises. `a^2 + ab + b^2` factors into linear forms over F_p exactly when p = 1 (mod 3), so this tests that at a matched pair of primes.
 
-| modulus |  | form over F_p | test acc | test pairs whose transpose was trained on | acc on those | acc on the rest | chance |
+| run | p | form over F_p | test acc | held-out pairs whose transpose was trained on | acc on those | acc on the rest | chance |
 |:--|--:|--:|--:|--:|--:|--:|--:|
-| p = 59 | 2 mod 3 | irreducible | 0.4951 | 0.4842 | 1.0 | 0.0212 | 0.0169 |
-| p = 61 | 1 mod 3 | splits | 0.4970 | 0.4793 | 1.0 | 0.0341 | 0.0164 |
+| `Q_sqx_p59` | 2 mod 3 | irreducible | 0.4951 | 0.4842 | 1.0 | 0.0212 | 0.0169 |
+| `Q_sqx_p61` | 1 mod 3 | splits | 0.4970 | 0.4793 | 1.0 | 0.0341 | 0.0164 |
 
-**Neither generalises within 60,000 steps, so the factorability question gets a null answer.** Both stop near 50% test accuracy, and the reason is not partial learning. The form is symmetric in a and b, and the train/test split is over *ordered* pairs, so about half the held-out pairs (b, a) have their transpose (a, b) in the training set. The model is correct on essentially all of those and near chance on the rest: it has memorised the training table and learned that the table is symmetric, and nothing more. The 50% is that fraction.
+**Neither generalises within 60,000 steps, so this gives a null answer on factorability.** Both sit near 50% test accuracy, and the cause is not partial learning of the form. It is symmetric in a and b while the train/test split is over *ordered* pairs, so about half the held-out pairs have their transpose in the training set; the model gets essentially all of those right and is near chance on the rest. It has memorised the training table and learned that the table is symmetric.
 
-An earlier version of this section read the plateau as a model that had 'lost the sign of b', from its tendency to predict a^2 - ab + b^2. That reading was wrong; the transposition test above accounts for the accuracy on its own. A fair test of factorability would split on unordered pairs, so that symmetry cannot stand in for generalisation.
+Its *mistakes* are structured, though. `a^2 - ab + b^2` is the same form with the sign of one input flipped, and on the held-out pairs it cannot answer from memory, the model often predicts exactly that. Whether it does depends on whether a sign-flipped partner of the pair -- (a, -b), (-a, b) or their transposes, all of which share that value -- was in the training set:
+
+| run | pairs with a sign-flipped partner trained | predicts a^2 - ab + b^2 | pairs without one | predicts a^2 - ab + b^2 | chance |
+|:--|--:|--:|--:|--:|--:|
+| `Q_sqx_p59` | 798 | 0.3935 | 64 | 0.0312 | 0.0169 |
+| `Q_sqx_p61` | 875 | 0.3886 | 66 | 0.0303 | 0.0164 |
+
+So these look like memorised answers retrieved for the wrong key, which suggests the representation places b and -b close together; that was not measured directly, and the without-partner groups are small. An earlier version read the plateau as a circuit that had 'lost the sign of b'; that explained neither the accuracy, which symmetry accounts for, nor these errors, which memorised partners do. Splitting on unordered pairs would remove both effects and make this a fair test of factorability.
 <!-- END:quadratic -->
 
 ### Which correction mattered?
 
 <!-- BEGIN:controls -->
-The first run used float32 cross-entropy, no warmup, and an unembedding with a column for the '=' token that can never be correct. The corrected configuration grokked in about half the steps. Each control below changes one thing, one run each.
+The first run used float32 cross-entropy, no warmup, and an unembedding with a column for the '=' token that can never be correct. The corrected configuration grokked in about half the steps. Each control below changes one training choice, one run each; their step budgets also differ, which does not affect the grokking step but does change the step at which the mechanism is read.
 
 | run | what differs | grokking step |
 |:--|:--|--:|
-| `main_add_s0` | float32 loss, no warmup, an extra W_U column for '=' | 14,536 |
-| `B_add_s0` | float64 loss, 10-step warmup, no extra column | 7,083 |
-| `C_add_f32` | as B_add_s0, but float32 loss | 6,734 |
-| `C_add_nowarm` | as B_add_s0, but warmup_steps = 1 | 9,764 |
-| `B_add_s1` | as B_add_s0, different seed for split and weights | 6,228 |
+| `main_add_s0` | add, float32 loss, no LR schedule, extra W_U column | 14,536 |
+| `B_add_s0` | add, float32 loss, 10-step warmup | 7,083 |
+| `C_add_f32` | add, float32 loss, 10-step warmup | 6,734 |
+| `C_add_nowarm` | add, float64 loss, warmup_steps = 1 | 9,764 |
+| `B_add_s1` | add, float64 loss, 10-step warmup; different seed for split and weights | 6,228 |
 
 Changing only the loss precision moves the step by -350; removing the warmup by +2,681. For scale, two seeds of the corrected configuration differ by 855. So neither change, alone, accounts for the gap to the original's 14,536.
 
@@ -401,7 +410,7 @@ A smaller modulus (p = 59) makes a run cheap enough to sweep. One seed per cell,
 
 7 of 12 cells did not get there within 20,000 steps -- censored, not shown never to grok.
 
-Within the one training fraction where every cell grokked (0.5), the grokking step falls monotonically as weight decay rises: 10,794, 3,100, 815, 344. Step times weight decay stays between 815 and 1,079 while weight decay spans a factor of 30: grokking time roughly proportional to 1/lambda. That is the published scaling (Lyu et al. (2023), arXiv:2311.18817; Khanh et al. (2026) give a calibrated delay law with the same dependence), reproduced rather than discovered. Nanda et al. (2023)'s appendix is internally inconsistent on the direction of the effect; this agrees with the published scaling, not with either side of that inconsistency in particular.
+Within the one training fraction where every cell grokked (0.5), the grokking step falls monotonically as weight decay rises: 10,794, 3,100, 815, 344. Step times weight decay stays between 815 and 1,079 while weight decay spans a factor of 30. On log axes the slope is -1.02 counting from step 0, and -1.17 counting from the end of memorisation, which is the delay the published law is about. One seed and four points; consistent with a roughly 1/lambda dependence, which Lyu et al. (2023) (arXiv:2311.18817) prove in a large-initialisation limit and Khanh et al. (2026) fit under AdamW. This reproduces that; it does not discover it.
 <!-- END:phase_diagram -->
 
 ![phase diagram](figures/fig6_phase_diagram.png)
@@ -416,7 +425,7 @@ The same training fraction, a second seed for both split and initialisation:
 | weight decay 1.0 | 815 | 922 |
 | weight decay 3.0 | 344 | 255 |
 
-The ordering is strictly monotone in 2 of 2 seeds that have every cell, treating a censored cell as later than its budget. The budgets differ between the seeds, so the censored cell is not directly comparable with the other seed's number in the same row.
+Both seeds order the cells the same way, from most weight decay (fastest) to least, counting a cell that did not grok as later than its budget. That is consistent in every seed. The budgets differ, so a censored cell is not comparable with the other seed's number in the same row, only with its own column's order.
 <!-- END:replicates -->
 
 ---
@@ -424,32 +433,32 @@ The ordering is strictly monotone in 2 of 2 seeds that have every cell, treating
 ## 7. Which early signals track the transition
 
 <!-- BEGIN:prediction -->
-Forecasting grokking from early training signals is Notsawo et al. (2023) (arXiv:2306.13253), who use the training-loss curve. The question here is narrower: which signals rank runs by when they will generalise, in a setting where only the random draw differs.
+Notsawo et al. (2023) (arXiv:2306.13253) predict *whether* grokking will occur from oscillations in the early training-loss curve. The question here is a different one: among runs that all grok, which early signals rank them by *when*, in a setting where only the random draw differs.
 
 16 runs share the task (`add`), modulus (59), training fraction (0.5), weight decay (1.0) and budget (6,000 steps). They grok between step 760 and 2,266. A reading taken after some run has grokked measures the outcome, so only readings before step 760 are used.
 
 These are not forecasts made before anything happens. In this configuration test accuracy starts rising almost immediately: at step 200 it is already 15% to 49%; at step 500 it is already 30% to 59% (chance 1.7%). The readings rank how far along a transition already under way each run is.
 
-Spearman correlation with the grokking step; positive means a higher reading goes with a later transition. `*` marks coefficients that survive a two-tailed Bonferroni correction over all 48 tests computed (|rho| > 0.74). 'Leak-free' rows use the frequencies each checkpoint itself would pick, rather than the final model's:
+Spearman correlation with the grokking step; positive means a higher reading goes with a later transition. `*` marks coefficients that survive a two-tailed Bonferroni correction over all 24 tests computed (|rho| > 0.73). 'Leak-free' rows use the frequencies each checkpoint itself would pick, rather than the final model's:
 
 | signal | at step 200 | at step 500 |
 |:--|--:|--:|
-| restricted loss | +0.72 | +0.81 * |
-| excluded loss | -0.60 | -0.77 * |
-| embedding Gini | -0.61 | -0.72 |
-| power in key frequencies | -0.41 | -0.77 * |
-| (a+b) variance explained | -0.58 | -0.69 |
+| restricted loss (train pairs) | +0.72 | +0.81 * |
+| excluded loss (train pairs) | -0.60 | -0.77 * |
+| embedding Gini (no frequency choice) | -0.61 | -0.72 |
+| power in key frequencies | -0.31 | -0.51 |
+| (a+b) variance explained (no frequency choice) | -0.58 | -0.69 |
 | weight norm | +0.67 | +0.79 * |
 | train loss | +0.59 | +0.84 * |
 | test accuracy (visible from outside) | -0.00 | -0.52 |
 | test loss (visible from outside) | +0.49 | +0.86 * |
-| restricted loss, leak-free | +0.44 | +0.81 * |
-| excluded loss, leak-free | -0.65 | -0.74 |
+| restricted loss (train pairs), leak-free | +0.44 | +0.83 * |
+| excluded loss (train pairs), leak-free | -0.65 | -0.74 * |
 | power in key frequencies, leak-free | -0.41 | -0.77 * |
 
-At step 200 nothing survives the correction.
+At step 200 nothing survives the correction. The largest point estimate there is the restricted loss (train pairs) (+0.72), a mechanistic measure, but none of these is reliable at this n.
 
-At step 500, 8 signals do. The strongest is the **test loss (visible from outside)** (rho +0.86), and the differences among the survivors are far smaller than their sampling error at n = 16. Two consequences. The mechanistic measures do not do better than plain losses, so on this evidence forecasting needs no interpretability. And the ordinary test loss -- visible from outside -- is among the best of them, which contradicts an earlier version of this section: it claimed the visible quantity could not rank the runs, but it had only looked at test accuracy.
+At step 500, 8 signals do. The strongest is the **test loss (visible from outside)** (rho +0.86), and the survivors are not distinguishable from one another at n = 16. In this one configuration, then, plain losses rank the runs as well as the mechanistic measures do by step 500, and the ordinary test loss -- visible from outside -- is among the best. An earlier version of this section claimed the visible quantity could not rank the runs; it had looked only at test accuracy.
 
 Earlier versions of this table were also wrong for a mechanical reason: runs with a non-zero data seed were analysed on the seed-0 train/test split, which corrupted every split-dependent signal. The numbers above are from the corrected analysis.
 <!-- END:prediction -->
@@ -470,10 +479,12 @@ starts to exist. For forecasting (section 7) that would leak information from
 after the transition, so the frequency-dependent signals are also computed with
 the frequencies each checkpoint picks for itself, and reported separately.
 
-**Loss in float64.** In float32, `log_softmax` quantises at about 1.2e-7, which
-is where the training loss sits for most of a run. The float32 control in
-section 5 shows the choice does not move the grokking step; the float64 loss is
-kept because the reported loss curve is otherwise an artefact below that floor.
+**Loss in float64, except in the first run.** In float32, `log_softmax`
+quantises at about 1.2e-7, which is where the training loss sits for most of a
+run. The headline run in sections 1-4 predates the switch and used float32, so
+its training-loss curve below that level is quantisation, not signal. In the
+controlled comparison of section 5, switching only the loss precision moved the
+grokking step by less than the difference between two seeds.
 
 **Reproducible in distribution, not bit for bit.** With one thread identical
 seeds give identical weights, and the tests assert it. With several threads
@@ -503,14 +514,23 @@ fact are listed there with the reason.
 
 ```bash
 pip install -r requirements.txt
-python -m pytest tests/ -q                      # no training needed
+python -m pytest tests/ -q                   # includes re-rendering this README from results/
 
-python scripts/run_train.py --tag main --op add --steps 40000
-python scripts/analyze_run.py --tag main        # walk the trajectory
-python scripts/analyze_mechanism.py --tag main  # the final-checkpoint report
-python scripts/make_figures.py --tag main
-python scripts/make_report.py --tag main        # regenerate every table above
+# regenerate every figure and table from the shipped results
+python scripts/make_figures.py
+python scripts/make_report.py
+
+# train and analyse a fresh run in the corrected configuration (B_add_s0's)
+python scripts/run_train.py --tag repro --op add --steps 40000
+python scripts/analyze_run.py --tag repro
+python scripts/analyze_mechanism.py --tag repro
 ```
+
+A fresh run reproduces `B_add_s0`'s configuration, not the headline run's: that
+first run used a float32 loss, no learning-rate schedule and an output column
+for the `=` token, which the current code no longer creates. Its results are
+shipped in `results/`. Runs with more than one thread are not bit-for-bit
+reproducible (see Method notes), so a fresh run lands near these numbers.
 
 <!-- BEGIN:runtime -->
 The mainline run is 40,000 steps in **82 minutes** on 6 CPU threads (122 ms per full-batch step).
@@ -541,37 +561,48 @@ tests/             correctness and calibration tests
 ## What is borrowed, and what went wrong
 
 **Borrowed.** The phenomenon: [Power et al. 2022](https://arxiv.org/abs/2201.02177).
-The mechanism, the neuron-clustering rule, restricted and excluded loss, and
-the three-phase account: [Nanda et al. 2023](https://arxiv.org/abs/2301.05217).
-Ablating irreducible-representation subspaces of a cyclic group:
-[Chughtai et al. 2023](https://arxiv.org/abs/2302.03025). The discrete-log
-reduction for multiplication: [Doshi et al. 2024](https://arxiv.org/abs/2406.03495);
-its sparsity in a trained transformer: [Nguyen 2026](https://arxiv.org/abs/2606.17399).
-The 1/lambda dependence of grokking time on weight decay:
-[Lyu et al. 2023](https://arxiv.org/abs/2311.18817). Forecasting grokking from
-early training signals: [Notsawo et al. 2023](https://arxiv.org/abs/2306.13253).
+The mechanism, the neuron-clustering rule, restricted and excluded loss, and the
+three-phase account: [Nanda et al. 2023](https://arxiv.org/abs/2301.05217).
+Ablating irreducible-representation subspaces of a group, including cyclic
+groups: [Chughtai et al. 2023](https://arxiv.org/abs/2302.03025). The
+discrete-log reduction for multiplication, and the factorisation hypothesis for
+modular polynomials: [Doshi et al. 2024](https://arxiv.org/abs/2406.03495).
+Which modular polynomials grok: [Furuta et al. 2024](https://arxiv.org/abs/2402.16726).
+Discrete-log sparsity in a trained transformer:
+[Nguyen 2026](https://arxiv.org/abs/2606.17399). Non-invertible elements as a
+separate region: [Chen et al. 2026](https://arxiv.org/abs/2607.07066). The
+1/lambda dependence of grokking time on weight decay:
+[Lyu et al. 2023](https://arxiv.org/abs/2311.18817) and
+[Khanh et al. 2026](https://arxiv.org/abs/2605.18845). Predicting whether
+grokking will happen from the early loss curve:
+[Notsawo et al. 2023](https://arxiv.org/abs/2306.13253).
 
-**Possibly new, and small.** Weight-level (not logit-level) ablations in the
-discrete-log basis on a model trained with 0 included; the finding that the
-embedding of 0 is small but that its size is not what makes the model answer 0;
-the within-configuration comparison of which early signals track the
-transition, including that plain losses do as well as mechanistic ones.
+**Possibly new, and small.** Embedding-weight surgery in the discrete-log basis
+on a transformer trained with 0 included (Chughtai et al. ablate irrep
+subspaces of activations and of the unembedding for group tasks; Nguyen
+excludes 0 and does not ablate). The observation that the model answers 0
+whenever one input carries no multiplicative signal, and a fixed non-zero class
+when neither does, with the size of 0's embedding not being the cause. A
+within-configuration comparison of which early signals rank runs by when they
+generalise, in which plain losses do as well as mechanistic measures.
 
-**Corrected along the way.** This write-up was reviewed adversarially before
-publication, and several claims in earlier versions did not survive: a
-mechanism for a float32 readout difference, a "sign-blindness" reading of the
-quadratic form, a "shrunken embedding" account of the zero element, a
-separation stated as seven orders of magnitude that is under three at the
-boundary, rule disagreement presented as an independent prediction, the claim
-that the visible quantity cannot forecast the transition, two novelty claims
-contradicted by published work, and a set of forecasting numbers corrupted by
-the data-seed bug. Each section above states the corrected version. Runs that
-fail to grok are reported with their step budget.
+**Corrected along the way.** This write-up went through two rounds of
+adversarial review before publication, and much of what earlier versions
+claimed did not survive: a mechanism for a float32 readout difference; a
+"sign-blind circuit" reading of the quadratic form, and then an overcorrection
+that ignored its structured errors; two successive accounts of the zero
+element; a separation stated as seven orders of magnitude; rule disagreement
+presented as an independent prediction; the claim that the visible quantity
+cannot forecast the transition; novelty claims contradicted by published work;
+a citation with a wrong author list; forecasting numbers corrupted by a
+data-seed bug and a double-counted signal; and reproduction instructions that
+did not reproduce the headline run. Each section states the corrected version.
+Runs that fail to grok are reported with their step budget.
 
 **How this was made.** This repository was designed, implemented and written
 by an AI system (Claude, by Anthropic) working as an agent at my direction. I
 chose the topic and set the scope; the experiment design, the code, the
 analysis and this write-up are the model's. Every number was produced by
 running that code on my machine. Several corrections came out of review
-questions I asked about whether the work was finished, and the rest from an
-independent adversarial review run before publication.
+questions I asked about whether the work was finished, and the rest from two
+rounds of independent adversarial review run before publication.

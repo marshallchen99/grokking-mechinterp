@@ -56,6 +56,8 @@ def analyse_one(snap, F, key_freqs, p, with_neurons=True):
     if live:
         from grokking.analysis.progress import excluded_loss, restricted_loss
         row["restricted_loss_sum_all_live"] = restricted_loss(snap, F, live, mode="sum", split="all")["loss"]
+        # training pairs only: a forecasting signal must not read held-out labels
+        row["restricted_loss_sum_train_live"] = restricted_loss(snap, F, live, mode="sum", split="train")["loss"]
         row["excluded_loss_sum_live"] = excluded_loss(snap, F, live, mode="sum", split="train")["loss"]
         pw = spec.power_per_freq[1:]
         row["emb_key_frac_live"] = float(sum(pw[k - 1] for k in live) / pw.sum())

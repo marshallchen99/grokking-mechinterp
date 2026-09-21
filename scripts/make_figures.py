@@ -40,14 +40,14 @@ def load(root, name):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", default="main_add_s0")
-    ap.add_argument("--op-tags", nargs="*",
-                    default=["main_add_s0", "B_sub_s0", "B_mul_s0",
-                             "B_sqx_p113", "B_sqx_p109", "B_add_s1"])
+    ap.add_argument("--op-tags", nargs="*", default=None)   # default: report_blocks.OP_TAGS
     ap.add_argument("--modes", nargs="+", default=["light"])
     ap.add_argument("--root", default=str(ROOT))
     args = ap.parse_args()
     root = Path(args.root)
     figs = root / "figures"
+    from grokking.report_blocks import OP_TAGS
+    args.op_tags = args.op_tags or OP_TAGS
 
     hist = load(root, f"{args.tag}_history.json")
     analysis = load(root, f"{args.tag}_analysis.json")

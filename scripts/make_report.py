@@ -18,12 +18,13 @@ from grokking.report_blocks import PENDING, build           # noqa: E402
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--tag", default="main_add_s0")
-ap.add_argument("--op-tags", nargs="*", default=["main_add_s0","B_add_s0","B_sub_s0","B_mul_s0","B_sqx_p113","B_sqx_p109","B_add_s1"])
+ap.add_argument("--op-tags", nargs="*", default=None)   # default: report_blocks.OP_TAGS
 ap.add_argument("--root", default=str(ROOT))
 args = ap.parse_args()
 
 root = Path(args.root)
-blocks = build(root, args.tag, op_tags=args.op_tags)
+from grokking.report_blocks import OP_TAGS
+blocks = build(root, args.tag, op_tags=args.op_tags or OP_TAGS)
 readme = root / "README.md"
 done = render_readme(readme, blocks)
 filled = [b for b in done if blocks[b] != PENDING]

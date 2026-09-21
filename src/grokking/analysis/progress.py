@@ -182,5 +182,11 @@ def progress_measures(snapshot, F: torch.Tensor, freqs: List[int],
         out["sum_sq_weights"] = float(sum(q.pow(2).sum() for q in snapshot.model.parameters()))
     if emb_spectrum is not None:
         out["emb_gini"] = emb_spectrum.gini
-        out["emb_key_frac"] = emb_spectrum.sparsity_report()["frac_power_in_key_freqs"]
+        # Power on the frequencies passed in -- the FINAL model's key set, like
+        # every other measure here.  An earlier version used the checkpoint's own
+        # gap-rule set, which made this identical to the separately reported
+        # "leak-free" variant and double-counted one signal.
+        pw = emb_spectrum.power_per_freq[1:]
+        tot = float(pw.sum())
+        out["emb_key_frac"] = (float(sum(pw[k - 1] for k in freqs)) / tot) if tot else 0.0
     return out

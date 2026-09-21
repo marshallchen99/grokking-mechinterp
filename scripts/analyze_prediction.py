@@ -31,20 +31,22 @@ from grokking.analysis.timing import crossing_step     # noqa: E402
 from grokking.report import is_finished                # noqa: E402
 
 FEATURES = [
-    ("restricted_loss_sum_all", "restricted loss", False),
-    ("excluded_loss_sum", "excluded loss", True),
-    ("emb_gini", "embedding Gini", True),
+    # Everything a forecast may use must be computable from TRAINING pairs, or
+    # be declared visible from outside.  Restricted loss is taken on the
+    # training split; the all-pairs version reads held-out labels.
+    ("restricted_loss_sum_train", "restricted loss (train pairs)", False),
+    ("excluded_loss_sum", "excluded loss (train pairs)", True),
+    ("emb_gini", "embedding Gini (no frequency choice)", True),
     ("emb_key_frac", "power in key frequencies", True),
-    ("logit_var_a+b", "(a+b) variance explained", True),
+    ("logit_var_a+b", "(a+b) variance explained (no frequency choice)", True),
     ("weight_norm", "weight norm", False),
     ("train_loss", "train loss", False),
     ("test_acc", "test accuracy (visible from outside)", True),
     ("test_loss", "test loss (visible from outside)", False),
-    # the same key-frequency measures, but with the frequencies the checkpoint
-    # itself picks rather than the final model's -- no information from after
-    # the transition
-    ("restricted_loss_sum_all_live", "restricted loss, leak-free", False),
-    ("excluded_loss_sum_live", "excluded loss, leak-free", True),
+    # the frequency-dependent measures again, with the set each checkpoint
+    # itself would pick -- no information from after the transition
+    ("restricted_loss_sum_train_live", "restricted loss (train pairs), leak-free", False),
+    ("excluded_loss_sum_live", "excluded loss (train pairs), leak-free", True),
     ("emb_key_frac_live", "power in key frequencies, leak-free", True),
 ]
 
@@ -110,6 +112,35 @@ def critical_rho(n, alpha):
         else:
             lo = mid
     return hi
+
+
+def permutation_null(n, draws=200_000, seed=0):
+    """|rho| under the null of no association, by Monte Carlo over permutations.
+
+    For untied ranks the null distribution of Spearman's rho depends only on n,
+    so it is computed once and reused for every signal.  This replaces a t
+    approximation that is anti-conservative at n around 16.
+    """
+    import numpy as np
+    rng = np.random.default_rng(seed)
+    ranks = np.arange(1, n + 1, dtype=float)
+    perms = np.argsort(rng.random((draws, n)), axis=1) + 1.0
+    d2 = ((perms - ranks) ** 2).sum(axis=1)
+    rho = 1.0 - 6.0 * d2 / (n * (n * n - 1))
+    return np.sort(np.abs(rho))
+
+
+def perm_p_two_tailed(rho, null):
+    import numpy as np
+    if rho is None:
+        return None
+    k = len(null) - np.searchsorted(null, abs(rho) - 1e-12, side="left")
+    return float((k + 1) / (len(null) + 1))
+
+
+def perm_critical(null, alpha):
+    import numpy as np
+    return float(np.quantile(null, 1.0 - alpha))
 
 
 def auc(pos, neg):
@@ -239,17 +270,27 @@ def main():
                 v = within["at_steps"][str(at)].get(key)
                 line += "%12s" % (f"{v['rho']:+.2f}" if v else "--")
             print(line)
-        # Bonferroni over every test actually run in this table
-        n_tests = sum(len(v) for v in within["at_steps"].values())
+        # Significance by permutation, and Bonferroni over the tests that are
+        # actually reported: readings before the earliest transition only.  A
+        # reading after some run has grokked measures the outcome and is not
+        # shown, so it must not inflate the denominator either.
+        earliest = min(m["grok"] for m in members)
+        reported = [s for s in within["at_steps"] if int(s) < earliest]
+        null = permutation_null(len(members))
+        n_tests = sum(len(within["at_steps"][s]) for s in reported)
         alpha = 0.05 / max(n_tests, 1)
-        within["bonferroni"] = {"n_tests": n_tests, "alpha": alpha,
-                                "critical_rho_two_tailed": critical_rho(len(members), alpha)}
         for at, rec in within["at_steps"].items():
             for v in rec.values():
-                v["survives_bonferroni"] = (v["p_two_tailed"] is not None
+                v["p_two_tailed"] = perm_p_two_tailed(v["rho"], null)
+                v["survives_bonferroni"] = (at in reported and v["p_two_tailed"] is not None
                                             and v["p_two_tailed"] < alpha)
-        print(f"  Bonferroni: {n_tests} tests, alpha {alpha:.5f}, two-tailed critical "
-              f"|rho| = {within['bonferroni']['critical_rho_two_tailed']:.3f}")
+        within["bonferroni"] = {
+            "n_tests": n_tests, "alpha": alpha, "reported_steps": reported,
+            "method": f"two-tailed permutation test, {len(null):,} draws",
+            "critical_rho_two_tailed": perm_critical(null, alpha)}
+        print(f"  Bonferroni over {n_tests} reported tests (steps {reported}), alpha "
+              f"{alpha:.5f}; permutation critical |rho| = "
+              f"{within['bonferroni']['critical_rho_two_tailed']:.3f}")
         out["within_config"] = within
         print()
 

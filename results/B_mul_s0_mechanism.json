@@ -1459,6 +1459,20 @@
    "row0_doubled": 1.0,
    "row0_replaced_by_mean_of_others": 0.995555579662323,
    "row0_scaled_x10": 0.0,
+   "one_input_without_signal": {
+    "probe_rows": [
+     5,
+     17,
+     60
+    ],
+    "frac_predicted_0_zeroed": 0.9910714030265808,
+    "frac_predicted_0_mean": 0.9910714030265808
+   },
+   "both_inputs_without_signal": {
+    "most_common_prediction": 59,
+    "its_share": 1.0,
+    "frac_predicted_0": 0.0
+   },
    "random_direction_mean_norm": {
     "n": 20,
     "min": 0.20000000298023224,
@@ -1487,6 +1501,7 @@
      1.0
     ]
    },
+   "scale_factor": 10.0,
    "row0_norm": 0.5055989623069763,
    "mean_other_norm": 1.0468156337738037,
    "row0_is_smallest": true
