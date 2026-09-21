@@ -7,3 +7,7 @@ checkpoints/
 .DS_Store
 env/
 venv/
+
+# run output: machine-specific, contains absolute paths
+logs/
+*.log

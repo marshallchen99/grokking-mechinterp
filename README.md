@@ -666,7 +666,11 @@ tests/             correctness tests for everything the results depend on
   configuration grokked in half the steps of the original, and the obvious
   explanation -- the float64 loss -- turned out to be wrong when run as a
   controlled comparison. It is left in the write-up rather than quietly removed.
-- This project was built with AI assistance (Claude). The experimental design,
-  the corrections to the implementation, and the write-up were produced
-  interactively; every number was produced by running the code in this
-  repository on this machine.
+- **How this was made.** This repository was designed, implemented and written
+  by an AI system (Claude, by Anthropic) working as an agent at my direction,
+  over about a day. I chose the topic and set the scope; the experiment design,
+  the code, the analysis and this write-up are the model's. Every number was
+  produced by running that code on my machine. Several corrections recorded
+  above -- the float32 hypothesis that turned out to be wrong, the five-run
+  forecasting result that did not survive seventeen, the gap in the readout --
+  came out of review questions I asked about whether the work was finished.
