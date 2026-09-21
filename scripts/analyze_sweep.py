@@ -24,7 +24,7 @@ from grokking.analysis.core import checkpoint_paths, load_snapshot    # noqa: E4
 from grokking.analysis.spectra import key_freqs_consensus             # noqa: E402
 from grokking.analysis.structure import additive_structure            # noqa: E402
 from grokking.analysis.timing import crossing_step                    # noqa: E402
-from grokking.data import make_dataset                                # noqa: E402
+from grokking.runinfo import provenance, run_dataset                  # noqa: E402
 from grokking.fourier import make_fourier_basis                       # noqa: E402
 
 
@@ -77,9 +77,7 @@ def main():
                 if p not in bases:
                     bases[p] = make_fourier_basis(p, dtype=torch.float64)[0]
                 F = bases[p]
-                data = make_dataset(p=p, op=h["data"]["op"],
-                                    train_frac=h["data"]["train_frac"],
-                                    seed=h["data"]["seed"])
+                data = run_dataset(root, tag)
                 snap = load_snapshot(paths[-1][1], data)
                 cons = key_freqs_consensus(snap.model.W_E.detach(), snap.neuron_acts, F, p)
                 K = cons["consensus"] if cons["agree"] else cons["union"]
@@ -99,7 +97,7 @@ def main():
               + (f"  gini {cell.get('gini_W_E', float('nan')):.3f}" if "gini_W_E" in cell else ""),
               flush=True)
 
-    out = {"cells": cells,
+    out = {"_provenance": provenance(root), "cells": cells,
            "n_censored": sum(c["censored"] for c in cells),
            "n_total": len(cells)}
     path = root / "results" / args.out

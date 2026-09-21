@@ -33,9 +33,10 @@ from grokking.analysis.spectra import key_freqs_consensus      # noqa: E402
 from grokking.analysis.structure import (                      # noqa: E402
     additive_structure, readout_budget, trig_identity_report,
 )
-from grokking.data import make_dataset
-from grokking.runinfo import run_config, run_dataset  # noqa: E402                         # noqa: E402
-from grokking.fourier import make_fourier_basis                # noqa: E402
+from grokking.runinfo import provenance, run_config, run_dataset   # noqa: E402
+from grokking.fourier import fourier_1d, gini, make_fourier_basis  # noqa: E402
+
+N_RANDOM_DRAWS = 20   # size-matched random neuron sets per cluster
 
 
 def main():
@@ -71,7 +72,7 @@ def main():
     print(f"{args.tag}: final checkpoint step {snap.step}", flush=True)
 
     out = {"tag": args.tag, "op": args.op, "p": p, "final_step": snap.step,
-           "baseline": snap.losses()}
+           "_provenance": provenance(root), "baseline": snap.losses()}
 
     # ---- which frequencies, by three independent rules ---------------------
     cons = key_freqs_consensus(snap.model.W_E.detach(), snap.neuron_acts, F, p)
@@ -82,6 +83,15 @@ def main():
         "jaccard": cons["jaccard"], "agree": cons["agree"],
         "gini_W_E": spec.gini,
         "frac_power_in_key": spec.sparsity_report()["frac_power_in_key_freqs"],
+        # Nanda et al.'s definition: Gini of the norms of the Fourier components
+        # (all p of them) of W_E and of the neuron-logit map W_L = W_out W_U.
+        # gini_W_E above is over per-frequency power (squared norms), which
+        # comes out much larger for the same weights.
+        "gini_W_E_nanda": float(gini(fourier_1d(
+            snap.model.W_E.detach()[:p].double(), F, dim=0).norm(dim=1))),
+        "gini_W_L_nanda": float(gini(fourier_1d(
+            (snap.model.W_out.detach() @ snap.model.W_U.detach()[:, :p]).double().T,
+            F, dim=0).norm(dim=1))),
         "power_per_freq": [float(x) for x in spec.power_per_freq],
     }
     print(f"  key frequencies {K}  (Jaccard {cons['jaccard']:.3f})", flush=True)
@@ -92,16 +102,34 @@ def main():
     domf, domfrac = full_b["dominant_freq"], full_b["dominant_frac"]
     counts = {int(k): int((domf == k).sum()) for k in sorted(set(domf.tolist()))}
     out["neurons"] = {
-        "counts_by_freq": counts,
+        "counts_by_freq": counts,             # key 0 = dead neurons
+        "n_dead": counts.get(0, 0),
         "n_total": int(domf.numel()),
         "frac_above_85": float((domfrac > 0.85).float().mean()),
         "mean_dominant_frac": float(domfrac.mean()),
         "min_dominant_frac": float(domfrac.min()),
-        "all_on_key_freqs": set(counts) <= set(K),
+        "all_on_key_freqs": set(counts) - {0} <= set(K),
     }
+
+    # ---- the softmax-invariant part of W_U ------------------------------------
+    # Adding the same number to every class changes no prediction.  W_U's part
+    # that does that is (W_U 1 / p) 1^T; its size, at step 0 and at the end.
+    def invariant(W):
+        W = W[:, :p].double()
+        return float(W.sum(dim=1).norm() / p ** 0.5), float(W.norm())
+    W0 = torch.load(paths[0][1], weights_only=True)["state_dict"]["W_U"]
+    inv0, _ = invariant(W0)
+    inv1, tot1 = invariant(snap.model.W_U.detach())
+    out["W_U_softmax_invariant"] = {"step0": inv0, "final": inv1,
+                                    "final_frac_of_W_U": inv1 / tot1, "step0_step": paths[0][0]}
 
     # ---- what does it compute ---------------------------------------------
     out["structure"] = additive_structure(snap.logits, p)
+    # The same, with the softmax-invariant per-input mean over c removed first,
+    # as the readout budget does.  It cannot change a prediction.
+    recentred = snap.logits - snap.logits.mean(dim=-1, keepdim=True)
+    out["structure_recentred"] = additive_structure(recentred, p)
+    out["trig_recentred_mean_sum_frac"] = trig_identity_report(recentred, F, p, K)["mean_sum_frac"]
     trig = trig_identity_report(snap.logits, F, p, K)
     out["trig"] = {
         "mean_sum_frac": trig["mean_sum_frac"],
@@ -140,13 +168,28 @@ def main():
     out["ablation_component"] = component_ablation_study(snap.model, data)
 
     mean_act = snap.neuron_acts.reshape(-1, snap.neuron_acts.shape[-1]).mean(0)
-    per_freq_neuron = {}
+    per_freq_neuron, size_matched = {}, {}
+    gen = torch.Generator().manual_seed(0)
     for k in K:
+        in_k = domf == k
         per_freq_neuron[f"drop_freq_{k}"] = evaluate_model(
-            ablate_neurons(snap.model, domf != k, mean_act), data)
+            ablate_neurons(snap.model, ~in_k, mean_act), data)
         per_freq_neuron[f"keep_only_freq_{k}"] = evaluate_model(
-            ablate_neurons(snap.model, domf == k, mean_act), data)
+            ablate_neurons(snap.model, in_k, mean_act), data)
+        # control: drop the same number of neurons, drawn from outside the cluster
+        n_k = int(in_k.sum())
+        outside = (~in_k).nonzero().flatten()
+        draws = []
+        for _ in range(N_RANDOM_DRAWS):
+            keep = torch.ones_like(in_k)
+            keep[outside[torch.randperm(len(outside), generator=gen)[:n_k]]] = False
+            draws.append(evaluate_model(ablate_neurons(snap.model, keep, mean_act), data))
+        size_matched[str(k)] = {
+            "n_neurons": n_k, "n_draws": N_RANDOM_DRAWS,
+            "test_acc": [d["test_acc"] for d in draws],
+            "test_loss": [d["test_loss"] for d in draws]}
     out["ablation_neuron_per_freq"] = per_freq_neuron
+    out["ablation_neuron_size_matched"] = size_matched
 
     # ---- optional: the multiplicative basis --------------------------------
     if args.dlog:

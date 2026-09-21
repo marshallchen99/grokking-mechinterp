@@ -35,33 +35,97 @@ def run_config(root: Path, tag: str) -> Dict:
             "train_frac": float(d["train_frac"]), "seed": int(d["seed"])}
 
 
+SPLIT_HASHES = "split_hashes.json"   # fingerprints of the shipped runs' splits
+
+
+def recorded_split_hash(root: Path, tag: str):
+    """The split fingerprint from the run's record, else from results/split_hashes.json."""
+    h = json.loads((Path(root) / "results" / f"{tag}_history.json").read_text())
+    if "split_hash" in h.get("data", {}):
+        return h["data"]["split_hash"]
+    table = Path(root) / "results" / SPLIT_HASHES
+    return json.loads(table.read_text()).get(tag) if table.exists() else None
+
+
 def run_dataset(root: Path, tag: str) -> ModularDataset:
     """The dataset -- including the exact train/test split -- a run was trained on."""
     c = run_config(root, tag)
-    return make_dataset(p=c["p"], op=c["op"], train_frac=c["train_frac"], seed=c["seed"])
+    d = make_dataset(p=c["p"], op=c["op"], train_frac=c["train_frac"], seed=c["seed"])
+    want = recorded_split_hash(root, tag)
+    if want is not None and d.split_hash() != want:
+        raise RuntimeError(
+            f"the split rebuilt for {tag!r} is not the one it was trained on "
+            f"({d.split_hash()} != {want}); torch's randperm has probably changed. "
+            f"The shipped runs used torch 2.12.")
+    return d
+
+
+def provenance(root: Path = None) -> Dict:
+    """What produced a results file: code commit, command line, threads, versions.
+
+    Written into every derived results file.  Without it, files made by two
+    versions of an analysis script look identical, which is how a redefined
+    field once sat unnoticed in two meanings across the shipped results.
+    """
+    import platform
+    import subprocess
+    import sys
+
+    import torch
+
+    repo = Path(__file__).resolve().parents[2]
+
+    def git(*a):
+        try:
+            return subprocess.run(["git", *a], cwd=repo, capture_output=True,
+                                  text=True, timeout=20).stdout.strip()
+        except Exception:
+            return ""
+
+    # local absolute paths do not belong in shipped files
+    places = sorted({str(Path(x).resolve()) for x in (repo, root) if x is not None},
+                    key=len, reverse=True)
+
+    def rel(a):
+        for pre in places:
+            a = a.replace(pre + "/", "").replace(pre, ".")
+        return a
+
+    return {
+        "commit": git("rev-parse", "HEAD") or None,
+        "code_modified": bool(git("status", "--porcelain", "--", "src", "scripts")),
+        "argv": [rel(a) for a in sys.argv],
+        "threads": torch.get_num_threads(),
+        "torch": torch.__version__,
+        "python": platform.python_version(),
+    }
 
 
 # ------------------------------------------------------------ training choices
 
-# Three runs were trained before the history file recorded the loss precision
-# and the warmup.  Their values are established from the git history, not
-# inferred from the results:
-#   main_add_s0  launched 2026-09-20 11:18, before commit 6a213ef introduced the
-#                float64 loss; the train.py of that time (c147ab2) uses
-#                F.cross_entropy on float32 logits and no LR scheduler.
-#   B_add_s0,    launched 13:01, after 6a213ef (float64 loss, 10-step warmup) and
-#   B_mul_s0     before fda9115 added the loss_dtype field; train.py at e25caae
-#                calls cross_entropy_f64 in the training step.
+# Three runs were trained before the history file recorded the loss precision.
+# main_add_s0 records neither that nor the warmup; B_add_s0 and B_mul_s0 record
+# the warmup (10 steps) but not the precision.  The values below come from the
+# git history and the launch commands, not from the results:
+#   main_add_s0  launched 2026-09-20 11:18 with `run_train.py --tag main_add_s0
+#                --op add --steps 40000 --threads 6`, from a working tree first
+#                committed 19 minutes later as c147ab2.  That commit's train.py
+#                uses F.cross_entropy on float32 logits and no LR scheduler, and
+#                it reproduces the run's initial weights and first steps.
+#   B_add_s0,    launched 13:01 from a working tree committed six minutes later
+#   B_mul_s0     as f381b15 (the run_train.py committed at 6a213ef and b5b7cfe
+#                does not run); train.py is identical from 6a213ef to e25caae
+#                and calls cross_entropy_f64 in the training step.
+# Independent check: float64 runs' training loss settles near 9e-8 and the
+# float32 runs' near 1e-5, and these two settle near 9e-8.
 # A run missing from both its record and this table is reported as "not
 # recorded" -- never given a default, which is how B_add_s0 was once labelled
 # float32.
 LEGACY_TRAINING = {
-    # num_threads: the run was launched with --threads 6, visible in the process list
-    # at the time; the run did not record it and no shipped file does, so this
-    # entry rests on the launch command alone.
+    # num_threads rests on the launch command alone; no shipped file records it.
     "main_add_s0": {"loss_dtype": "float32", "warmup_steps": None, "num_threads": 6},
-    "B_add_s0": {"loss_dtype": "float64", "warmup_steps": 10},
-    "B_mul_s0": {"loss_dtype": "float64", "warmup_steps": 10},
+    "B_add_s0": {"loss_dtype": "float64"},
+    "B_mul_s0": {"loss_dtype": "float64"},
 }
 
 

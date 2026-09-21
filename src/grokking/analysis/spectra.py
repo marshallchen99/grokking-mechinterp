@@ -163,11 +163,15 @@ def neuron_frequencies(neuron_acts: torch.Tensor, F: torch.Tensor, p: int
     per_freq = torch.stack([freq_block_power(coeffs, k, p) for k in range(1, n_freq + 1)])
     frac = per_freq / (total + 1e-30)
     best = frac.argmax(dim=0) + 1
+    # A dead neuron (constant output) has no variance for any frequency to
+    # explain; argmax would silently file it under frequency 1.  Mark it 0.
+    dead = total <= 1e-12 * total.max().clamp_min(1e-30)
+    best = torch.where(dead, torch.zeros_like(best), best)
     return {
         "coeffs": coeffs,
         "power_per_freq": per_freq,          # (n_freq, d_mlp)
         "explained_frac": frac,              # (n_freq, d_mlp)
-        "dominant_freq": best,               # (d_mlp,)
+        "dominant_freq": best,               # (d_mlp,); 0 = dead neuron
         "dominant_frac": frac.max(dim=0).values,
         "total_variance": total,
     }

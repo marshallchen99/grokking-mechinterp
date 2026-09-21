@@ -91,14 +91,18 @@ def ablate_neurons(model: OneLayerTransformer, keep_mask: torch.Tensor,
     zero-ablated: their contribution is replaced by its average over the input
     distribution, which is the fairer intervention because it removes the
     neuron's information without also removing its constant offset.
+
+    The average contribution is added at the MLP's output, where the neurons'
+    own output would have gone.  (An earlier version folded it into the
+    position embedding instead, which fed it through attention and the MLP
+    again and wrecked the kept neurons' inputs; every neuron-ablation number
+    it produced was wrong.  tests/test_analysis.py now checks that the kept
+    neurons' activations are untouched.)
     """
     m = _clone(model)
     drop = ~keep_mask
     if mean_act is not None:
-        # fold the average contribution of the dropped neurons into W_pos, so
-        # the residual stream keeps the same mean it had before
-        bias = mean_act[drop] @ m.W_out.data[drop]          # (d_model,)
-        m.W_pos.data[-1] += bias
+        m.mlp_out_offset += mean_act[drop].to(m.W_out.dtype) @ m.W_out.data[drop]
     m.W_out.data[drop] = 0.0
     return m
 

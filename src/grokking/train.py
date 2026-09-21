@@ -68,7 +68,9 @@ class TrainConfig:
     dense_from: int = 5_000
     dense_to: int = 20_000
     dense_every: int = 250
-    seed: int = 0
+    # (There was once a `seed` field here.  Nothing read it -- the model and the
+    # split carry their own seeds -- yet every history recorded it as 0, even
+    # for runs with other seeds.  Old histories still contain it; ignore it.)
 
     def to_dict(self) -> Dict:
         d = asdict(self)
@@ -124,6 +126,7 @@ class Trainer:
         cfg: TrainConfig,
         out_dir: Path,
         tag: str = "run",
+        overwrite: bool = False,
     ):
         self.model = model
         self.data = data
@@ -131,6 +134,16 @@ class Trainer:
         self.out_dir = Path(out_dir)
         self.tag = tag
         self.ckpt_dir = self.out_dir / "checkpoints" / tag
+        old = sorted(self.ckpt_dir.glob("step_*.pt"))
+        if old:
+            # Mixing two runs' checkpoints in one directory is silent: the
+            # analysis takes the highest step as "final", whichever run wrote it.
+            if not overwrite:
+                raise FileExistsError(
+                    f"{self.ckpt_dir} already holds {len(old)} checkpoints; "
+                    f"use another tag, or pass overwrite=True (--overwrite) to replace them")
+            for f in old:
+                f.unlink()
         self.ckpt_dir.mkdir(parents=True, exist_ok=True)
         (self.out_dir / "results").mkdir(parents=True, exist_ok=True)
 
@@ -154,10 +167,11 @@ class Trainer:
         # multiplier at step 0 is exactly 0, so the first step updates nothing
         # -- including the decoupled weight decay, which AdamW scales by lr.
         # Both reference implementations behave this way; it is not an
-        # off-by-one to be "fixed".
-        w = max(cfg.warmup_steps, 1)
-        self.sched = torch.optim.lr_scheduler.LambdaLR(
-            self.opt, lambda step: min(step / w, 1.0))
+        # off-by-one to be "fixed".  warmup_steps = 0 means no scheduler at
+        # all (the first run's setting); it used to behave exactly like 1.
+        w = cfg.warmup_steps
+        self.sched = (torch.optim.lr_scheduler.LambdaLR(
+            self.opt, lambda step: min(step / w, 1.0)) if w > 0 else None)
 
         self._loss_dtype = DTYPES[cfg.loss_dtype]
         self.ckpt_at = set(checkpoint_steps(
@@ -177,7 +191,8 @@ class Trainer:
             "train_cfg": self.cfg.to_dict(),
             "data": {"p": self.data.p, "op": self.data.op,
                      "train_frac": self.data.train_frac, "seed": self.data.seed,
-                     "n_train": self.data.n_train, "n_test": self.data.n_test},
+                     "n_train": self.data.n_train, "n_test": self.data.n_test,
+                     "split_hash": self.data.split_hash()},
             "n_params": self.model.n_params(),
             "checkpoint_steps": sorted(self.ckpt_at),
             "torch_version": _t.__version__,
@@ -198,7 +213,8 @@ class Trainer:
             "train_cfg": self.cfg.to_dict(),
             "data": {"p": self.data.p, "op": self.data.op,
                      "train_frac": self.data.train_frac, "seed": self.data.seed,
-                     "n_train": self.data.n_train, "n_test": self.data.n_test},
+                     "n_train": self.data.n_train, "n_test": self.data.n_test,
+                     "split_hash": self.data.split_hash()},
             "n_params": self.model.n_params(),
             "history": self.history,
         }
@@ -239,7 +255,8 @@ class Trainer:
             self.opt.zero_grad(set_to_none=True)
             loss.backward()
             self.opt.step()
-            self.sched.step()
+            if self.sched is not None:
+                self.sched.step()
 
         self._write_history()
         return self.history

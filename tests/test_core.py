@@ -153,7 +153,8 @@ def test_param_count_matches_formula():
         #                                                 residues only, no "=" column
     )
     assert m.n_params() == expected
-    # the canonical configuration, and the published model's own weight count
+    # this repository's configuration at p = 113 (Nanda et al.'s model adds MLP
+    # biases and a live output class for '=', so it is not their count)
     assert OneLayerTransformer(ModelConfig()).n_params() == 226_048
 
 
@@ -278,39 +279,34 @@ def test_primitive_root_generates_whole_group(p):
 
 # ------------------------------------------------------------ determinism
 
-def test_single_threaded_training_is_bit_reproducible():
-    """Same seeds, one thread -> identical weights.
+def test_single_threaded_training_is_bit_reproducible(tmp_path):
+    """Same seeds, one thread -> identical weights, through the real Trainer.
 
     Worth pinning down, because it is NOT true with more than one thread:
     PyTorch's multi-threaded CPU reductions do not fix their summation order,
     so two runs of this same code at 6 threads diverge within a hundred steps.
     Runs in this repository are therefore reproducible in distribution but not
-    bit-exact unless single-threaded, and the write-up says so.
+    bit-exact unless single-threaded, and the write-up says so.  Fifteen steps
+    cover the warmup and the float64 loss path the shipped runs used.
     """
     import hashlib
 
-    from grokking.train import cross_entropy_f64
+    from grokking.train import TrainConfig, Trainer
 
     old = torch.get_num_threads()
     torch.set_num_threads(1)
     try:
-        def run():
+        def run(out):
             d = make_dataset(p=P, seed=0)
-            m = OneLayerTransformer(ModelConfig(d_vocab=d.vocab_size, d_vocab_out=P, seed=0))
-            opt = torch.optim.AdamW(m.parameters(), lr=1e-3, betas=(0.9, 0.98),
-                                    weight_decay=1.0)
-            x, y = d.train()
-            x, y = x[:256], y[:256]
-            for _ in range(12):
-                loss = cross_entropy_f64(final_logits(m(x, last_only=True), P), y)
-                opt.zero_grad(set_to_none=True)
-                loss.backward()
-                opt.step()
+            m = OneLayerTransformer(ModelConfig(d_vocab=d.vocab_size, seed=0))
+            cfg = TrainConfig(steps=15, log_every=5, n_log_checkpoints=2,
+                              dense_from=0, dense_to=0, dense_every=1)
+            Trainer(m, d, cfg, out, tag="det").run(verbose=False)
             with torch.no_grad():
                 return hashlib.sha256(
                     b"".join(p.numpy().tobytes() for p in m.parameters())).hexdigest()
 
-        assert run() == run()
+        assert run(tmp_path / "a") == run(tmp_path / "b")
     finally:
         torch.set_num_threads(old)
 
@@ -360,4 +356,6 @@ def test_no_analysis_script_builds_its_own_split():
 def test_training_sets_the_output_width_to_p():
     """No dead output columns at any modulus, not just at p = 113."""
     src = (Path(__file__).resolve().parents[1] / "scripts" / "run_train.py").read_text()
-    assert "d_vocab_out=data.p" in src
+    assert "d_vocab_out=args.d_vocab_out or data.p" in src
+    from grokking.model import ModelConfig
+    assert ModelConfig(d_vocab=60).d_vocab_out == 59

@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Export a compact JSON for the interactive page.
+"""Build the interactive page: web/data.json and web/index.html.
 
 Everything the page shows has to come from the results files, same as the
 README, so this is the only place the web data is assembled.  It is kept small
 by thinning the training history (which has thousands of points at a cadence no
-chart needs) while keeping every checkpoint's spectrum.
+chart needs) while keeping every checkpoint's spectrum.  The page itself is
+web/page.template.html with the data substituted for __DATA__, so it opens as a
+single self-contained file.
 """
 from __future__ import annotations
 
@@ -54,7 +56,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", default="main_add_s0")
     ap.add_argument("--op-tags", nargs="*", default=None)   # default: report_blocks.OP_TAGS
-    ap.add_argument("--out", default="web_data.json")
+    ap.add_argument("--web", default=None, help="output directory (default <root>/web)")
     ap.add_argument("--root", default=str(ROOT))
     args = ap.parse_args()
     root = Path(args.root)
@@ -199,11 +201,20 @@ def main():
     if "## What is borrowed, and what went wrong" in readme:
         out["borrowed"] = readme.split("## What is borrowed, and what went wrong", 1)[1].strip()
 
-    path = root / "results" / args.out
-    path.write_text(json.dumps(out, separators=(",", ":")))
-    kb = path.stat().st_size / 1024
-    print(f"wrote {path}  ({kb:.0f} KB; {len(curve)} curve points, "
-          f"{len(frames)} spectra, {len(ops)} finished operation runs)")
+    web = Path(args.web) if args.web else root / "web"
+    web.mkdir(parents=True, exist_ok=True)
+    data = json.dumps(out, separators=(",", ":"))
+    (web / "data.json").write_text(data)
+    template = (ROOT / "web" / "page.template.html").read_text()
+    # the data sits inside a <script> element, so "</" must not end it early
+    (web / "index.html").write_text(template.replace("__DATA__", build_safe(data)))
+    kb = len(data) / 1024
+    print(f"wrote {web / 'data.json'} and {web / 'index.html'}  ({kb:.0f} KB; "
+          f"{len(curve)} curve points, {len(frames)} spectra, {len(ops)} finished operation runs)")
+
+
+def build_safe(data: str) -> str:
+    return data.replace("</", "<\\/")
 
 
 if __name__ == "__main__":

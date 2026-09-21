@@ -1,4 +1,9 @@
-torch>=2.0
-numpy
-matplotlib
+# Tested with Python 3.13.12, torch 2.12.0 (CPU build), numpy 2.4.4, matplotlib 3.10.9.
+# The project needs no GPU; the CPU-only torch wheel is much smaller:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+# The train/test splits are rebuilt with torch.randperm; the analysis checks
+# each rebuilt split against a recorded fingerprint and stops on a mismatch.
+torch>=2.5
+numpy>=2.0
+matplotlib>=3.8
 pytest

@@ -342,3 +342,131 @@ def test_report_prose_has_no_hand_picked_numbers_in_expressions():
                         and sub.value not in (0, 1, 2, 60, 100, 1000)):   # counts; s->min, s->ms, %
                     bad.append((sub.lineno, sub.value))
     assert not bad, f"hand-picked numbers inside formatted expressions: {bad}"
+
+
+# ------------------------------------------------------- interventions
+
+def _small_model_and_data(p=31, seed=3):
+    from grokking.analysis.core import load_snapshot  # noqa: F401  (import check)
+    from grokking.model import ModelConfig, OneLayerTransformer
+    d = make_dataset(p=p, seed=0)
+    m = OneLayerTransformer(ModelConfig(d_vocab=d.vocab_size, d_model=32, n_heads=4,
+                                        d_head=8, d_mlp=64, seed=seed))
+    m.eval()
+    return m, d
+
+
+def test_mean_ablation_replaces_only_the_dropped_neurons():
+    """Mean-ablation must leave every kept neuron's activation untouched.
+
+    The first version folded the dropped neurons' mean output into the position
+    embedding, which sent it through attention and the MLP again; every
+    neuron-ablation number it produced was wrong and no test noticed.
+    """
+    from grokking.analysis.ablation import ablate_neurons
+    m, d = _small_model_and_data()
+    _, cache = m.run_with_cache(d.inputs)
+    post = cache["mlp_post"][:, -1]                       # (p*p, d_mlp)
+    mean = post.mean(0)
+    keep = torch.ones(post.shape[1], dtype=torch.bool)
+    keep[::3] = False
+    m2 = ablate_neurons(m, keep, mean)
+    logits2, cache2 = m2.run_with_cache(d.inputs)
+    assert torch.equal(cache2["mlp_post"][:, -1][:, keep], post[:, keep])
+    # and the logits are exactly "dropped neurons pinned at their mean"
+    mixed = torch.where(keep, post, mean)
+    want = (cache["resid_mid"][:, -1] + mixed @ m.W_out) @ m.W_U
+    assert torch.allclose(logits2[:, -1], want, atol=1e-5)
+
+
+def test_mean_ablating_nothing_is_the_identity():
+    from grokking.analysis.ablation import ablate_neurons
+    m, d = _small_model_and_data()
+    _, cache = m.run_with_cache(d.inputs)
+    mean = cache["mlp_post"][:, -1].mean(0)
+    keep = torch.ones(mean.numel(), dtype=torch.bool)
+    assert torch.equal(ablate_neurons(m, keep, mean)(d.inputs), m(d.inputs))
+
+
+def test_embedding_surgery_keeping_everything_is_the_identity():
+    from grokking.analysis.ablation import ablate_embedding_frequencies
+    m, d = _small_model_and_data()
+    F = make_fourier_basis(d.p, dtype=torch.float64)[0]
+    every = list(range(1, d.p // 2 + 1))
+    kept = ablate_embedding_frequencies(m, F, d.p, every, keep=True)
+    assert torch.allclose(kept.W_E[: d.p], m.W_E[: d.p], atol=1e-6)
+    none_dropped = ablate_embedding_frequencies(m, F, d.p, [], keep=False)
+    assert torch.allclose(none_dropped.W_E[: d.p], m.W_E[: d.p], atol=1e-6)
+    # deleting a frequency removes exactly its two basis directions
+    gone = ablate_embedding_frequencies(m, F, d.p, [5], keep=False)
+    from grokking.analysis.spectra import block_indices
+    from grokking.fourier import fourier_1d
+    c = fourier_1d(gone.W_E.detach()[: d.p].double(), F, dim=0)
+    ck, sk = block_indices(5, d.p)
+    assert float(c[[ck, sk]].abs().max()) < 1e-6
+
+
+def test_readout_budget_on_known_logits(basis):
+    """Exact algorithm: all readout energy at the predicted frequency.
+
+    Plus an (a+b)-shaped offset shared by every class, which softmax ignores:
+    recentring must remove it completely.
+    """
+    from grokking.analysis.structure import readout_budget
+    L = _algorithm_logits(KEYS)
+    rb = readout_budget(L, basis, P, KEYS)
+    assert rb["own"] == pytest.approx(1.0, abs=1e-9)
+    assert rb["cross"] == pytest.approx(0.0, abs=1e-9)
+    x = torch.arange(P, dtype=torch.float64)
+    offset = 5 * torch.cos(2 * torch.pi * 7 * (x[:, None] + x[None, :]) / P)[:, :, None]
+    assert readout_budget(L + offset, basis, P, KEYS)["own"] == pytest.approx(1.0, abs=1e-9)
+    # a subtraction algorithm has all its readout energy in the (a-b) direction
+    # and none in (a+b); the fractions of the empty direction mean nothing
+    Lsub = _algorithm_logits(KEYS, sign=-1)
+    right = readout_budget(Lsub, basis, P, KEYS, sign=-1)
+    wrong = readout_budget(Lsub, basis, P, KEYS, sign=+1)
+    assert right["own"] == pytest.approx(1.0, abs=1e-9)
+    assert wrong["total"] < 1e-12 * right["total"]
+
+
+def test_crossing_step_interpolates_between_logged_steps():
+    from grokking.analysis.timing import crossing_step
+    rows = [{"step": 0, "a": 0.0}, {"step": 10, "a": 0.2}, {"step": 20, "a": 0.6}]
+    assert crossing_step(rows, "a", 0.4) == pytest.approx(15.0)
+    assert crossing_step(rows, "a", 0.7) is None
+    assert crossing_step(rows, "a", 0.0) == 0.0
+
+
+def test_a_changed_split_is_refused(tmp_path):
+    """If torch ever rebuilt a run's split differently, analysis must stop."""
+    import json
+    from grokking.runinfo import run_dataset
+    (tmp_path / "results").mkdir()
+    rec = {"data": {"p": 31, "op": "add", "train_frac": 0.3, "seed": 2}}
+    good = make_dataset(p=31, seed=2, train_frac=0.3).split_hash()
+    (tmp_path / "results" / "x_history.json").write_text(
+        json.dumps({"data": {**rec["data"], "split_hash": good}}))
+    assert run_dataset(tmp_path, "x").split_hash() == good
+    (tmp_path / "results" / "x_history.json").write_text(
+        json.dumps({"data": {**rec["data"], "split_hash": "0" * 16}}))
+    with pytest.raises(RuntimeError):
+        run_dataset(tmp_path, "x")
+
+
+def test_every_shipped_split_is_the_one_trained_on():
+    import json
+    from grokking.runinfo import run_dataset
+    root = Path(__file__).resolve().parents[1]
+    table = json.loads((root / "results" / "split_hashes.json").read_text())
+    hists = sorted((root / "results").glob("*_history.json"))
+    assert {h.name[: -len("_history.json")] for h in hists} == set(table)
+    for tag in table:
+        run_dataset(root, tag)          # raises on a mismatch
+
+
+def test_page_is_the_template_with_the_data():
+    root = Path(__file__).resolve().parents[1]
+    tpl = (root / "web" / "page.template.html").read_text()
+    data = (root / "web" / "data.json").read_text()
+    assert (root / "web" / "index.html").read_text() == tpl.replace(
+        "__DATA__", data.replace("</", "<\\/"))

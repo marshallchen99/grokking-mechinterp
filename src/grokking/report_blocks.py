@@ -704,7 +704,7 @@ def operations(root: Path, tags: List[str]) -> Optional[str]:
 
 
 def quadratic(root: Path, _tag: str) -> Optional[str]:
-    d = load_json(root, "quadratic_form.json")
+    d = (load_json(root, "quadratic_form.json") or {}).get("runs")
     if not d or "unseen_with_flipped_partner_trained" not in d[0]:
         return None
     rows = [[f"`{r['tag']}`", f"{r['p_mod_3']} mod 3",

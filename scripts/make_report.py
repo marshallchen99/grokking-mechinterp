@@ -40,3 +40,5 @@ if broken:
 miss = missing_blocks(readme, blocks)
 if miss:
     print(f"  WARNING: markers with no generator: {miss}")
+if pending or broken or miss:
+    sys.exit(1)
