@@ -24,8 +24,13 @@ for spec in "$@"; do
   echo "=== $spec  $(date +%T) ==="
   python3 scripts/run_many.py --jobs "scripts/$spec" --parallel "$PARALLEL" --threads "$THREADS"
   for tag in $(python3 -c "import json,sys; print(' '.join(j['tag'] for j in json.load(open(sys.argv[1]))))" "scripts/$spec"); do
+    case "$tag" in R_*) continue ;; esac     # seed replicates: only their training curves are used
+    case " main_add_s0 B_add_s0 " in         # the runs whose neuron measures are reported
+      *" $tag "*) flags="" ;;
+      *)          flags="--no-neurons" ;;
+    esac
     echo "  analysing $tag"
-    python3 scripts/analyze_run.py --tag "$tag" --threads 4 --no-neurons > "logs/traj_$tag.log" 2>&1 \
+    python3 scripts/analyze_run.py --tag "$tag" --threads 4 $flags > "logs/traj_$tag.log" 2>&1 \
       || { echo "FAILED (see logs/traj_$tag.log)"; exit 1; }
   done
 done
