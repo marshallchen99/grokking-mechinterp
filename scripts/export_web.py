@@ -18,6 +18,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from grokking.analysis.timing import crossing_step, phase_boundaries   # noqa: E402
 from grokking.report import is_finished                                # noqa: E402
+from grokking.report_blocks import OP_TAGS                             # noqa: E402
 
 
 def load(root, name):
@@ -52,9 +53,7 @@ def r4(x):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", default="main_add_s0")
-    ap.add_argument("--op-tags", nargs="*",
-                    default=["main_add_s0", "B_add_s0", "B_sub_s0", "B_mul_s0",
-                             "B_sqx_p113", "B_sqx_p109", "B_add_s1"])
+    ap.add_argument("--op-tags", nargs="*", default=None)   # default: report_blocks.OP_TAGS
     ap.add_argument("--out", default="web_data.json")
     ap.add_argument("--root", default=str(ROOT))
     args = ap.parse_args()
@@ -168,7 +167,7 @@ def main():
     out["replicates"] = repl
 
     ops = []
-    for tag in args.op_tags:
+    for tag in (args.op_tags or OP_TAGS):
         h = load(root, f"{tag}_history.json")
         if not is_finished(h):
             continue
@@ -194,7 +193,7 @@ def main():
     # external review found the page asserting things the README had already
     # corrected.  One generator, two renderings.
     from grokking.report_blocks import build
-    op_tags = [t for t in args.op_tags if t != args.tag] or args.op_tags
+    op_tags = args.op_tags or OP_TAGS
     out["blocks"] = build(root, args.tag, op_tags=op_tags)
     readme = (root / "README.md").read_text()
     if "## What is borrowed, and what went wrong" in readme:

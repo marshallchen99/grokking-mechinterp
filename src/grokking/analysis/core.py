@@ -83,7 +83,10 @@ def load_snapshot(path: str | Path, data: Optional[ModularDataset] = None) -> Sn
     model.eval()
 
     if data is None:
-        data = make_dataset(p=cfg.d_vocab - 1)
+        # Guessing the dataset means guessing the split, and a guessed split is
+        # silently the wrong one for any run not trained on seed 0.
+        raise ValueError("load_snapshot needs the run's dataset; build it with "
+                         "grokking.runinfo.run_dataset(root, tag)")
     p = data.p
 
     _, cache = model.run_with_cache(data.inputs)

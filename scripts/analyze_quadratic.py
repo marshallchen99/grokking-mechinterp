@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""What does a model that plateaus at 50% on a^2+ab+b^2 actually compute?
+"""Why does a model trained on a^2+ab+b^2 plateau near 50%?
 
-"Did not grok" is a description of the accuracy, not of the model.  A run that
-stops at exactly half is doing something specific, and the interesting question
-is what.  This tests one concrete hypothesis -- that the circuit has lost the
-sign of b -- against the obvious alternatives, and reports how much of the
-error it accounts for rather than declaring it the answer.
+The form is symmetric in (a, b) while the train/test split is over ORDERED
+pairs, so many held-out pairs have their transpose in the training set.  A
+model that memorised the training table and learned only that it is symmetric
+would score exactly on those and nothing else.  This measures that directly,
+and also how the remaining errors are structured, rather than reading a
+mechanism into the accuracy.
 """
 from __future__ import annotations
 
@@ -27,7 +28,6 @@ from grokking.runinfo import run_config, run_dataset  # noqa: E402              
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tags", nargs="+", required=True)
-    ap.add_argument("--train-frac", type=float, default=0.5)
     ap.add_argument("--threads", type=int, default=3)
     ap.add_argument("--root", default=str(ROOT))
     args = ap.parse_args()
@@ -56,7 +56,7 @@ def main():
         true, flip = cands["true  a^2+ab+b^2"], cands["sign-flipped b  a^2-ab+b^2"]
         coincide = true == flip
 
-        rec = {"tag": tag, "p": p, "p_mod_3": p % 3,
+        rec = {"tag": tag, "p": p, "p_mod_3": p % 3, "budget": mani["train_cfg"]["steps"],
                "form_splits": p % 3 == 1,
                "train_acc": float((pred == true)[~test].float().mean()),
                "test_acc": float((pred == true)[test].float().mean()),
@@ -84,6 +84,22 @@ def main():
         rec["acc_transpose_in_train"] = float((pred == true)[seen_T].float().mean())
         rec["acc_transpose_held_out"] = float((pred == true)[test & ~train.T].float().mean())
         rec["predictions_symmetric"] = float((pred == pred.T).float().mean())
+        unseen = test & ~train.T & ~coincide
+        rec["n_unseen"] = int(unseen.sum())
+        rec["unseen_predicts_flipped"] = float((pred == flip)[unseen].float().mean())
+        rec["unseen_flip_enrichment"] = rec["unseen_predicts_flipped"] * p
+        # f(a,-b) = f(-a,b) = f(b,-a) = f(-b,a).  Is a sign-flip prediction just a
+        # memorised answer retrieved from one of these partners?
+        neg = lambda x: (-x) % p
+        partner = torch.zeros(p, p, dtype=torch.bool)
+        for i, j in ((a, neg(b)), (neg(a), b), (b, neg(a)), (neg(b), a)):
+            partner |= train[i, j]
+        w, wo = unseen & partner, unseen & ~partner
+        rec["unseen_with_flipped_partner_trained"] = {
+            "n": int(w.sum()), "predicts_flipped": float((pred == flip)[w].float().mean())}
+        rec["unseen_without_flipped_partner"] = {
+            "n": int(wo.sum()),
+            "predicts_flipped": float((pred == flip)[wo].float().mean()) if int(wo.sum()) else None}
         rec["explained_by_memorisation_plus_symmetry"] = (
             rec["frac_test_with_transpose_in_train"] * rec["acc_transpose_in_train"]
             + (1 - rec["frac_test_with_transpose_in_train"]) * rec["acc_transpose_held_out"])

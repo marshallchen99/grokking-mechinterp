@@ -230,10 +230,15 @@ def test_report_prose_contains_no_hand_typed_results():
 
     src_path = Path(__file__).resolve().parents[1] / "src" / "grokking" / "report_blocks.py"
     tree = ast.parse(src_path.read_text())
+    # decimals, thousands-separated counts, "N orders", "Nx", "N%", and any bare
+    # integer of two or more digits.  Number *words* are not caught (the prose
+    # legitimately says "one seed", "two directions"), which is a known limit.
     looks_measured = re.compile(
-        r"(?<![\w.])(\d+\.\d+|\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?\s*orders?\b|\d+x\b)")
-    # Fragments that are formatting, citations or method definitions, not results.
-    allowed = re.compile(r"arXiv|\(\d{4}\)|^\s*$|:\.\d|:,")
+        r"(?<![\w.])(\d+\.\d+|\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?\s*orders?\b|\d+x\b"
+        r"|\d+%|\d{2,})(?![\w])")
+    # Only these spans are exempt, and only the matched span, not the fragment:
+    # arXiv ids, years, format specs, and the names of the moduli/operations.
+    exempt_span = re.compile(r"arXiv:\S+|\b(19|20)\d{2}\b|^\d+$")
     # Docstrings never reach the README; they are allowed to quote old mistakes.
     docstrings = set()
     for node in ast.walk(tree):
@@ -253,9 +258,39 @@ def test_report_prose_contains_no_hand_typed_results():
         else:
             continue
         for text in parts:
-            if allowed.search(text):
-                continue
-            for m in looks_measured.finditer(text):
+            if re.fullmatch(r"\s*\d+\s*", text):
+                continue                        # a code constant, not prose
+            cleaned = re.sub(r"arXiv:\S+", " ", text)
+            cleaned = re.sub(r"Hypothesis \d+(\.\d+)?", " ", cleaned)   # a citation locator
+            cleaned = re.sub(r"\b(19|20)\d{2}\b", " ", cleaned)   # years in citations
+            for m in looks_measured.finditer(cleaned):
                 offenders.append((getattr(node, "lineno", "?"), m.group(0), text.strip()[:70]))
     assert not offenders, "hand-typed numbers in report prose:\n" + "\n".join(
         f"  line {ln}: {num!r} in {txt!r}" for ln, num, txt in offenders)
+
+
+
+def test_readme_matches_a_fresh_render():
+    """The README claims every section is regenerated from results/; check it.
+
+    Re-renders every block with the shipped defaults and compares it with the
+    text between the README's markers.  A drift here means a table in the
+    README no longer comes from the data it claims to.
+    """
+    import re
+
+    root = Path(__file__).resolve().parents[1]
+    readme = (root / "README.md").read_text()
+    from grokking.report_blocks import OP_TAGS, PENDING, build
+
+    blocks = build(root, "main_add_s0", op_tags=OP_TAGS)
+    mismatched = []
+    for name, body in blocks.items():
+        m = re.search(r"<!-- BEGIN:%s -->\n(.*?)\n<!-- END:%s -->" % (name, name), readme, re.S)
+        if m is None:
+            continue
+        if body == PENDING:
+            mismatched.append((name, "pending"))
+        elif m.group(1) != body:
+            mismatched.append((name, "differs"))
+    assert not mismatched, mismatched
