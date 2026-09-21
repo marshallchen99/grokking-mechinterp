@@ -136,7 +136,7 @@ Every one of the 512 MLP neurons is dominated by one of these frequencies:
 ### The readout
 
 <!-- BEGIN:readout -->
-The mechanism's third step is the readout: the amplitudes of cos(w(a+b)) and sin(w(a+b)) must themselves be waves at the same frequency in the answer c, which is what makes the sum peak at c = a+b. Before measuring it, each input's logits are shifted to mean zero over c. That component adds the same number to every class, so softmax, the loss and every prediction are exactly invariant to it; counting it would measure a direction the model cannot be using.
+The mechanism's third step is the readout: the amplitudes of cos(w(a+b)) and sin(w(a+b)) must themselves be waves at the same frequency in the answer c, which is what makes the sum peak at c = a+b. Before measuring it, each input's logits are shifted to mean zero over c. That component adds the same number to every class, so softmax, the loss and every prediction are exactly invariant to it; counting it would measure a direction the model cannot be using. Where the identification rules disagree, the frequencies measured are all those any rule picks.
 
 | run | configuration | direction read | at the predicted frequency | at another key frequency | left over |
 |:--|--:|--:|--:|--:|--:|

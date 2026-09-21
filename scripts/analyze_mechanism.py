@@ -84,8 +84,6 @@ def main():
     print(f"  key frequencies {K}  (Jaccard {cons['jaccard']:.3f})", flush=True)
 
     # ---- neuron census -----------------------------------------------------
-    rb = cons["rule_b"]
-    dom = cons["rule_b"]  # counts recomputed below from the full rule-b output
     from grokking.analysis.spectra import key_freqs_rule_b
     full_b = key_freqs_rule_b(snap.neuron_acts, F, p)
     domf, domfrac = full_b["dominant_freq"], full_b["dominant_frac"]

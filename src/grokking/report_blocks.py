@@ -234,7 +234,8 @@ def readout(root: Path, _tag: str) -> Optional[str]:
         "is what makes the sum peak at c = a+b. Before measuring it, each input's logits are "
         "shifted to mean zero over c. That component adds the same number to every class, "
         "so softmax, the loss and every prediction are exactly invariant to it; counting it "
-        "would measure a direction the model cannot be using.",
+        "would measure a direction the model cannot be using. Where the identification "
+        "rules disagree, the frequencies measured are all those any rule picks.",
         tbl,
     ]
     if f64:
