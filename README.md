@@ -156,7 +156,7 @@ In the float64 addition runs the readout is essentially exact (0.998 to 0.999 at
 
 The 2 float32 runs are measurably less clean (0.876 to 0.894), with the remainder split between other key frequencies and energy none of them explain. **The cause is not established.** It is 2 runs against 3, and the pairs are not matched on everything: the float32 control `C_add_f32` was read at step 25,000 and its float64 twin `B_add_s0` at step 40,000, so budget differs as well as precision (though `C_add_nowarm`, float64 and read at step 25,000, is as clean as the others).
 
-An earlier version attributed the difference to a per-answer bias that float32 prevented from being cleaned up; a later one said that no gradient acts on that component at any precision. Neither holds up. The component is real, and float32 does keep it: rounding gives the float32 gradient a part along the direction softmax ignores, and that part of W_U grows during the float32 runs (`C_add_f32` from 0.77 to 2.16, 45% of W_U; `main_add_s0` from 0.78 to 2.27, 43% of W_U) while it shrinks in the float64 ones (to between 0.013 and 0.023). But it is exactly the component removed before measuring, so it cannot change a prediction and does not explain the difference in this table.
+An earlier version attributed the difference to a per-answer bias that float32 prevented from being cleaned up; a later one said that no gradient acts on that component at any precision. Neither holds up. The component is real, and float32 does keep it: the part of W_U along the direction softmax ignores grows during the float32 runs (`C_add_f32` from 0.77 to 2.16, 45% of W_U's norm; `main_add_s0` from 0.78 to 2.27, 43% of W_U's norm) while it shrinks in the float64 ones (to between 0.013 and 0.023), consistent with float32 rounding giving the gradient a part along it that the exact gradient does not have; that gradient was not measured. Either way it is exactly the component removed before measuring, so it cannot change a prediction and does not explain the difference in this table.
 <!-- END:readout -->
 
 ---
@@ -191,7 +191,7 @@ The key frequencies hold 94.9% of the embedding's power and the evenly spaced co
 | 22 | 208 | 0.3302 | 0.7278 (0.6645 to 0.7813) | 0.1103 |
 | 56 | 73 | 0.9970 | 0.9989 (0.9947 to 0.9997) | 0.0359 |
 
-Removing the cluster for each of frequencies 1, 18, 22 costs more test accuracy than removing as many random other neurons does in any of the 20 draws; for 56 it is within the random range. No single cluster is enough on its own (test accuracy 3.59% to 11.03% with only it kept). An earlier version of this table added the removed neurons' average output at the model's input instead of at the MLP's output, so it went through attention and the MLP a second time; its numbers, and a caveat about test losses above a thousand, were artefacts of that bug.
+Removing the cluster for each of frequencies 1, 18, 22 costs more test accuracy than removing as many random other neurons does in any of the 20 draws: 1.9 to 2.7 times the largest accuracy loss in any draw; for 56 it is within the random range. No single cluster is enough on its own (test accuracy 3.59% to 11.03% with only it kept). Every one of the 512 neurons belongs to some key frequency's cluster, so the random neurons come from the other clusters. An earlier version of this table added the removed neurons' average output at the model's input instead of at the MLP's output, so it went through attention and the MLP a second time; its numbers, and a caveat about test losses above a thousand, were artefacts of that bug.
 
 **Whole components.**
 
@@ -312,7 +312,7 @@ Same model and optimiser, one seed per operation; the step budgets differ (see t
 | `B_sqx_p113` | `(a^2 + ab + b^2) mod p` | 113 | none by 30,000 | 30,000 | 0.1138 | -- | -- | -- |
 | `B_sqx_p109` | `(a^2 + ab + b^2) mod p` | 109 | none by 30,000 | 30,000 | 0.0893 | -- | -- | -- |
 
-Subtraction's output tracks (a-b) rather than (a+b). It grokked at step 27,242 against 7,083 for `B_add_s0`, a factor of 3.8. Among the 120 pairs of seeds in the one configuration run many times, none differs by that factor or more; but that configuration has a different modulus and training fraction, and seed noise here was not measured. With one seed per operation this is suggestive at most. Subtraction grokked 2,758 steps before its budget ran out, so its mechanism was read much closer to the transition than addition's.
+Subtraction's output tracks (a-b) rather than (a+b). It grokked at step 27,242 against 7,083 for `B_add_s0`, a factor of 3.8. Among the 120 pairs of seeds in the one configuration run many times, none differs by that factor or more; but that configuration has a different modulus and training fraction, and at this one seed noise was measured only by a single pair (`B_add_s1` against `B_add_s0`, 1.14x). With one seed per operation this is suggestive at most. Subtraction grokked 2,758 steps before its budget ran out, so its mechanism was read much closer to the transition than addition's.
 
 **Censored runs.**
 
@@ -397,9 +397,9 @@ The first run used float32 cross-entropy, no warmup, and an unembedding with a c
 | `C_add_nowarm` | add, float64 loss, one-step warmup (zero learning rate on step 0), seed 0 | 9,764 |
 | `B_add_s1` | add, float64 loss, 10-step warmup, seed 1 | 6,228 |
 
-Changing only the loss precision moves the step by -349; reducing the warmup to a single step, whose learning rate is zero, by +2,681. With one run per arm, these have to be read against how far two seeds can differ by chance. The only configuration run with many seeds is a different one (16 seeds of `add` at p = 59, training fraction 0.5); there, 90% of seed pairs differ by a larger factor than the precision change, 54% by a larger factor than the warmup change, and 8% by one at least as large as the whole gap between the first run and the corrected one (2.05x). If seed noise at p = 113 is similar, these runs cannot say whether either change matters, or whether the gap itself is chance.
+Changing only the loss precision moves the step by -349; reducing the warmup to a single step, whose learning rate is zero, by +2,681. With one run per arm, these have to be read against how far two runs can differ by chance. The only seed pair of the reference configuration itself (`B_add_s1` against `B_add_s0`) differs by 1.14x. The only configuration run with many seeds is a different one (16 seeds of `add` at p = 59, training fraction 0.5, grokking between step 760 and 2,266); there, 90% of seed pairs differ by a larger factor than the precision change, 54% by a larger factor than the warmup change, and 8% by one at least as large as the whole gap between the first run and the corrected one (2.05x). The control arms share their split and initial weights with the reference run, so independent seeds overstate their noise; but noise at p = 113, training fraction 0.3, was not measured beyond that one pair. These runs cannot say whether either change matters, or whether the gap itself is chance.
 
-What else differs is narrower than it might seem. At step 0 the two runs share 8 of their 9 weight tensors bit for bit; only W_U is drawn differently, because it is drawn last and its shape changed. The extra column itself can matter only through floating-point rounding: it received no gradient, and at every one of 133 checkpoints its weights equal their step-0 values times the pure weight-decay factor (largest relative deviation 5.1e-04). What remains is W_U's initial draw, an interaction between float32 and no warmup (never run jointly), and chance. These single runs cannot separate them, and an earlier claim that the original was simply 'a slow draw' went beyond them.
+What else differs is narrower than it might seem. At step 0 the two runs share 8 of their 9 weight tensors bit for bit; only W_U is drawn differently, because it is drawn last and its shape changed. The extra column itself can matter only through floating-point rounding: it received no gradient, and at 133 of 133 checkpoints its weights equal, bit for bit, their step-0 values decayed by AdamW's weight decay alone. What remains is W_U's initial draw, the difference between no scheduler at all and the control's one zero-rate warmup step (never run on its own), an interaction between float32 and no warmup (never run jointly), and chance. These single runs cannot separate them, and an earlier claim that the original was simply 'a slow draw' went beyond them.
 <!-- END:controls -->
 
 ---
@@ -417,7 +417,7 @@ A smaller modulus (p = 59) makes a run cheap enough to sweep. One seed per cell,
 
 7 of 12 cells did not get there within 20,000 steps -- censored, not shown never to grok.
 
-Within the one training fraction where every cell grokked (0.5), the grokking step falls monotonically as weight decay rises: 10,794, 3,100, 815, 344. Step times weight decay stays between 815 and 1,079 while weight decay spans a factor of 30; the delay after memorisation times weight decay goes from 1,068 to 616. Fitting log step against log weight decay over these 4 cells and the 3 seed-1 replicates that grokked (7 points) gives, counted from step 0, a slope of -1.07 (95% interval -1.28 to -0.86, consistent with -1), and counted from the end of memorisation, -1.27 (95% interval -1.50 to -1.04, steeper than -1). The intervals take the seed-to-seed spread measured at one of these cells (16 seeds at weight decay 1.0) as the noise on every point. Liu et al. (2022) argued that the time to generalise goes like 1/lambda and showed it in a teacher-student model; Lyu et al. (2023) (arXiv:2311.18817) prove it in a large-initialisation limit, counting from initialisation; Truong et al. (2026c) fit a law for the delay after memorisation under AdamW. This reproduces that dependence; it does not discover it.
+Within the one training fraction where every cell grokked (0.5), the grokking step falls monotonically as weight decay rises: 10,794, 3,100, 815, 344. Step times weight decay stays between 815 and 1,079 while weight decay spans a factor of 30; the delay after memorisation times weight decay goes from 1,068 to 616. Fitting log step against log weight decay over these 4 cells and the 3 seed-1 replicates that grokked (7 points) gives a slope of -1.07 counted from step 0 and -1.27 counted from the end of memorisation. Taking the noise on each point from the seed-to-seed spread measured at one of these cells (16 seeds at weight decay 1.0), and allowing for the delay's log being noisier where the delay is short, the 95% intervals are -1.30 to -0.85 and -1.61 to -0.93; both include -1. Part of the gap between the two slopes is arithmetic: a total falling exactly as 1/lambda, minus these memorisation steps, would give a delay slope of -1.17. The seed-1 run at weight decay 0.1 had not grokked by step 12,000 and is left out; a later grokking step there would make both slopes steeper. Liu et al. (2022) argued that the time to generalise goes like 1/lambda and showed it in a teacher-student model and, in their Appendix C, in this same one-layer transformer on (a+b) mod 113, per seed; Lyu et al. (2023) (arXiv:2311.18817) prove it in a large-initialisation limit, counting from initialisation; Truong et al. (2026a) and Truong et al. (2026c) derive and fit a law for the delay after memorisation under AdamW. Both measures agree with that dependence within the noise here; this reproduces it, it does not discover it.
 <!-- END:phase_diagram -->
 
 ![phase diagram](figures/fig6_phase_diagram.png)
@@ -440,9 +440,9 @@ Every seed orders the cells the same way, from most weight decay (fastest) to le
 ## 7. Which early signals track the transition
 
 <!-- BEGIN:prediction -->
-Forecasting grokking from early signals is not new. Notsawo et al. (2023) (arXiv:2306.13253) predict *whether* it will occur from oscillations in the early training loss. At a fixed configuration, Truong et al. (2026a) (arXiv:2603.13331) predict each seed's delay from the parameter norm at memorisation, and Truong et al. (2026b) (arXiv:2604.13123) forecast it from the spectral entropy of the representation; Truong et al. (2026c) (arXiv:2605.18845) fit the delay across hyperparameter settings. For a different emergence, induction heads, Howe (2026) (arXiv:2609.19000) finds that a loss rule ranks seeds as well as a mechanistic precursor does. The question here is a small instance of the same kind: within one configuration of this task, where only the random draw differs, how do a dozen early signals compare at ranking runs by when they generalise?
+Forecasting grokking from early signals is not new. Notsawo et al. (2023) (arXiv:2306.13253) predict *whether* it will occur from oscillations in the early training loss. At a fixed configuration, Truong et al. (2026a) (arXiv:2603.13331) predict each seed's delay from the parameter norm at memorisation, and Truong et al. (2026b) (arXiv:2604.13123) forecast it from the spectral entropy of the representation; Truong et al. (2026c) (arXiv:2605.18845) fit the delay across hyperparameter settings. Howe (2026) (arXiv:2609.19000) forecasts grokking per seed on held-out runs and, for induction heads, finds that an oracle-tuned loss rule ranks seeds as well as a mechanistic precursor but only as a nowcast -- a median lead of 50 steps against 975 -- and argues that rank correlation without lead time rewards nowcasts. The question here is a small instance of the same kind, and shares that limitation: within one configuration of this task, where only the random draw differs, how do a dozen signals, read at fixed early steps, compare at ranking runs by when they generalise?
 
-16 runs share the task (`add`), modulus (59), training fraction (0.5), weight decay (1.0) and budget (6,000 steps). They grok between step 760 and 2,266. A reading taken after some run has grokked measures the outcome, so only readings before step 760 are used. `S_p59_wd1.0_f0.5` has the same configuration but a 20,000-step budget, so a different checkpoint schedule, and is left out.
+16 runs share the task (`add`), modulus (59), training fraction (0.5), weight decay (1.0) and budget (6,000 steps). They grok between step 760 and 2,266. A reading taken after some run has grokked measures the outcome, so only readings before step 760 are used. `R_p59_wd1.0_f0.5_s1` has the same configuration but is left out: different budget and no trajectory analysis (12,000-step budget). `S_p59_wd1.0_f0.5` has the same configuration but is left out: different budget (20,000-step budget).
 
 These are not forecasts made before anything happens. In this configuration test accuracy starts rising almost immediately: at step 200 it is already 15% to 49%; at step 500 it is already 30% to 59% (chance 1.7%). The readings rank how far along a transition already under way each run is.
 
@@ -463,11 +463,11 @@ Spearman correlation with the grokking step; positive means a higher reading goe
 | excluded loss (train pairs), leak-free | -0.65 | -0.74 * |
 | power in key frequencies, leak-free | -0.41 | -0.77 * |
 
-That family of 24 tests was chosen after the results were seen. The first version corrected over all 48 tests computed, at every step (|rho| of at least 0.759); under that family 7 signals survive at step 500 instead of 8, the excluded loss (train pairs), leak-free dropping out.
+That family of 24 tests was chosen after the results were seen; an earlier version corrected over all 48 tests computed, at every step. Under that larger family (permutation threshold |rho| of at least 0.759) 7 signals survive at step 500 instead of 8, the excluded loss (train pairs), leak-free dropping out.
 
 At step 200 nothing survives the correction. The largest point estimate among signals that use no information from after the transition is the weight norm (+0.67); the restricted loss (train pairs) (final) is higher (+0.72) but uses the final model's frequencies. None of these is reliable at this n.
 
-At step 500, 8 signals survive. The strongest is the **test loss (visible from outside)** (rho +0.86), a plain loss that needs no mechanistic analysis. Resampling the 16 runs, the difference in |rho| between the best plain signal (test loss (visible from outside)) and the best mechanistic one that uses no future information (restricted loss (train pairs), leak-free) is +0.04, with a 95% bootstrap interval of -0.22 to +0.31. So in this one configuration neither kind ranks the runs detectably better than the other; the data cannot show that they are equal either. An earlier version of this section claimed the visible quantity could not rank the runs; it had looked only at test accuracy.
+At step 500, 8 signals survive. The strongest is the **test loss (visible from outside)** (rho +0.86), a plain loss that needs no mechanistic analysis. Resampling the 16 runs, the difference in |rho| between the best plain signal (test loss (visible from outside)) and the best mechanistic one that uses no future information (restricted loss (train pairs), leak-free) is +0.04, with a 95% bootstrap interval of -0.22 to +0.31. So in this one configuration neither kind ranks the runs detectably better than the other; the data cannot show that they are equal either, and by then every run's test accuracy is already rising, so these are nowcasts. An earlier version of this section claimed the visible quantity could not rank the runs; it had looked only at test accuracy.
 
 Earlier versions of this table were also wrong for a mechanical reason: runs with a non-zero data seed were analysed on the seed-0 train/test split, which corrupted every split-dependent signal. The numbers above are from the corrected analysis.
 <!-- END:prediction -->
@@ -485,9 +485,12 @@ tests, an (a-b) algorithm scores 0, random logits sit at chance, and a
 softmax-invariant offset leaves the readout untouched. The weight interventions
 have narrower checks: keeping every frequency, or mean-ablating no neuron,
 leaves the model unchanged; deleting a frequency removes exactly its two
-directions; and mean-ablation leaves the kept neurons' activations exactly as
-they were. The zero-element and discrete-log edits, the per-frequency exclusion
-and the redundancy search have no test of their own.
+directions and leaves the rest untouched; mean-ablation leaves the kept
+neurons' activations exactly as they were, on both forward paths; and removing
+the MLP or a head removes exactly that component. The norm-restored embedding
+surgery, the embedding-norm-threshold rule, the zero-element and discrete-log
+edits, the per-frequency exclusion and the redundancy search have no test of
+their own.
 
 **Key frequencies are taken from the final checkpoint** for the progress
 measures in section 4, because the question there is when the *final* circuit
@@ -496,7 +499,7 @@ after the transition, so the frequency-dependent signals are also computed with
 the frequencies each checkpoint picks for itself, and reported separately.
 
 <!-- BEGIN:loss_precision -->
-**Loss in float64, except in the first run and its float32 control.** In float32, `log_softmax` quantises at about 1.2e-07. After step 10,000, the training loss of the 3 float64 runs settles at a median of 8.6e-08 to 9.3e-08, near that level; that of the 2 float32 runs (`main_add_s0`, `C_add_f32`) stays around 1.2e-05 to 1.4e-05, about 127 times higher, and its readings are quantised whenever they come near 1.2e-07. Section 5 compares the two precisions directly.
+**Loss in float64, except in the first run and its float32 control.** In float32, `log_softmax` quantises at about 1.2e-07. After step 10,000, the training loss of the 3 float64-trained runs settles at a median of 8.6e-08 to 9.3e-08, near that level; that of the 2 float32-trained runs (`main_add_s0`, `C_add_f32`) stays around 1.2e-05 to 1.4e-05, about 127 times higher. Only `main_add_s0` also logged its loss in float32 (every logged value is exactly a float32 number), so only its curve is quantised near 1.2e-07; `C_add_f32` logged in float64, so its higher level is a property of the float32-trained model, not of the measurement. Section 5 compares the two precisions directly.
 <!-- END:loss_precision -->
 
 **Reproducible in distribution, not bit for bit.** With one thread identical
@@ -556,20 +559,28 @@ python scripts/analyze_mechanism.py --tag repro
 only `--report` works: every table and figure can be re-rendered from
 `results/`, but the analyses that produced `results/` need checkpoints.
 `scripts/regenerate.sh` lists the exact command, flags and thread count behind
-every results file, and each file records the commit, command line and thread
-count that produced it.
+every derived results file (trajectory, mechanism, redundancy, quadratic, sweep,
+controls, forecasting and split files), and each of those records the commit,
+command line and thread count that produced it. The `*_history.json` files are
+written by training and record each run's configuration; the headline run's
+thread count is known only from its launch command.
 
 **Every shipped run has a job file** in `scripts/jobs_*.json` that reproduces
-its configuration; `./scripts/run_pipeline.sh jobs_sweep.json` trains one and
-then regenerates everything. That includes the headline run
-(`jobs_main.json`: float32 loss, no learning-rate schedule, and an output
-column for the `=` token that is cut off before the loss) and the runs at
-p != 113, which keep their 113-wide output. The train/test split is rebuilt
-from each run's record and checked against the fingerprint recorded for it in
-`results/split_hashes.json`; a torch version that shuffled differently would
-stop the analysis rather than silently use another split. Runs with more than
-one thread are not bit-for-bit reproducible (see Method notes), so a fresh run
-lands near these numbers.
+its configuration. `./scripts/run_pipeline.sh jobs_sweep.json` trains the runs
+in one, analyses their trajectories and re-renders the report; rebuilding the
+files that combine runs needs every run's checkpoints (`regenerate.sh`). The
+job files include the headline run (`jobs_main.json`: float32 loss, no
+learning-rate schedule, an output column for the `=` token that is cut off
+before the loss, and its original checkpoint schedule; it logged its losses in
+float32, where a rerun logs them in float64) and the runs at p != 113, which
+keep their 113-wide output. The train/test split is rebuilt from each run's
+record and checked against `results/split_hashes.json`. `scripts/record_splits.py`
+writes that file only after checking, for every run, that its final checkpoint
+reproduces the train and test accuracy logged during training on the rebuilt
+split, so a torch version that shuffled differently would stop the analysis
+rather than silently use another split. Runs with more than one thread are not
+bit-for-bit reproducible (see Method notes), so a fresh run lands near these
+numbers.
 
 <!-- BEGIN:runtime -->
 The mainline run is 40,000 steps in **82 minutes** on 6 CPU threads (122 ms per full-batch step).
@@ -622,15 +633,17 @@ a trained transformer: [Nguyen 2026](https://arxiv.org/abs/2606.17399).
 Non-invertible elements as a separate region:
 [Chen et al. 2026](https://arxiv.org/abs/2607.07066). The 1/lambda dependence of
 grokking time on weight decay: [Liu et al. 2022](https://arxiv.org/abs/2210.01117),
-[Lyu et al. 2023](https://arxiv.org/abs/2311.18817) and
-[Truong et al. 2026c](https://arxiv.org/abs/2605.18845). Predicting grokking
-from early signals: [Notsawo et al. 2023](https://arxiv.org/abs/2306.13253);
-per seed at a fixed configuration,
+who also test it on this same transformer and task,
+[Lyu et al. 2023](https://arxiv.org/abs/2311.18817), and
 [Truong et al. 2026a](https://arxiv.org/abs/2603.13331) and
-[2026b](https://arxiv.org/abs/2604.13123); and, for induction heads rather than
-grokking, a loss rule that ranks seeds as well as a mechanistic precursor:
-[Howe 2026](https://arxiv.org/abs/2609.19000). The comparison of early signals
-in section 7 is a small instance of these questions, not a new one.
+[2026c](https://arxiv.org/abs/2605.18845). Predicting grokking from early
+signals: [Notsawo et al. 2023](https://arxiv.org/abs/2306.13253); per seed at a
+fixed configuration, [Truong et al. 2026a](https://arxiv.org/abs/2603.13331),
+[2026b](https://arxiv.org/abs/2604.13123) and
+[Howe 2026](https://arxiv.org/abs/2609.19000), who also shows, for induction
+heads, that a loss rule can match a mechanistic precursor at ranking seeds only
+as a nowcast. The comparison of early signals in section 7, read at fixed
+steps, is a small instance of these questions, not a new one.
 
 **Possibly new, and small.** Embedding-weight surgery in the discrete-log
 basis, with a control, on a transformer trained with 0 included: Chughtai et al.
@@ -641,41 +654,53 @@ embedding norm is not why the model answers 0, and blanking exactly one
 nonzero input makes it answer 0 while zeroing both does not.
 
 **Corrected along the way.** Much of what earlier versions claimed did not
-survive review: a mechanism for a float32 readout difference, and then a wrong
-reason for dismissing it; a "sign-blind circuit" reading of the quadratic form,
-an overcorrection that ignored its structured errors, and an attribution of the
-factorisation question to papers that do not pose it; a misreading of what
-Furuta et al. found for that form (it does grok, at a larger training fraction
-than used here); three successive accounts of the zero element; a reference run
-labelled with the wrong loss precision; a separation stated as seven orders of
-magnitude; rule disagreement presented as an independent prediction; the claim
-that the visible quantity cannot forecast the transition, and later an
-unsupported claim that plain losses forecast exactly as well as mechanistic
-ones; novelty claims contradicted by published work; a citation with a wrong
-author list, and another with given names as surnames; forecasting numbers
-corrupted by a data-seed bug and a double-counted signal; a multiple-comparison
-family narrowed after the results were seen, without saying so; reproduction
-instructions that did not reproduce the headline run, and results files that
+survive review. The main items: an opening claim that the model sits at chance
+on held-out pairs for fourteen thousand steps; a mechanism for a float32
+readout difference, and then a wrong reason for dismissing it; a "sign-blind
+circuit" reading of the quadratic form, an overcorrection that ignored its
+structured errors, and an attribution of the factorisation question to papers
+that do not pose it; a misreading of what Furuta et al. found for that form (it
+does grok, at a larger training fraction than used here); three successive
+accounts of the zero element; three identification rules called independent;
+a reference run labelled with the wrong loss precision; a separation stated as
+seven orders of magnitude; a phase-diagram sentence saying the grokking step
+falls with weight decay next to numbers that rose; rule disagreement presented
+as an independent prediction; the claim that the visible quantity cannot
+forecast the transition, and later an unsupported claim that plain losses
+forecast exactly as well as mechanistic ones; novelty claims contradicted by
+published work; a citation with a wrong author list, another with given names
+as surnames, and a paper cited for the opposite of its conclusion; forecasting
+numbers corrupted by a data-seed bug and a double-counted signal; a
+multiple-comparison family narrowed after the results were seen, without
+saying so; reproduction instructions that did not reproduce the headline run,
+claims that a file reproduced byte for byte when it did not, and results files
 no shipped script could rebuild; a phase-timing comparison whose choice of end
 point was unstated; phase boundaries in a figure placed at hand-picked
-fractions of the grokking step; a comparison with Nanda et al.'s Gini that used
-a different definition; the claim that the architecture follows theirs exactly
+fractions of the grokking step; statements on the interactive page that the
+data did not support; a comparison with Nanda et al.'s Gini that used a
+different definition; the claim that the architecture follows theirs exactly
 (their MLP has biases); the unused '=' column listed as a possible cause of a
 timing gap; control conclusions drawn against too small an estimate of seed
-noise; a 1/lambda fit reported without uncertainty; and a bug in the neuron
-mean-ablation that made its whole table wrong. Each section states the
-corrected version. Runs that fail to grok are reported with their step budget.
+noise; a weight-decay slope reported without uncertainty, and then called
+steeper than 1/lambda on a noise model that was too narrow; missing credit to
+Omnigrok; a bug in the neuron mean-ablation that made its whole table wrong;
+and three inaccurate versions of the note below on how this was made. Each
+section states the corrected version; the git history has the rest. Runs that
+fail to grok are reported with their step budget.
 
 **How this was made.** This repository was designed, implemented and written
-by an AI system (Claude, by Anthropic) working as an agent. I asked for a
-substantial project, picked this topic from a list of options the model
-proposed, and told it to start; the scope, the experiment design, the code, the
-analysis and this write-up are the model's. Every number was produced by
-running that code on my machine. Some corrections came out of questions I asked
-about whether the work was finished, some from the model's own control
-experiments, and the rest from review by AI agents -- separate Claude
-instances launched by the model, each told to refute the work: three rounds of
-review of the write-up, a targeted fourth check, and then an audit of the whole
-process by eight agents that re-ran the analyses and the training, and read the
-code, the statistics, the cited papers and the git history. No human reviewed
-it. The model made the corrections and reported them to me.
+by an AI system (Claude, by Anthropic) working as an agent for the repository's
+owner. The owner asked for a substantial project, picked this topic from a list
+of options the model proposed (the model had recommended it), and told it to
+start; the scope, the experiment design, the code, the analysis and this
+write-up are the model's. Every measured number was produced by running that
+code on the owner's machine. Some corrections came out of the owner's
+questions about whether the work was finished, some from the model's own
+control experiments, and the rest from review by AI agents launched by the
+model: three rounds of review of the write-up, each agent told to refute it; a
+targeted fourth check; then, at the owner's request, an audit of the whole
+process by eight agents that re-ran the analyses, re-ran the start of training,
+re-evaluated the checkpoints, and read the code, the statistics, the cited
+papers and the git history; and a final round that checked the fixes. No human
+reviewed the analysis. The model made the corrections and reported them to the
+owner.

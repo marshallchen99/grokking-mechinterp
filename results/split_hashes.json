@@ -1,45 +1,575 @@
 {
- "B_add_s0": "aec84ad3dac16b13",
- "B_add_s1": "150720ca43e3a594",
- "B_mul_s0": "aec84ad3dac16b13",
- "B_sqx_p109": "ef4f0d22a6090e49",
- "B_sqx_p113": "aec84ad3dac16b13",
- "B_sub_s0": "aec84ad3dac16b13",
- "C_add_f32": "aec84ad3dac16b13",
- "C_add_nowarm": "aec84ad3dac16b13",
- "F_seed10": "03dfc5d200379f83",
- "F_seed11": "bca034a3354b4a25",
- "F_seed12": "4e29359c5e9df507",
- "F_seed13": "9f1d1e5193583433",
- "F_seed14": "bf7d8057c2afb800",
- "F_seed15": "c00b265fce817844",
- "F_seed16": "dc440ed0e4951d97",
- "F_seed17": "54d2cc1839edad28",
- "F_seed18": "c020a90f735a577d",
- "F_seed19": "c308a7accc3f0894",
- "F_seed20": "a1824ae5f906be02",
- "F_seed21": "f6c9a0e27eaf027d",
- "F_seed22": "c09a29734223815c",
- "F_seed23": "8674a482764df4df",
- "F_seed24": "9ab01b586b3a76a6",
- "F_seed25": "506a850fb5229246",
- "Q_sqx_p59": "fee1e06f1601356c",
- "Q_sqx_p61": "8e72a5a262026cd6",
- "R_p59_wd0.1_f0.5_s1": "875ce5d0a2a953ae",
- "R_p59_wd0.3_f0.5_s1": "875ce5d0a2a953ae",
- "R_p59_wd1.0_f0.5_s1": "875ce5d0a2a953ae",
- "R_p59_wd3.0_f0.5_s1": "875ce5d0a2a953ae",
- "S_p59_wd0.1_f0.25": "446dfee61462cbe2",
- "S_p59_wd0.1_f0.35": "5625c02abae81000",
- "S_p59_wd0.1_f0.5": "fee1e06f1601356c",
- "S_p59_wd0.3_f0.25": "446dfee61462cbe2",
- "S_p59_wd0.3_f0.35": "5625c02abae81000",
- "S_p59_wd0.3_f0.5": "fee1e06f1601356c",
- "S_p59_wd1.0_f0.25": "446dfee61462cbe2",
- "S_p59_wd1.0_f0.35": "5625c02abae81000",
- "S_p59_wd1.0_f0.5": "fee1e06f1601356c",
- "S_p59_wd3.0_f0.25": "446dfee61462cbe2",
- "S_p59_wd3.0_f0.35": "5625c02abae81000",
- "S_p59_wd3.0_f0.5": "fee1e06f1601356c",
- "main_add_s0": "aec84ad3dac16b13"
+ "_provenance": {
+  "commit": "6712242f48cfa1302d68db0ac7ec8205310f98a1",
+  "code_modified": false,
+  "argv": [
+   "scripts/record_splits.py",
+   "--root",
+   "."
+  ],
+  "threads": 4,
+  "torch": "2.12.0+cpu",
+  "python": "3.13.12"
+ },
+ "runs": {
+  "B_add_s0": {
+   "split_hash": "aec84ad3dac16b13",
+   "checked_at_step": 40000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "B_add_s1": {
+   "split_hash": "150720ca43e3a594",
+   "checked_at_step": 30000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "B_mul_s0": {
+   "split_hash": "aec84ad3dac16b13",
+   "checked_at_step": 40000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "B_sqx_p109": {
+   "split_hash": "ef4f0d22a6090e49",
+   "checked_at_step": 30000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    0.08933509886264801,
+    0.08933509886264801
+   ],
+   "matches": true
+  },
+  "B_sqx_p113": {
+   "split_hash": "aec84ad3dac16b13",
+   "checked_at_step": 30000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    0.11377111822366714,
+    0.11377111822366714
+   ],
+   "matches": true
+  },
+  "B_sub_s0": {
+   "split_hash": "aec84ad3dac16b13",
+   "checked_at_step": 30000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "C_add_f32": {
+   "split_hash": "aec84ad3dac16b13",
+   "checked_at_step": 25000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    0.9997762441635132,
+    0.9997762441635132
+   ],
+   "matches": true
+  },
+  "C_add_nowarm": {
+   "split_hash": "aec84ad3dac16b13",
+   "checked_at_step": 25000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "F_seed10": {
+   "split_hash": "03dfc5d200379f83",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "F_seed11": {
+   "split_hash": "bca034a3354b4a25",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "F_seed12": {
+   "split_hash": "4e29359c5e9df507",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "F_seed13": {
+   "split_hash": "9f1d1e5193583433",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    0.9965537190437317,
+    0.9965537190437317
+   ],
+   "matches": true
+  },
+  "F_seed14": {
+   "split_hash": "bf7d8057c2afb800",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "F_seed15": {
+   "split_hash": "c00b265fce817844",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "F_seed16": {
+   "split_hash": "dc440ed0e4951d97",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "F_seed17": {
+   "split_hash": "54d2cc1839edad28",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "F_seed18": {
+   "split_hash": "c020a90f735a577d",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "F_seed19": {
+   "split_hash": "c308a7accc3f0894",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "F_seed20": {
+   "split_hash": "a1824ae5f906be02",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "F_seed21": {
+   "split_hash": "f6c9a0e27eaf027d",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "F_seed22": {
+   "split_hash": "c09a29734223815c",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "F_seed23": {
+   "split_hash": "8674a482764df4df",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    0.9965537190437317,
+    0.9965537190437317
+   ],
+   "matches": true
+  },
+  "F_seed24": {
+   "split_hash": "9ab01b586b3a76a6",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "F_seed25": {
+   "split_hash": "506a850fb5229246",
+   "checked_at_step": 6000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "Q_sqx_p59": {
+   "split_hash": "fee1e06f1601356c",
+   "checked_at_step": 60000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    0.49511775374412537,
+    0.49511775374412537
+   ],
+   "matches": true
+  },
+  "Q_sqx_p61": {
+   "split_hash": "8e72a5a262026cd6",
+   "checked_at_step": 60000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    0.4970445930957794,
+    0.4970445930957794
+   ],
+   "matches": true
+  },
+  "R_p59_wd0.1_f0.5_s1": {
+   "split_hash": "875ce5d0a2a953ae",
+   "checked_at_step": 12000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    0.7869040966033936,
+    0.7869040966033936
+   ],
+   "matches": true
+  },
+  "R_p59_wd0.3_f0.5_s1": {
+   "split_hash": "875ce5d0a2a953ae",
+   "checked_at_step": 12000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "R_p59_wd1.0_f0.5_s1": {
+   "split_hash": "875ce5d0a2a953ae",
+   "checked_at_step": 12000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "R_p59_wd3.0_f0.5_s1": {
+   "split_hash": "875ce5d0a2a953ae",
+   "checked_at_step": 12000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "S_p59_wd0.1_f0.25": {
+   "split_hash": "446dfee61462cbe2",
+   "checked_at_step": 20000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    0.00880888570100069,
+    0.00880888570100069
+   ],
+   "matches": true
+  },
+  "S_p59_wd0.1_f0.35": {
+   "split_hash": "5625c02abae81000",
+   "checked_at_step": 20000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    0.045514803379774094,
+    0.045514803379774094
+   ],
+   "matches": true
+  },
+  "S_p59_wd0.1_f0.5": {
+   "split_hash": "fee1e06f1601356c",
+   "checked_at_step": 20000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "S_p59_wd0.3_f0.25": {
+   "split_hash": "446dfee61462cbe2",
+   "checked_at_step": 20000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    0.00880888570100069,
+    0.00880888570100069
+   ],
+   "matches": true
+  },
+  "S_p59_wd0.3_f0.35": {
+   "split_hash": "5625c02abae81000",
+   "checked_at_step": 20000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    0.05435262992978096,
+    0.05435262992978096
+   ],
+   "matches": true
+  },
+  "S_p59_wd0.3_f0.5": {
+   "split_hash": "fee1e06f1601356c",
+   "checked_at_step": 20000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "S_p59_wd1.0_f0.25": {
+   "split_hash": "446dfee61462cbe2",
+   "checked_at_step": 20000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    0.013021830469369888,
+    0.013021830469369888
+   ],
+   "matches": true
+  },
+  "S_p59_wd1.0_f0.35": {
+   "split_hash": "5625c02abae81000",
+   "checked_at_step": 20000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    0.16526734828948975,
+    0.16526734828948975
+   ],
+   "matches": true
+  },
+  "S_p59_wd1.0_f0.5": {
+   "split_hash": "fee1e06f1601356c",
+   "checked_at_step": 20000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "S_p59_wd3.0_f0.25": {
+   "split_hash": "446dfee61462cbe2",
+   "checked_at_step": 20000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    0.009957870468497276,
+    0.009957870468497276
+   ],
+   "matches": true
+  },
+  "S_p59_wd3.0_f0.35": {
+   "split_hash": "5625c02abae81000",
+   "checked_at_step": 20000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "S_p59_wd3.0_f0.5": {
+   "split_hash": "fee1e06f1601356c",
+   "checked_at_step": 20000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  },
+  "main_add_s0": {
+   "split_hash": "aec84ad3dac16b13",
+   "checked_at_step": 40000,
+   "train_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "test_acc_logged_vs_rebuilt": [
+    1.0,
+    1.0
+   ],
+   "matches": true
+  }
+ }
 }
