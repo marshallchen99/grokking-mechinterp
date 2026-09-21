@@ -34,10 +34,10 @@ FEATURES = [
     # Everything a forecast may use must be computable from TRAINING pairs, or
     # be declared visible from outside.  Restricted loss is taken on the
     # training split; the all-pairs version reads held-out labels.
-    ("restricted_loss_sum_train", "restricted loss (train pairs)", False),
-    ("excluded_loss_sum", "excluded loss (train pairs)", True),
+    ("restricted_loss_sum_train", "restricted loss (train pairs) (final)", False),
+    ("excluded_loss_sum", "excluded loss (train pairs) (final)", True),
     ("emb_gini", "embedding Gini (no frequency choice)", True),
-    ("emb_key_frac", "power in key frequencies", True),
+    ("emb_key_frac", "power in key frequencies (final)", True),
     ("logit_var_a+b", "(a+b) variance explained (no frequency choice)", True),
     ("weight_norm", "weight norm", False),
     ("train_loss", "train loss", False),

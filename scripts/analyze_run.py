@@ -60,7 +60,8 @@ def analyse_one(snap, F, key_freqs, p, with_neurons=True):
         row["restricted_loss_sum_train_live"] = restricted_loss(snap, F, live, mode="sum", split="train")["loss"]
         row["excluded_loss_sum_live"] = excluded_loss(snap, F, live, mode="sum", split="train")["loss"]
         pw = spec.power_per_freq[1:]
-        row["emb_key_frac_live"] = float(sum(pw[k - 1] for k in live) / pw.sum())
+        tot = float(pw.sum())
+        row["emb_key_frac_live"] = float(sum(pw[k - 1] for k in live)) / tot if tot else 0.0
 
     struct = additive_structure(snap.logits, p)
     for k, v in struct.items():
@@ -112,10 +113,9 @@ def _write(out_path, args, key_freqs, cons, final, final_spec, rows, complete=Fa
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", required=True)
-    ap.add_argument("--op", default="add")
-    ap.add_argument("--p", type=int, default=113)
-    ap.add_argument("--train-frac", type=float, default=0.3)
-    ap.add_argument("--data-seed", type=int, default=0)
+    ap.add_argument("--op", default=None)
+    ap.add_argument("--p", type=int, default=None)
+    ap.add_argument("--train-frac", type=float, default=None)
     ap.add_argument("--every", type=int, default=1)
     ap.add_argument("--key-method", default="gap", choices=["gap", "topk", "zscore"])
     ap.add_argument("--key-k", type=int, default=5)
@@ -128,6 +128,10 @@ def main():
     root = Path(args.root)
     data = run_dataset(root, args.tag)   # the run's own split, never a default
     cfg_ = run_config(root, args.tag)
+    for _k, _v in (("p", args.p), ("op", args.op), ("train_frac", args.train_frac)):
+        if _v is not None and _v != cfg_[_k]:
+            raise SystemExit(f"--{_k.replace('_', '-')} {_v} contradicts the run's record ({cfg_[_k]}); "
+                             "the data configuration is read from the run and cannot be overridden")
     args.p, args.op, args.train_frac = cfg_["p"], cfg_["op"], cfg_["train_frac"]
     F, _ = make_fourier_basis(args.p, dtype=torch.float64)
 

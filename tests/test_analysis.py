@@ -284,13 +284,61 @@ def test_readme_matches_a_fresh_render():
     from grokking.report_blocks import OP_TAGS, PENDING, build
 
     blocks = build(root, "main_add_s0", op_tags=OP_TAGS)
+    markers = set(re.findall(r"<!-- BEGIN:([a-z_]+) -->", readme))
+    assert markers == set(blocks), ("README markers and generators differ",
+                                    sorted(markers ^ set(blocks)))
     mismatched = []
     for name, body in blocks.items():
+        assert "Block failed to render" not in body, (name, body[:200])
+        assert body != PENDING, f"{name} is pending"
         m = re.search(r"<!-- BEGIN:%s -->\n(.*?)\n<!-- END:%s -->" % (name, name), readme, re.S)
-        if m is None:
-            continue
-        if body == PENDING:
-            mismatched.append((name, "pending"))
-        elif m.group(1) != body:
-            mismatched.append((name, "differs"))
+        if m.group(1) != body:
+            mismatched.append(name)
     assert not mismatched, mismatched
+
+
+def test_controls_are_distinguishable():
+    """Every control row must describe a different configuration.
+
+    A reference run once rendered with the same description as its own float32
+    control, because a missing record field fell back to a default; the README
+    and a fresh render agreed, so the consistency test above could not see it.
+    """
+    from grokking.report_blocks import CONTROL_ORDER, READOUT_RUNS, describe_run
+    root = Path(__file__).resolve().parents[1]
+    for group in (CONTROL_ORDER, READOUT_RUNS):
+        descs = {t: describe_run(root, t) for t in group
+                 if (root / "results" / f"{t}_history.json").exists()}
+        assert len(set(descs.values())) == len(descs), descs
+        assert not any("not recorded" in d for d in descs.values()), descs
+
+
+def test_every_reported_run_has_a_known_loss_precision():
+    from grokking.runinfo import training_choice
+    root = Path(__file__).resolve().parents[1]
+    for f in sorted((root / "results").glob("*_history.json")):
+        tag = f.name[: -len("_history.json")]
+        assert training_choice(root, tag, "loss_dtype") in ("float32", "float64"), tag
+
+
+def test_report_prose_has_no_hand_picked_numbers_in_expressions():
+    """Numeric constants inside formatted expressions are method choices too.
+
+    Allowed: 0, 1, 2 (counting, halving, pairs), 60 and 1000 (unit conversions)
+    and 100 (percent). Anything
+    else -- a 0.8 or a *5 used to pick where to sample a curve -- must be a
+    named constant, so that it is visible as a choice.
+    """
+    import ast
+
+    src = (Path(__file__).resolve().parents[1] / "src" / "grokking" / "report_blocks.py")
+    tree = ast.parse(src.read_text())
+    bad = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.FormattedValue):
+            for sub in ast.walk(node.value):
+                if (isinstance(sub, ast.Constant) and isinstance(sub.value, (int, float))
+                        and not isinstance(sub.value, bool)
+                        and sub.value not in (0, 1, 2, 60, 100, 1000)):   # counts; s->min, s->ms, %
+                    bad.append((sub.lineno, sub.value))
+    assert not bad, f"hand-picked numbers inside formatted expressions: {bad}"

@@ -40,6 +40,7 @@ def main():
         p = mani["data"]["p"]
         d = run_dataset(root, tag)   # the run's own split, not a hard-coded seed
         snap = load_snapshot(checkpoint_paths(root / "checkpoints" / tag)[-1][1], d)
+        snap_model = snap.model
         pred = snap.logits.argmax(-1)
         test = ~d.train_mask()
 
@@ -97,6 +98,27 @@ def main():
         w, wo = unseen & partner, unseen & ~partner
         rec["unseen_with_flipped_partner_trained"] = {
             "n": int(w.sum()), "predicts_flipped": float((pred == flip)[w].float().mean())}
+        # A single sign flip changes the value; a double flip (-a,-b) or (-b,-a)
+        # keeps it.  If the representation simply put x near -x, double-flip
+        # partners would be retrieved as readily -- and would give the RIGHT
+        # answer.  Measure both, and measure the embedding similarity directly.
+        dbl = torch.zeros(p, p, dtype=torch.bool)
+        for i, j in ((neg(a), neg(b)), (neg(b), neg(a))):
+            dbl |= train[i, j]
+        dbl_only = test & ~train.T & dbl & ~partner & ~coincide
+        rec["unseen_with_only_double_flip_partner"] = {
+            "n": int(dbl_only.sum()),
+            "correct": float((pred == true)[dbl_only].float().mean()) if int(dbl_only.sum()) else None}
+        E = snap_model.W_E.detach()[:p]
+        En = E / E.norm(dim=1, keepdim=True).clamp_min(1e-12)
+        xs = torch.arange(1, p)
+        cos_neg = (En[xs] * En[(-xs) % p]).sum(1)
+        g = torch.Generator().manual_seed(0)
+        ys = (xs + torch.randint(1, p - 1, (p - 1,), generator=g)) % p
+        ys = torch.where(ys == 0, torch.ones_like(ys), ys)
+        cos_rand = (En[xs] * En[ys]).sum(1)
+        rec["embedding_cos_x_minus_x"] = float(cos_neg.mean())
+        rec["embedding_cos_x_random"] = float(cos_rand.mean())
         rec["unseen_without_flipped_partner"] = {
             "n": int(wo.sum()),
             "predicts_flipped": float((pred == flip)[wo].float().mean()) if int(wo.sum()) else None}

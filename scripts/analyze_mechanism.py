@@ -41,10 +41,9 @@ from grokking.fourier import make_fourier_basis                # noqa: E402
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", required=True)
-    ap.add_argument("--op", default="add")
-    ap.add_argument("--p", type=int, default=113)
-    ap.add_argument("--train-frac", type=float, default=0.3)
-    ap.add_argument("--data-seed", type=int, default=0)
+    ap.add_argument("--op", default=None)
+    ap.add_argument("--p", type=int, default=None)
+    ap.add_argument("--train-frac", type=float, default=None)
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--dlog", action="store_true",
                     help="also analyse in the discrete-log (multiplicative) basis")
@@ -56,6 +55,10 @@ def main():
     p = args.p
     # The run's own split, read from its record -- never a command-line default.
     cfg_ = run_config(root, args.tag)
+    for _k, _v in (("p", args.p), ("op", args.op), ("train_frac", args.train_frac)):
+        if _v is not None and _v != cfg_[_k]:
+            raise SystemExit(f"--{_k.replace('_', '-')} {_v} contradicts the run's record ({cfg_[_k]}); "
+                             "the data configuration is read from the run and cannot be overridden")
     p = args.p = cfg_["p"]
     args.op, args.train_frac = cfg_["op"], cfg_["train_frac"]
     data = run_dataset(root, args.tag)

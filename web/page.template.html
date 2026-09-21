@@ -275,7 +275,7 @@ footer p{ font-size:.86rem; }
       strategies both score 100% on the visible cells. <strong>Memorise</strong> &mdash; there is
       ample room for a lookup table &mdash; which says nothing at all about the hidden cells.
       Or <strong>find the rule</strong>. Gradient descent takes the first road, because
-      memorising pays immediately and a general circuit pays nothing until it is finished.
+      gradient descent gets to the first long before the second.
     </p>
   </div></div>
 </section>
@@ -302,8 +302,6 @@ footer p{ font-size:.86rem; }
       transform of that embedding across the 113 symbols and you get 56 frequencies. Below
       is how the embedding's power is distributed across them, at whatever step you choose.
       Four bars are coloured: the frequencies the <em>finished</em> model ends up using.
-      Watch them climb out of the noise floor while the accuracy readout beside them
-      refuses to move.
     </p>
     <figure>
       <div class="panel instrument">
@@ -325,8 +323,8 @@ footer p{ font-size:.86rem; }
       <figcaption>
         The coloured bars are the <span id="nkeys"></span> frequencies the <em>finished</em>
         model uses. <strong>Restricted loss</strong> keeps only their contribution to the
-        output and discards everything else. It becomes low thousands of steps before test
-        accuracy moves: the generalising solution exists before it is visible.
+        output and discards everything else. Section 06 compares when it moves with when test
+        accuracy does.
       </figcaption>
     </figure>
   </div></div>
@@ -337,12 +335,13 @@ footer p{ font-size:.86rem; }
     <p class="eyebrow">04 &middot; the algorithm</p>
     <h2>Addition as rotation</h2>
     <p>
-      The trained weights represent each number as a point on a circle, at a handful of
-      frequencies, and add by turning further:
+      Nanda et al. (2023) found that a model like this one represents each number as a
+      point on a circle, at a handful of frequencies, and adds by turning further. The
+      blocks below test whether this model does the same:
     </p>
 <pre class="f">  a  <b>-&gt;</b>  ( cos(w*a), sin(w*a) )        w = 2*pi*k/p, for a few values of k
 
-  <b>cos(w*(a+b))</b> = cos(w*a)cos(w*b) - sin(w*a)sin(w*b)     &lt;- attention + MLP
+  <b>cos(w*(a+b))</b> = cos(w*a)cos(w*b) - sin(w*a)sin(w*b)
   <b>sin(w*(a+b))</b> = sin(w*a)cos(w*b) + cos(w*a)sin(w*b)
 
   logit(c)  proportional to   <b>sum over k of  cos( w_k * (a + b - c) )</b></pre>
@@ -421,9 +420,9 @@ footer p{ font-size:.86rem; }
     <p class="eyebrow">Run configuration</p>
     <div class="kv" id="config-kv"></div>
     <p style="margin-top:1.6rem; color:var(--ink-3); font-size:.82rem">
-      Every measured number and finding on this page is rendered from the same generator as
-      the repository README, so the two cannot disagree. The introductions to sections 01,
-      03 and 04 are hand-written and make no measured claims.
+      The findings and measured numbers in sections 02 and 04&ndash;10 are rendered from the
+      same generator as the repository README. The chart labels and readouts are computed from
+      the same data; the short introductions to sections 01, 03 and 04 are hand-written.
     </p>
   </div></div>
 </footer>
@@ -484,7 +483,7 @@ footer p{ font-size:.86rem; }
                                 fill:css("--panel-2")}));
     svg.appendChild(el("text", {x:(p0+p1)/2, y:mT+16, "text-anchor":"middle",
                                 "font-size":"11", fill:css("--ink-3")},
-                       commas(D.phases.plateau_length)+" steps at chance"));
+                       commas(D.phases.plateau_length)+" steps from memorisation to 90% test accuracy"));
 
     // grid + y labels
     [0,0.25,0.5,0.75,1].forEach(function(v){
@@ -597,9 +596,8 @@ footer p{ font-size:.86rem; }
       rl == null ? "—" : (rl < 0.01 ? rl.toExponential(1) : rl.toFixed(2));
     document.getElementById("ro-restr").className = "ro " + (rl != null && rl < 1 ? "rising" : "");
     var lab = document.getElementById("phaselabel");
-    lab.textContent = f.s <= D.phases.memorisation_step ? "memorisation"
-      : (f.s < D.phases.grokking_step*0.9 ? "circuit forming, invisibly"
-      : (f.s < D.phases.grokking_step*1.15 ? "cleanup" : "generalised"));
+    lab.textContent = f.s < D.phases.memorisation_step ? "before memorisation"
+      : (f.s < D.phases.grokking_step ? "memorised, not yet generalised" : "generalised");
   }
 
   var scrub = document.getElementById("scrub");
