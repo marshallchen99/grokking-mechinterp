@@ -80,6 +80,11 @@ PUBLISHED: Dict[str, Fact] = {
     "power_sensitivity": Fact(
         [0.40, 0.50], "relative increase in median time-to-generalisation per 1% less data",
         POWER_2022, "near 25-30% training data"),
+    "furuta_prime": Fact(
+        97, "the prime used for all of Furuta et al.'s experiments", FURUTA_2024,
+        "97 = 1 (mod 3), so a^2+ab+b^2 splits over F_97"),
+    "chen_prime_modulus": Fact(
+        113, "a prime modulus among those Chen et al. train on, with 0 included", CHEN_2026),
     "power_headline_optimizer": Fact(
         "Adam, no weight decay, 1e6 step budget",
         "the setup behind the headline division-mod-97 curve", POWER_2022),

@@ -31,6 +31,12 @@
    "n": 798,
    "predicts_flipped": 0.3934836983680725
   },
+  "unseen_with_only_double_flip_partner": {
+   "n": 48,
+   "correct": 0.0416666679084301
+  },
+  "embedding_cos_x_minus_x": 0.5761964917182922,
+  "embedding_cos_x_random": -0.0350719690322876,
   "unseen_without_flipped_partner": {
    "n": 64,
    "predicts_flipped": 0.03125
@@ -69,6 +75,12 @@
    "n": 875,
    "predicts_flipped": 0.38857144117355347
   },
+  "unseen_with_only_double_flip_partner": {
+   "n": 46,
+   "correct": 0.021739130839705467
+  },
+  "embedding_cos_x_minus_x": 0.5768893957138062,
+  "embedding_cos_x_random": -0.001714628655463457,
   "unseen_without_flipped_partner": {
    "n": 66,
    "predicts_flipped": 0.03030303120613098

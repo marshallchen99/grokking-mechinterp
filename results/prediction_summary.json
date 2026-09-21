@@ -359,14 +359,14 @@
    "n": 39,
    "features": {
     "restricted_loss_sum_train": {
-     "label": "restricted loss (train pairs)",
+     "label": "restricted loss (train pairs) (final)",
      "auc": 0.8766233766233766,
      "rho": 0.7859879584017516,
      "n_grok": 28,
      "n_censored": 11
     },
     "excluded_loss_sum": {
-     "label": "excluded loss (train pairs)",
+     "label": "excluded loss (train pairs) (final)",
      "auc": 0.8831168831168831,
      "rho": -0.78544061302682,
      "n_grok": 28,
@@ -380,7 +380,7 @@
      "n_censored": 11
     },
     "emb_key_frac": {
-     "label": "power in key frequencies",
+     "label": "power in key frequencies (final)",
      "auc": 0.7564935064935064,
      "rho": -0.778872468527641,
      "n_grok": 28,
@@ -448,14 +448,14 @@
    "n": 39,
    "features": {
     "restricted_loss_sum_train": {
-     "label": "restricted loss (train pairs)",
+     "label": "restricted loss (train pairs) (final)",
      "auc": 0.8668831168831169,
      "rho": 0.8976464148877943,
      "n_grok": 28,
      "n_censored": 11
     },
     "excluded_loss_sum": {
-     "label": "excluded loss (train pairs)",
+     "label": "excluded loss (train pairs) (final)",
      "auc": 0.8084415584415584,
      "rho": -0.8472906403940887,
      "n_grok": 28,
@@ -469,7 +469,7 @@
      "n_censored": 11
     },
     "emb_key_frac": {
-     "label": "power in key frequencies",
+     "label": "power in key frequencies (final)",
      "auc": 0.8084415584415584,
      "rho": -0.8396278051450466,
      "n_grok": 28,
@@ -537,14 +537,14 @@
    "n": 39,
    "features": {
     "restricted_loss_sum_train": {
-     "label": "restricted loss (train pairs)",
+     "label": "restricted loss (train pairs) (final)",
      "auc": 0.8766233766233766,
      "rho": 0.9348659003831419,
      "n_grok": 28,
      "n_censored": 11
     },
     "excluded_loss_sum": {
-     "label": "excluded loss (train pairs)",
+     "label": "excluded loss (train pairs) (final)",
      "auc": 0.8051948051948052,
      "rho": -0.7843459222769569,
      "n_grok": 28,
@@ -558,7 +558,7 @@
      "n_censored": 11
     },
     "emb_key_frac": {
-     "label": "power in key frequencies",
+     "label": "power in key frequencies (final)",
      "auc": 0.7792207792207793,
      "rho": -0.9168035030103997,
      "n_grok": 28,
@@ -626,14 +626,14 @@
    "n": 39,
    "features": {
     "restricted_loss_sum_train": {
-     "label": "restricted loss (train pairs)",
+     "label": "restricted loss (train pairs) (final)",
      "auc": 0.8896103896103896,
      "rho": 0.899288451012589,
      "n_grok": 28,
      "n_censored": 11
     },
     "excluded_loss_sum": {
-     "label": "excluded loss (train pairs)",
+     "label": "excluded loss (train pairs) (final)",
      "auc": 0.8409090909090909,
      "rho": -0.4991789819376027,
      "n_grok": 28,
@@ -647,7 +647,7 @@
      "n_censored": 11
     },
     "emb_key_frac": {
-     "label": "power in key frequencies",
+     "label": "power in key frequencies (final)",
      "auc": 0.8376623376623377,
      "rho": -0.9507389162561578,
      "n_grok": 28,
@@ -790,13 +790,13 @@
   "at_steps": {
    "200": {
     "restricted_loss_sum_train": {
-     "label": "restricted loss (train pairs)",
+     "label": "restricted loss (train pairs) (final)",
      "rho": 0.7176470588235294,
      "p_two_tailed": 0.0025199874000629997,
      "survives_bonferroni": false
     },
     "excluded_loss_sum": {
-     "label": "excluded loss (train pairs)",
+     "label": "excluded loss (train pairs) (final)",
      "rho": -0.5970588235294118,
      "p_two_tailed": 0.01660991695041525,
      "survives_bonferroni": false
@@ -808,7 +808,7 @@
      "survives_bonferroni": false
     },
     "emb_key_frac": {
-     "label": "power in key frequencies",
+     "label": "power in key frequencies (final)",
      "rho": -0.31176470588235294,
      "p_two_tailed": 0.23931880340598297,
      "survives_bonferroni": false
@@ -864,13 +864,13 @@
    },
    "500": {
     "restricted_loss_sum_train": {
-     "label": "restricted loss (train pairs)",
+     "label": "restricted loss (train pairs) (final)",
      "rho": 0.8088235294117647,
      "p_two_tailed": 0.00027499862500687496,
      "survives_bonferroni": true
     },
     "excluded_loss_sum": {
-     "label": "excluded loss (train pairs)",
+     "label": "excluded loss (train pairs) (final)",
      "rho": -0.7676470588235295,
      "p_two_tailed": 0.0008849955750221249,
      "survives_bonferroni": true
@@ -882,7 +882,7 @@
      "survives_bonferroni": false
     },
     "emb_key_frac": {
-     "label": "power in key frequencies",
+     "label": "power in key frequencies (final)",
      "rho": -0.5147058823529411,
      "p_two_tailed": 0.04313478432607837,
      "survives_bonferroni": false
@@ -938,13 +938,13 @@
    },
    "1000": {
     "restricted_loss_sum_train": {
-     "label": "restricted loss (train pairs)",
+     "label": "restricted loss (train pairs) (final)",
      "rho": 0.8411764705882353,
      "p_two_tailed": 0.00011499942500287499,
      "survives_bonferroni": false
     },
     "excluded_loss_sum": {
-     "label": "excluded loss (train pairs)",
+     "label": "excluded loss (train pairs) (final)",
      "rho": -0.5735294117647058,
      "p_two_tailed": 0.02218988905055475,
      "survives_bonferroni": false
@@ -956,7 +956,7 @@
      "survives_bonferroni": false
     },
     "emb_key_frac": {
-     "label": "power in key frequencies",
+     "label": "power in key frequencies (final)",
      "rho": -0.75,
      "p_two_tailed": 0.001294993525032375,
      "survives_bonferroni": false
@@ -1012,13 +1012,13 @@
    },
    "2000": {
     "restricted_loss_sum_train": {
-     "label": "restricted loss (train pairs)",
+     "label": "restricted loss (train pairs) (final)",
      "rho": 0.7970588235294118,
      "p_two_tailed": 0.000384998075009625,
      "survives_bonferroni": false
     },
     "excluded_loss_sum": {
-     "label": "excluded loss (train pairs)",
+     "label": "excluded loss (train pairs) (final)",
      "rho": 0.2823529411764706,
      "p_two_tailed": 0.28826855865720674,
      "survives_bonferroni": false
@@ -1030,7 +1030,7 @@
      "survives_bonferroni": false
     },
     "emb_key_frac": {
-     "label": "power in key frequencies",
+     "label": "power in key frequencies (final)",
      "rho": -0.8970588235294118,
      "p_two_tailed": 1.9999900000499998e-05,
      "survives_bonferroni": false

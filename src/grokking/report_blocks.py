@@ -45,6 +45,8 @@ MID_ACC = 0.50
 FULL_ACC = 0.99
 NEURON_FRAC = 0.85       # the neuron-clustering rule's variance threshold
 HALFWAY = 0.50           # "half of a signal's total change"
+EARLY_SAMPLE_MULT = 5    # where the headline samples test accuracy: 5x the memorisation step
+LATE_SAMPLE_FRAC = 0.8   # ... and at 80% of the way to its 10% crossing
 
 
 def cite(ref: str) -> str:
@@ -71,6 +73,11 @@ def arxiv(ref: str) -> str:
         if tok.startswith("arXiv:"):
             return tok
     return ""
+
+
+def _tc(root, tag, key):
+    from .runinfo import training_choice
+    return training_choice(root, tag, key)
 
 
 def st(v):
@@ -120,7 +127,9 @@ def headline(root: Path, tag: str) -> Optional[str]:
     # test accuracy on the plateau, sampled rather than characterised by eye
     def acc_at(step):
         return min(hist, key=lambda r: abs(r["step"] - step))["test_acc"]
-    early, late = acc_at(c["train"] * 5 if c["train"] else 1000), acc_at(0.8 * c["t10"]) if c["t10"] else None
+    early_step = c["train"] * EARLY_SAMPLE_MULT
+    late_step = LATE_SAMPLE_FRAC * c["t10"]
+    early, late = acc_at(early_step), acc_at(late_step)
 
     lines = [table(["event", "step", "note"], rows, align="lrl"), ""]
     if plateau is not None:
@@ -131,8 +140,9 @@ def headline(root: Path, tag: str) -> Optional[str]:
             f"{MEMORISED_ACC:.0%} {n_dips} times in short loss spikes, as low as "
             f"{worst_train['train_acc']:.1%} at step {worst_train['step']:,}. Test accuracy "
             f"is above chance almost from the start and creeps up slowly -- "
-            f"{early:.1%} a few hundred steps in, {late:.1%} by step "
-            f"{0.8 * c['t10']:,.0f} -- and only passes {EARLY_ACC:.0%} at step {c['t10']:,.0f}.")
+            f"{early:.1%} at step {early_step:,.0f}, {late:.1%} at step "
+            f"{late_step:,.0f} -- and only passes {EARLY_ACC:.0%} at step {c['t10']:,.0f}, "
+            f"{c['t10'] - c['train']:,.0f} steps after memorisation.")
     peak_train = next((r for r in hist if r["step"] == peak["step"]), None)
     lines.append("")
     lines.append(
@@ -149,8 +159,8 @@ def headline(root: Path, tag: str) -> Optional[str]:
         f"full-batch AdamW with weight decay {h['train_cfg']['weight_decay']}, "
         f"{h['train_cfg']['steps']:,} steps, CPU only. The architecture and optimiser follow "
         f"{cite(NANDA_2023)}; the phenomenon is {cite(POWER_2022)}. This first run also had "
-        + ("a float32 loss, " if h["train_cfg"].get("loss_dtype", "float32") == "float32" else "")
-        + ("no learning-rate warmup, " if "warmup_steps" not in h["train_cfg"] else "")
+        + ("a float32 loss, " if _tc(root, tag, "loss_dtype") == "float32" else "")
+        + ("no learning-rate schedule, " if not _tc(root, tag, "warmup_steps") else "")
         + "and an output column for the '=' token; section 5 tests whether those mattered.")
     return "\n".join(lines)
 
@@ -224,15 +234,18 @@ READOUT_RUNS = ["B_add_s0", "B_add_s1", "C_add_nowarm", "C_add_f32", "main_add_s
 
 def describe_run(root: Path, tag: str) -> str:
     """A run's training choices, read from its own record rather than typed."""
+    from .runinfo import training_choice
     h = load_history(root, tag) or {}
-    tc, mc, d = h.get("train_cfg", {}), h.get("model_cfg", {}), h.get("data", {})
-    bits = [d.get("op", "?"), f"{tc.get('loss_dtype', 'float32')} loss"]
-    w = tc.get("warmup_steps")
+    mc, d = h.get("model_cfg", {}), h.get("data", {})
+    dtype = training_choice(root, tag, "loss_dtype")
+    bits = [d.get("op", "?"), f"{dtype} loss" if dtype else "loss precision not recorded"]
+    w = training_choice(root, tag, "warmup_steps")
     bits.append(f"{w}-step warmup" if w and w > 1 else
                 ("warmup_steps = 1" if w == 1 else "no LR schedule"))
     if mc.get("d_vocab_out", mc.get("d_vocab")) and d.get("p") and \
             mc.get("d_vocab_out", mc.get("d_vocab")) > d["p"]:
         bits.append("extra W_U column")
+    bits.append(f"seed {d.get('seed')}")
     return ", ".join(bits)
 
 
@@ -253,8 +266,10 @@ def readout(root: Path, _tag: str) -> Optional[str]:
         return None
     tbl = table(["run", "configuration", "direction read", "at the predicted frequency",
                  "at another key frequency", "left over"], rows, bold_best={3: "max"})
-    f64 = [own[t][0] for t in ("B_add_s0", "B_add_s1", "C_add_nowarm") if t in own]
-    f32 = [own[t][0] for t in ("C_add_f32", "main_add_s0") if t in own]
+    from .runinfo import training_choice
+    add_runs = [t for t in own if (load_history(root, t) or {}).get("data", {}).get("op") == "add"]
+    f64 = [own[t][0] for t in add_runs if training_choice(root, t, "loss_dtype") == "float64"]
+    f32 = [own[t][0] for t in add_runs if training_choice(root, t, "loss_dtype") == "float32"]
     steps_read = {t: (load_json(root, f"{t}_mechanism.json") or {}).get("final_step") for t in own}
     parts = [
         "The mechanism's third step is the readout: the amplitudes of cos(w(a+b)) and "
@@ -361,19 +376,18 @@ def ablations(root: Path, tag: str) -> Optional[str]:
     if worst_loss is not None:
         parts.append(
             f"Two caveats. The clusters differ in size and there is no size-matched random "
-            f"control, so 'dropping this cluster is survivable' partly reflects that it is the "
-            f"smallest. And losses as high as {worst_loss:,.0f} -- far above the "
-            f"{math.log(m['p']):.2f} of a uniform guess -- mean the ablated network is being "
-            f"pushed off its training distribution, so these rows say which clusters matter, "
-            f"not by how much.")
+            f"control, so a cluster being survivable to drop may partly reflect its size. And "
+            f"losses as high as {worst_loss:,.0f}, far above the {math.log(m['p']):.2f} of a "
+            f"uniform guess, mean the ablated network is confidently wrong, so these rows say "
+            f"which clusters matter, not by how much.")
     parts += [
         "**Whole components.**",
         component,
         f"**Logit-space restriction** ({cite(NANDA_2023)}'s restricted and excluded loss). "
         f"This edits the output logits, not the weights, so it is a projection rather than an "
         f"intervention. The logits for one output class, as a function of (a, b), have "
-        f"{m['p'] ** 2:,} degrees of freedom; keeping two directions per key frequency "
-        f"leaves {2 * len(K)}:",
+        f"{m['p'] ** 2:,} degrees of freedom; keeping two directions per key frequency, "
+        f"plus the per-class mean, leaves {2 * len(K) + 1}:",
         prog,
     ]
     return "\n\n".join(parts)
@@ -456,8 +470,9 @@ def load_bearing(root: Path, tag: str) -> Optional[str]:
         table(["frequency removed", "train loss afterwards"], rows),
         f"At the boundary -- the weakest key frequency against the strongest of the rest -- "
         f"the separation is a factor of {boundary:,.0f} ({orders(boundary):.1f} orders of "
-        f"magnitude). Most non-key frequencies cost nothing measurable: removing them leaves "
-        f"the training loss at its unablated value of {base:.2e}. The top {len(K)} by this "
+        f"magnitude). Most non-key frequencies cost nothing measurable: removing one leaves "
+        f"the training loss at about {rest[len(rest) // 2]:.2e} (median over the "
+        f"{len(rest)}), indistinguishable from removing nothing. The top {len(K)} by this "
         f"measure are "
         f"{picked}, " + ("the same set the rules find." if picked == sorted(K)
                          else f"which differs from the rules' {sorted(K)}."),
@@ -559,10 +574,18 @@ def phases(root: Path, tag: str) -> Optional[str]:
                 ("behind by more than it: " + ", ".join(behind)) if behind else ""] if x)
             + f". The restricted loss is also not monotone: it first rises, to "
             f"{rl_peak[1]:.2f} at step {rl_peak[0]:,}, before it falls.")
-    parts.append(
-        f"The ordering -- the key frequencies' subspace becoming predictive before test "
-        f"accuracy moves, the removal of the memorised solution coming later -- is the one "
-        f"{cite(NANDA_2023)} describe. This is one run.")
+    lead_rl = next((b[2] for b in body if b[0] == "restricted loss"), None)
+    lead_ex = next((b[2] for b in body if b[0] == "excluded loss"), None)
+    if lead_rl is not None:
+        parts.append(
+            f"So: the restricted loss reaches the midpoint of its change {lead_rl:,} steps "
+            f"before test accuracy reaches its own midpoint"
+            + (f", while the excluded loss -- the measure that tracks removal of the memorised "
+               f"solution -- is within resolution of test accuracy ({lead_ex:+,} steps)"
+               if lead_ex is not None and spacing and abs(lead_ex) <= spacing else "")
+            + f". That order is consistent with {cite(NANDA_2023)}'s account. This is one run, "
+            f"and test accuracy has already begun to rise by then; the lead is over its "
+            f"midpoint, not over its first movement.")
     return "\n\n".join(parts)
 
 
@@ -572,7 +595,7 @@ def runtime(root: Path, tag: str) -> Optional[str]:
         return None
     last = h["history"][-1]
     return (f"The mainline run is {last['step']:,} steps in "
-            f"**{last['elapsed'] / 60:.0f} minutes** on 6 CPU threads "
+            f"**{last['elapsed'] / 60:.0f} minutes** on {_tc(root, tag, 'num_threads')} CPU threads "
             f"({last['elapsed'] / max(last['step'], 1) * 1000:.0f} ms per full-batch step).")
 
 
@@ -630,13 +653,14 @@ def operations(root: Path, tags: List[str]) -> Optional[str]:
         spread = (max(gs) / min(gs)) if len(gs) > 1 else None
         sub_budget = load_history(root, sub_tag)["train_cfg"]["steps"]
         parts.append(
-            f"Subtraction builds the mirror circuit: its output tracks (a-b). It grokked at "
-            f"step {st(got[sub_tag]):,} against {st(got[ADD_REFERENCE]):,} for `{ADD_REFERENCE}`, "
-            f"but with one seed each"
-            + (f", and seeds of one configuration elsewhere in this project spanning a factor "
-               f"of {spread:.1f}" if spread else "")
-            + f", that is not evidence subtraction is slower. It grokked "
-            f"{sub_budget - st(got[sub_tag]):,} steps before its budget ran out.")
+            f"Subtraction's output tracks (a-b) rather than (a+b). It grokked at step "
+            f"{st(got[sub_tag]):,} against {st(got[ADD_REFERENCE]):,} for `{ADD_REFERENCE}`, "
+            f"a factor of {got[sub_tag] / got[ADD_REFERENCE]:.1f}"
+            + (f"; seeds of a single configuration elsewhere in this project span a factor of "
+               f"{spread:.1f} (at a different modulus and training fraction)" if spread else "")
+            + f". With one seed per operation this is weak evidence either way. It grokked "
+            f"{sub_budget - st(got[sub_tag]):,} steps before its budget ran out, so its "
+            f"mechanism was read much closer to the transition than addition's.")
     if notes:
         parts += ["**Censored runs.**"] + [f"- {n}" for n in notes]
     return "\n\n".join(parts)
@@ -663,13 +687,17 @@ def quadratic(root: Path, _tag: str) -> Optional[str]:
                   r["unseen_without_flipped_partner"]["predicts_flipped"],
                   r["chance"]] for r in d]
     return "\n\n".join([
-        f"{cite(FURUTA_2024)} and {cite(DOSHI_2024)} (their Hypothesis 5.1) relate whether "
-        f"a modular polynomial is learnable to whether it factorises. `a^2 + ab + b^2` "
-        f"factors into linear forms over F_p exactly when p = 1 (mod 3), so this tests "
-        f"that at a matched pair of primes.",
+        f"`a^2 + ab + b^2` splits into linear factors over F_p exactly when p = 1 (mod 3). "
+        f"This pair of primes asks whether that matters. It is not a hypothesis from the "
+        f"literature: {cite(FURUTA_2024)} call the form non-factorisable in the sense of not "
+        f"being expressible through (a +- b), and {cite(DOSHI_2024)}'s Hypothesis 5.1 "
+        f"concerns forms h(g1(a) + g2(b)); neither is about splitting over F_p. "
+        f"{cite(FURUTA_2024)} also already report that it does not grok at "
+        f"p = {PUBLISHED['furuta_prime'].value}, where it does split.",
         tbl,
-        (f"**Neither generalises within {budgets[-1]:,} steps, so this gives a null answer "
-         f"on factorability.** " if none_grok else "")
+        (f"**Neither generalises within {budgets[-1]:,} steps**, consistent with "
+         f"{cite(FURUTA_2024)}'s result: splitting over F_p does not appear to matter here. "
+         if none_grok else "")
         + f"Both sit near {sum(r['test_acc'] for r in d) / len(d):.0%} test accuracy, and the cause is not partial learning of the "
         "form. It is symmetric in a and b while the train/test split is over *ordered* "
         "pairs, so about half the held-out pairs have their transpose in the training set; "
@@ -683,12 +711,22 @@ def quadratic(root: Path, _tag: str) -> Optional[str]:
         table(["run", "pairs with a sign-flipped partner trained",
                "predicts a^2 - ab + b^2", "pairs without one", "predicts a^2 - ab + b^2",
                "chance"], part_rows),
-        "So these look like memorised answers retrieved for the wrong key, which suggests "
-        "the representation places b and -b close together; that was not measured "
-        "directly, and the without-partner groups are small. An earlier version read the "
+        "So these look like memorised answers retrieved for the wrong key. The embedding "
+        "does place each residue near its negative (mean cosine similarity "
+        + ", ".join(f"{r['embedding_cos_x_minus_x']:.2f} at p = {r['p']}" for r in d)
+        + "; random pairs "
+        + ", ".join(f"{r['embedding_cos_x_random']:.2f}" for r in d)
+        + "). But that alone predicts that a *double* flip (-a, -b), whose value equals the "
+        "true one, would be retrieved as readily and give the right answer; where only "
+        "such a partner was trained, the model is right on "
+        + ", ".join(f"{r['unseen_with_only_double_flip_partner']['correct']:.0%} "
+                    f"(n = {r['unseen_with_only_double_flip_partner']['n']})" for r in d)
+        + ". Why single flips are retrieved and double flips are not was not established, "
+        "and the without-partner groups are small. An earlier version read the "
         "plateau as a "
         "circuit that had 'lost the sign of b'; that explained neither the accuracy, which "
-        "symmetry accounts for, nor these errors, which memorised partners do. Splitting "
+        "symmetry accounts for, nor the dependence of these errors on which partners were "
+        "trained. Splitting "
         "on unordered pairs would remove both effects and make this a fair test of "
         "factorability.",
     ])
@@ -713,11 +751,16 @@ def dlog_block(root: Path, tag: str = "B_mul_s0") -> Optional[str]:
         f"{cite(CHUGHTAI_2023)} ({arxiv(CHUGHTAI_2023)}). What follows reproduces those on "
         f"this repository's own model, which was trained on the full table including 0.",
         table(["basis", "key frequencies", "Gini(W_E)", "power in key freqs",
-               "variance explained by the sum", "rules agree (Jaccard)"],
-              [["ordinary (residues 0..p-1)", len(o["used"]), o["gini_W_E"],
-                o["frac_power_in_key"], m["structure"]["a+b"], o["jaccard"]],
+               "rules agree (Jaccard)"],
+              [["ordinary (residues 0..p-1)",
+                "--" if o["jaccard"] == 0 else len(o["used"]), o["gini_W_E"],
+                "--" if o["jaccard"] == 0 else o["frac_power_in_key"], o["jaccard"]],
                [f"discrete log (g = {d['primitive_root']}, n = {d['n']})", len(s["used"]),
-                s["gini_W_E"], s["frac_power_in_key"], d["structure"]["a+b"], s["jaccard"]]]),
+                s["gini_W_E"], s["frac_power_in_key"], s["jaccard"]]]),
+        f"In the ordinary basis the three rules share no frequency at all, so there is no "
+        f"key set to report; in the discrete-log basis they agree exactly. How much of the "
+        f"logits' variance is a function of a*b does not depend on the basis "
+        f"({m['structure']['a*b']:.3f}); only the sparsity does.",
     ]
     ws = d.get("weight_surgery")
     if ws:
@@ -740,13 +783,14 @@ def dlog_block(root: Path, tag: str = "B_mul_s0") -> Optional[str]:
         parts += [
             "**The absorbing element.** Zero has no multiplicative inverse, so it is outside "
             f"the group. Prior work excludes it or treats it as a separate stratum "
-            f"({cite(DOSHI_2024)}; {cite(CHEN_2026)}, observationally and on composite moduli). "
-            f"Here the model is correct on the pairs containing a zero, no neuron behaves "
-            f"like a detector for it (strongest correlation with `a == 0`: "
-            f"{d['zero_element']['max_neuron_corr_a_is_zero']:.3f}), and its embedding row "
-            f"has the smallest norm of all ({zi['row0_norm']:.2f} against a mean of "
-            f"{zi['mean_other_norm']:.2f}). But the small norm is not the mechanism. Editing "
-            f"that one row and re-running the model:",
+            f"({cite(DOSHI_2024)}; {cite(CHEN_2026)}, correlationally, at "
+            f"p = {PUBLISHED['chen_prime_modulus'].value} among other moduli). "
+            f"Here the model is correct on {zi['unedited']:.0%} of the pairs containing a "
+            f"zero, no neuron behaves like a detector for it (strongest correlation with "
+            f"`a == 0`: {d['zero_element']['max_neuron_corr_a_is_zero']:.3f}), and its embedding "
+            f"row has norm {zi['row0_norm']:.2f} against a mean of {zi['mean_other_norm']:.2f}"
+            + (" -- the smallest of all" if zi.get("row0_is_smallest") else "")
+            + ". Editing that one row and re-running the model:",
             table(["edit to the embedding of 0",
                    f"accuracy, all {2 * m['p'] - 1} pairs containing a 0 (train and test)"],
                   [["none", zi["unedited"]],
@@ -755,31 +799,38 @@ def dlog_block(root: Path, tag: str = "B_mul_s0") -> Optional[str]:
                    ["doubled", zi["row0_doubled"]],
                    ["replaced by the mean of the other rows", zi["row0_replaced_by_mean_of_others"]],
                    [f"replaced by a random direction at the mean norm (median of {rd['n']})", rd["median"]],
-                   [f"scaled by {zi.get('scale_factor', 10)}", zi["row0_scaled_x10"]]]),
-            f"Restoring its norm changes nothing, and what the row contains barely matters: "
-            f"zeroed, averaged, or replaced by a random direction (median {rd['median']:.2f} "
-            f"over {rd['n']} directions, range {rd['min']:.2f} to {rd['max']:.2f}), the model "
-            f"still answers 0, until the edit is large enough to dominate the residual stream.",
+                   [f"scaled by {zi.get('scale_factor')}", zi["row0_scaled"]]]),
+            f"Restoring its norm to the mean leaves accuracy at "
+            f"{zi['row0_rescaled_to_mean_norm']:.2f}, so the small norm is not what makes the "
+            f"model answer 0. Replacing the row usually leaves it answering 0 too (random "
+            f"directions at the mean norm: median {rd['median']:.2f} over {rd['n']}, but as low "
+            f"as {rd['min']:.2f}); scaling it by {zi.get('scale_factor')} breaks it "
+            f"({zi['row0_scaled']:.2f}).",
         ]
     one = (zi or {}).get("one_input_without_signal")
     both = (zi or {}).get("both_inputs_without_signal")
-    if one and both:
+    if one and both and "pairs_scored" in one:
         parts.append(
-            f"So what does make it answer 0? Remove the multiplicative signal from one "
-            f"*nonzero* input instead -- zero or average the embedding of a nonzero residue "
-            f"({', '.join(map(str, one['probe_rows']))}) -- and the model answers 0 on "
-            f"{one['frac_predicted_0_zeroed']:.1%} of that residue's pairs. Remove it from "
-            f"both inputs and it answers {both['most_common_prediction']} on "
-            f"{both['its_share']:.0%} of pairs, and 0 on {both['frac_predicted_0']:.0%}. The "
-            f"model treats an input that carries no multiplicative signal as a zero factor -- "
-            f"what 0 means in multiplication -- whether or not the input is actually 0. Which "
-            f"weights implement that was not identified.")
+            f"So what does make it answer 0? Blank the embedding row of one *nonzero* "
+            f"residue instead (zero it, or replace it with the mean row), for every one of "
+            f"the {one['residues_probed']} nonzero residues in either input position, and "
+            f"score only pairs whose other input is untouched: the model answers 0 on "
+            f"{one['frac_predicted_0_zeroed']:.1%} of {one['pairs_scored']:,} pairs when zeroed "
+            f"and {one['frac_predicted_0_mean']:.1%} when averaged. Blank *both* inputs' rows "
+            f"and it answers {both['most_common_prediction']}, never 0, on the "
+            f"{both['pairs_scored']} pairs tested ({both['frac_predicted_0']:.0%} answer 0). "
+            f"Every such pair then presents the same input, so their agreeing is automatic; "
+            f"which class they agree on is the measurement. The real pair (0, 0), once 0's own "
+            f"row is blanked, becomes that same input and gives "
+            f"{zi.get('zero_zero_with_row0_blanked')}. So the rule is narrower than 'a blank "
+            f"input acts as zero': exactly one uninformative input gives 0, and two give a "
+            f"fixed non-zero class. Which weights implement this was not identified.")
     return "\n\n".join(parts)
 
 
 # ----------------------------------------------------------------- controls
 
-CONTROL_NOTES = {"B_add_s1": "different seed for split and weights"}
+CONTROL_NOTES: Dict[str, str] = {}
 CONTROL_ORDER = ["main_add_s0", "B_add_s0", "C_add_f32", "C_add_nowarm", "B_add_s1"]
 
 
@@ -927,12 +978,13 @@ def replicates(root: Path, _tag: str) -> Optional[str]:
         "The same training fraction, a second seed for both split and initialisation:",
         table(["", *[f"seed {s} ({', '.join(f'{b:,}' for b in budgets[s])}-step budget)"
                      for s in seeds]], body),
-        f"Both seeds order the cells the same way, from most weight decay (fastest) to "
-        f"least, counting a cell that did not grok as later than its budget. That is "
-        + ("consistent in every seed" if all(verdicts) else
-           f"consistent in {sum(verdicts)} of {len(verdicts)} seeds")
-        + ". The budgets differ, so a censored cell is not comparable with the other seed's "
-        f"number in the same row, only with its own column's order.",
+        (f"Every seed orders the cells the same way, from most weight decay (fastest) to "
+         f"least" if verdicts and all(verdicts) else
+         f"{sum(verdicts)} of {len(verdicts)} seeds order the cells from most weight decay "
+         f"(fastest) to least")
+        + ", counting a cell that did not grok as later than its budget. The budgets "
+        "differ, so a censored cell is comparable only with its own seed's order, not with "
+        "the other seed's number in the same row.",
     ])
 
 
@@ -969,9 +1021,11 @@ def prediction(root: Path, _tag: str) -> Optional[str]:
     best = surv[0] if surv else None
     parts = [
         f"{cite(NOTSAWO_2023)} ({arxiv(NOTSAWO_2023)}) predict *whether* grokking will occur "
-        f"from oscillations in the early training-loss curve. The question here is a "
-        f"different one: among runs that all grok, which early signals rank them by *when*, "
-        f"in a setting where only the random draw differs.",
+        f"from oscillations in the early training-loss curve, and {cite(KHANH_2026)} "
+        f"({arxiv(KHANH_2026)}) predict *when*, across hyperparameter settings, from the "
+        f"parameter norm. The question here is narrower still: within a single configuration, "
+        f"where only the random draw differs, which early signals rank runs by when they "
+        f"generalise.",
         f"{w['n']} runs share the task (`{c['op']}`), modulus ({c['p']}), training fraction "
         f"({c['train_frac']}), weight decay ({c['weight_decay']}) and budget "
         f"({c['budget']:,} steps). They grok between step {earliest:,.0f} and "
@@ -988,10 +1042,13 @@ def prediction(root: Path, _tag: str) -> Optional[str]:
               f"transition already under way each run is.")
     parts += [
         f"Spearman correlation with the grokking step; positive means a higher reading goes "
-        f"with a later transition. `*` marks coefficients that survive a two-tailed "
-        f"Bonferroni correction over all {b['n_tests']} tests computed (|rho| > "
-        f"{b['critical_rho_two_tailed']:.2f}). 'Leak-free' rows use the frequencies each "
-        f"checkpoint itself would pick, rather than the final model's:",
+        f"with a later transition. `*` marks coefficients whose two-tailed permutation "
+        f"p-value survives Bonferroni over the {b['n_tests']} tests at the {len(steps)} "
+        f"reported steps (|rho| of at least {b['critical_rho_two_tailed']:.3f}); readings at "
+        f"later steps were also computed and are excluded, as above. Rows marked `(final)` "
+        f"use the finished model's key frequencies and so borrow information from after the "
+        f"transition; their 'leak-free' counterparts use the frequencies each checkpoint would "
+        f"pick itself:",
         table(["signal", *[f"at step {int(s):,}" for s in steps]], body),
     ]
     plain = {"train_loss", "test_loss", "test_acc", "weight_norm"}
