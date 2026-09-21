@@ -277,20 +277,20 @@ At the boundary -- the weakest key frequency against the strongest of the rest -
 ## 4. When the circuit forms
 
 <!-- BEGIN:phases -->
-The progress measures and the three-phase account are Nanda et al. (2023)'s. Each signal is measured against its own range, from initialisation to final value, and the table gives the step at which it has made half its total change. A positive lead means it gets there before test accuracy does.
+The progress measures and the three-phase account are Nanda et al. (2023)'s. Each signal is measured against its own range, from its value at initialisation to its final level, taken as the median of the last 8 checkpoints (steps 25,013 to 40,000); the table gives the step at which it has made half that change. A positive lead means it gets there before test accuracy does. The last column repeats the lead with the final level taken as the last checkpoint alone, to show which leads depend on that choice.
 
-| signal | reaches 50% of its change | lead over test accuracy |
-|:--|--:|--:|
-| test accuracy (visible from outside) | 13,711 | 0 |
-| restricted loss | 10,172 | 3,539 |
-| embedding spectrum Gini | 12,822 | 889 |
-| logit variance explained by (a+b) | 13,068 | 643 |
-| excluded loss | 13,659 | 52 |
-| neurons explained >85% by one frequency | 15,345 | -1,634 |
+| signal | reaches 50% of its change | lead over test accuracy | lead, final level = last checkpoint |
+|:--|--:|--:|--:|
+| test accuracy (visible from outside) | 13,711 | 0 | 0 |
+| restricted loss | 10,172 | 3,539 | 3,539 |
+| embedding spectrum Gini | 12,822 | 889 | 885 |
+| logit variance explained by (a+b) | 13,068 | 643 | 622 |
+| excluded loss | 13,659 | 52 | -2,599 |
+| neurons explained >85% by one frequency | 15,345 | -1,634 | -1,491 |
 
-**Resolution.** Checkpoints near the transition are about 887 steps apart, so a lead smaller than that is not distinguishable from zero. Against that: ahead by more than the spacing: restricted loss, embedding spectrum Gini; within it: logit variance explained by (a+b), excluded loss; behind by more than it: neurons explained >85% by one frequency. The restricted loss is also not monotone: it first rises, to 7.85 at step 2,925, before it falls.
+**Resolution.** Checkpoints near the transition are about 887 steps apart, so a lead smaller than that is not distinguishable from zero. Against that: ahead by more than the spacing: restricted loss; at the edge of resolution: embedding spectrum Gini; within it: logit variance explained by (a+b); behind by more than it: neurons explained >85% by one frequency; moved by more than the spacing when the final level is chosen the other way: excluded loss. The restricted loss is also not monotone: it first rises, to 7.85 at step 2,925, before it falls.
 
-So: the restricted loss reaches the midpoint of its change 3,539 steps before test accuracy reaches its own midpoint, while the excluded loss -- the measure that tracks removal of the memorised solution -- is within resolution of test accuracy (+52 steps). That order is consistent with Nanda et al. (2023)'s account. This is one run, and test accuracy has already begun to rise by then; the lead is over its midpoint, not over its first movement.
+So: the restricted loss reaches the midpoint of its change 3,539 steps before test accuracy reaches its own midpoint, with either choice of final level. The excluded loss cannot be placed: after the transition it swings between 13.0 and 26.6 from one checkpoint to the next, so its final level is not well defined, and its lead is +52 steps with one choice and -2,599 with the other. The restricted loss leading is consistent with Nanda et al. (2023)'s account. This is one run, and test accuracy has already begun to rise by then; the lead is over its midpoint, not over its first movement.
 <!-- END:phases -->
 
 ![progress measures](figures/fig3_progress_measures.png)
@@ -363,14 +363,14 @@ So what does make it answer 0? Blank the embedding row of one *nonzero* residue 
 ### A quadratic form
 
 <!-- BEGIN:quadratic -->
-`a^2 + ab + b^2` splits into linear factors over F_p exactly when p = 1 (mod 3). This pair of primes asks whether that matters. It is not a hypothesis from the literature: Furuta et al. (2024) call the form non-factorisable in the sense of not being expressible through (a +- b), and Doshi et al. (2024)'s Hypothesis 5.1 concerns forms h(g1(a) + g2(b)); neither is about splitting over F_p. Furuta et al. (2024) also already report that it does not grok at p = 97, where it does split.
+`a^2 + ab + b^2` splits into linear factors over F_p exactly when p = 1 (mod 3). This pair of primes asks whether that matters. It is not a hypothesis from the literature: Furuta et al. (2024) call the form non-factorisable in the sense of not being expressible through (a +- b), and Doshi et al. (2024)'s Hypothesis 5.1 concerns forms h(g1(a) + g2(b)); neither is about splitting over F_p. Furuta et al. (2024) do train this form: at p = 97, where it splits, it groks from scratch only with a training fraction of at least 0.8, and at 0.5 it reaches 56% test accuracy (their Tables 1 and 5). The runs here use a training fraction of 0.5.
 
 | run | p | form over F_p | test acc | held-out pairs whose transpose was trained on | acc on those | acc on the rest | chance |
 |:--|--:|--:|--:|--:|--:|--:|--:|
 | `Q_sqx_p59` | 2 mod 3 | irreducible | 0.4951 | 0.4842 | 1.0 | 0.0212 | 0.0169 |
 | `Q_sqx_p61` | 1 mod 3 | splits | 0.4970 | 0.4793 | 1.0 | 0.0341 | 0.0164 |
 
-**Neither generalises within 60,000 steps**, consistent with Furuta et al. (2024)'s result: splitting over F_p does not appear to matter here. Both sit near 50% test accuracy, and the cause is not partial learning of the form. It is symmetric in a and b while the train/test split is over *ordered* pairs, so about half the held-out pairs have their transpose in the training set; the model gets essentially all of those right and is near chance on the rest. It has memorised the training table and learned that the table is symmetric.
+**Neither generalises within 60,000 steps.** Both sit near 50% test accuracy, and the cause is not partial learning of the form. It is symmetric in a and b while the train/test split is over *ordered* pairs, so about half the held-out pairs have their transpose in the training set; the model gets essentially all of those right and is near chance on the rest. It has memorised the training table and learned that the table is symmetric. Since both primes sit at that floor, this pair says nothing either way about whether splitting over F_p matters.
 
 Its *mistakes* are structured, though. `a^2 - ab + b^2` is the same form with the sign of one input flipped, and on the held-out pairs it cannot answer from memory, the model often predicts exactly that. Whether it does depends on whether a sign-flipped partner of the pair -- (a, -b), (-a, b) or their transposes, all of which share that value -- was in the training set:
 
@@ -379,7 +379,7 @@ Its *mistakes* are structured, though. `a^2 - ab + b^2` is the same form with th
 | `Q_sqx_p59` | 798 | 0.3935 | 64 | 0.0312 | 0.0169 |
 | `Q_sqx_p61` | 875 | 0.3886 | 66 | 0.0303 | 0.0164 |
 
-So these look like memorised answers retrieved for the wrong key. The embedding does place each residue near its negative (mean cosine similarity 0.58 at p = 59, 0.58 at p = 61; random pairs -0.04, -0.00). But that alone predicts that a *double* flip (-a, -b), whose value equals the true one, would be retrieved as readily and give the right answer; where only such a partner was trained, the model is right on 4% (n = 48), 2% (n = 46). Why single flips are retrieved and double flips are not was not established, and the without-partner groups are small. An earlier version read the plateau as a circuit that had 'lost the sign of b'; that explained neither the accuracy, which symmetry accounts for, nor the dependence of these errors on which partners were trained. Splitting on unordered pairs would remove both effects and make this a fair test of factorability.
+So these look like memorised answers retrieved for the wrong key. The embedding does place each residue near its negative (mean cosine similarity 0.58 at p = 59, 0.58 at p = 61; random pairs -0.04, -0.00). But that alone predicts that a *double* flip (-a, -b), whose value equals the true one, would be retrieved as readily and give the right answer; where only such a partner was trained, the model is right on 4% (n = 48), 2% (n = 46). Why single flips are retrieved and double flips are not was not established, and the without-partner groups are small. An earlier version read the plateau as a circuit that had 'lost the sign of b'; that explained neither the accuracy, which symmetry accounts for, nor the dependence of these errors on which partners were trained. Splitting on unordered pairs would remove the transpose effect only. Removing the sign-flip one as well needs whole orbits {(+-a, +-b), (+-b, +-a)} held out together, so that no held-out pair has a transpose or a sign-flipped partner in training; and with one seed per prime, even that would be a first look rather than a test.
 <!-- END:quadratic -->
 
 ### Which correction mattered?
@@ -593,7 +593,7 @@ within-configuration comparison of which early signals rank runs by when they
 generalise, in which plain losses do as well as mechanistic measures; Khanh et
 al. predict the delay across settings from the parameter norm.
 
-**Corrected along the way.** This write-up went through three rounds of
+**Corrected along the way.** This write-up went through four rounds of
 adversarial review by AI agents before publication, and much of what earlier versions
 claimed did not survive: a mechanism for a float32 readout difference; a
 "sign-blind circuit" reading of the quadratic form, and then an overcorrection
@@ -605,7 +605,10 @@ presented as an independent prediction; the claim that the visible quantity
 cannot forecast the transition; novelty claims contradicted by published work;
 a citation with a wrong author list; forecasting numbers corrupted by a
 data-seed bug and a double-counted signal; and reproduction instructions that
-did not reproduce the headline run. Each section states the corrected version.
+did not reproduce the headline run; a misreading of what Furuta et al. found
+for the quadratic form (it does grok, at a larger training fraction than used
+here); and a phase-timing comparison whose choice of end point was unstated and
+decided one of its conclusions. Each section states the corrected version.
 Runs that fail to grok are reported with their step budget.
 
 **How this was made.** This repository was designed, implemented and written
@@ -613,8 +616,8 @@ by an AI system (Claude, by Anthropic) working as an agent at my direction. I
 chose the topic and set the scope; the experiment design, the code, the
 analysis and this write-up are the model's. Every number was produced by
 running that code on my machine. Several corrections came out of review
-questions I asked about whether the work was finished, and the rest from three
+questions I asked about whether the work was finished, and the rest from four
 rounds of adversarial review before publication. Those reviews were also run
 by AI agents -- separate Claude instances, each told to refute the write-up,
-launched from a script that I directed -- not by human reviewers. I read their
-findings; the model made the corrections.
+launched by the model -- not by human reviewers. The model made the
+corrections and reported them to me.
