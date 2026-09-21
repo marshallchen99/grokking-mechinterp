@@ -43,3 +43,7 @@ step      0 | train 4.0854/0.014 | test 4.0801/0.018 | |w| 33.0 | 0s
 step   1000 | train 0.0000/1.000 | test 1.5322/0.768 | |w| 41.4 | 155s
 step   2000 | train 0.0000/1.000 | test 0.0001/1.000 | |w| 29.9 | 384s
 step   3000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 26.7 | 560s
+step   4000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 25.4 | 736s
+step   5000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 24.8 | 916s
+step   6000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 24.7 | 1103s
+DONE {"step": 6000, "train_loss": 0.0, "train_acc": 1.0, "test_loss": 0.0, "test_acc": 1.0, "weight_norm": 24.68413, "elapsed": 1102.86155}

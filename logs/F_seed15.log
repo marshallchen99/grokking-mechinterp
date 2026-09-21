@@ -1,5 +1,5 @@
 {
-  "tag": "F_seed10",
+  "tag": "F_seed15",
   "op": "add",
   "p": 59,
   "n_train": 1740,
@@ -17,7 +17,7 @@
     "causal": true,
     "init_std": 0.0,
     "init_range": 0.8,
-    "seed": 10
+    "seed": 15
   },
   "train": {
     "steps": 6000,
@@ -39,11 +39,11 @@
     "seed": 0
   }
 }
-step      0 | train 4.0851/0.014 | test 4.0834/0.020 | |w| 33.1 | 0s
-step   1000 | train 0.0000/1.000 | test 0.0196/0.995 | |w| 38.9 | 127s
-step   2000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.3 | 263s
-step   3000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 26.3 | 381s
-step   4000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 25.9 | 501s
-step   5000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 25.8 | 615s
-step   6000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 25.8 | 708s
-DONE {"step": 6000, "train_loss": 0.0, "train_acc": 1.0, "test_loss": 0.0, "test_acc": 1.0, "weight_norm": 25.7604, "elapsed": 707.71109}
+step      0 | train 4.0841/0.017 | test 4.0816/0.017 | |w| 33.1 | 0s
+step   1000 | train 0.0000/1.000 | test 0.0040/1.000 | |w| 38.4 | 92s
+step   2000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 28.5 | 193s
+step   3000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 26.6 | 293s
+step   4000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 26.2 | 398s
+step   5000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 26.0 | 501s
+step   6000 | train 0.0000/1.000 | test 0.0000/1.000 | |w| 26.0 | 618s
+DONE {"step": 6000, "train_loss": 0.0, "train_acc": 1.0, "test_loss": 0.0, "test_acc": 1.0, "weight_norm": 25.98883, "elapsed": 617.59129}
