@@ -1,90 +1,109 @@
-[
- {
-  "tag": "Q_sqx_p59",
-  "p": 59,
-  "p_mod_3": 2,
-  "budget": 60000,
-  "form_splits": false,
-  "train_acc": 1.0,
-  "test_acc": 0.49511775374412537,
-  "chance": 0.01694915254237288,
-  "forms_differ_on": 0.9663889408111572,
-  "matches": {
-   "true  a^2+ab+b^2": 0.49511775374412537,
-   "sign-flipped b  a^2-ab+b^2": 0.20045951008796692,
-   "(a+b)^2": 0.02986789122223854,
-   "a^2+b^2": 0.02240091934800148,
-   "a*b": 0.013210798613727093
-  },
-  "sign_flip_enrichment": 10.708787649869919,
-  "acc_where_forms_coincide": 0.515625,
-  "n_coincide": 64,
-  "either_form": 0.6766226291656494,
-  "frac_test_with_transpose_in_train": 0.4842044711112976,
-  "acc_transpose_in_train": 1.0,
-  "acc_transpose_held_out": 0.0211581289768219,
-  "predictions_symmetric": 0.985636293888092,
-  "n_unseen": 862,
-  "unseen_predicts_flipped": 0.36658933758735657,
-  "unseen_flip_enrichment": 21.628770917654037,
-  "unseen_with_flipped_partner_trained": {
-   "n": 798,
-   "predicts_flipped": 0.3934836983680725
-  },
-  "unseen_with_only_double_flip_partner": {
-   "n": 48,
-   "correct": 0.0416666679084301
-  },
-  "embedding_cos_x_minus_x": 0.5761964917182922,
-  "embedding_cos_x_random": -0.0350719690322876,
-  "unseen_without_flipped_partner": {
-   "n": 64,
-   "predicts_flipped": 0.03125
-  },
-  "explained_by_memorisation_plus_symmetry": 0.49511773943719284
+{
+ "_provenance": {
+  "commit": "3d96319caff10e3ab22424f26acc59ef93efec3e",
+  "code_modified": false,
+  "argv": [
+   "scripts/analyze_quadratic.py",
+   "--root",
+   ".",
+   "--tags",
+   "Q_sqx_p59",
+   "Q_sqx_p61",
+   "--threads",
+   "2"
+  ],
+  "threads": 2,
+  "torch": "2.12.0+cpu",
+  "python": "3.13.12"
  },
- {
-  "tag": "Q_sqx_p61",
-  "p": 61,
-  "p_mod_3": 1,
-  "budget": 60000,
-  "form_splits": true,
-  "train_acc": 1.0,
-  "test_acc": 0.4970445930957794,
-  "chance": 0.01639344262295082,
-  "forms_differ_on": 0.9674818515777588,
-  "matches": {
-   "true  a^2+ab+b^2": 0.4970445930957794,
-   "sign-flipped b  a^2-ab+b^2": 0.2047286331653595,
-   "(a+b)^2": 0.02579258382320404,
-   "a^2+b^2": 0.024180548265576363,
-   "a*b": 0.025255238637328148
+ "runs": [
+  {
+   "tag": "Q_sqx_p59",
+   "p": 59,
+   "p_mod_3": 2,
+   "budget": 60000,
+   "form_splits": false,
+   "train_acc": 1.0,
+   "test_acc": 0.49511775374412537,
+   "chance": 0.01694915254237288,
+   "forms_differ_on": 0.9663889408111572,
+   "matches": {
+    "true  a^2+ab+b^2": 0.49511775374412537,
+    "sign-flipped b  a^2-ab+b^2": 0.20045951008796692,
+    "(a+b)^2": 0.02986789122223854,
+    "a^2+b^2": 0.02240091934800148,
+    "a*b": 0.013210798613727093
+   },
+   "sign_flip_enrichment": 10.708787649869919,
+   "acc_where_forms_coincide": 0.515625,
+   "n_coincide": 64,
+   "either_form": 0.6766226291656494,
+   "frac_test_with_transpose_in_train": 0.4842044711112976,
+   "acc_transpose_in_train": 1.0,
+   "acc_transpose_held_out": 0.0211581289768219,
+   "predictions_symmetric": 0.985636293888092,
+   "n_unseen": 862,
+   "unseen_predicts_flipped": 0.36658933758735657,
+   "unseen_flip_enrichment": 21.628770917654037,
+   "unseen_with_flipped_partner_trained": {
+    "n": 798,
+    "predicts_flipped": 0.3934836983680725
+   },
+   "unseen_with_only_double_flip_partner": {
+    "n": 48,
+    "correct": 0.0416666679084301
+   },
+   "embedding_cos_x_minus_x": 0.5761964917182922,
+   "embedding_cos_x_random": -0.0350719690322876,
+   "unseen_without_flipped_partner": {
+    "n": 64,
+    "predicts_flipped": 0.03125
+   },
+   "explained_by_memorisation_plus_symmetry": 0.49511773943719284
   },
-  "sign_flip_enrichment": 11.21010185778141,
-  "acc_where_forms_coincide": 0.6610169410705566,
-  "n_coincide": 59,
-  "either_form": 0.6808167695999146,
-  "frac_test_with_transpose_in_train": 0.4793122112751007,
-  "acc_transpose_in_train": 1.0,
-  "acc_transpose_held_out": 0.03405572846531868,
-  "predictions_symmetric": 0.9914001822471619,
-  "n_unseen": 941,
-  "unseen_predicts_flipped": 0.36344313621520996,
-  "unseen_flip_enrichment": 22.170031309127808,
-  "unseen_with_flipped_partner_trained": {
-   "n": 875,
-   "predicts_flipped": 0.38857144117355347
-  },
-  "unseen_with_only_double_flip_partner": {
-   "n": 46,
-   "correct": 0.021739130839705467
-  },
-  "embedding_cos_x_minus_x": 0.5768893957138062,
-  "embedding_cos_x_random": -0.001714628655463457,
-  "unseen_without_flipped_partner": {
-   "n": 66,
-   "predicts_flipped": 0.03030303120613098
-  },
-  "explained_by_memorisation_plus_symmetry": 0.4970446132231231
- }
-]
+  {
+   "tag": "Q_sqx_p61",
+   "p": 61,
+   "p_mod_3": 1,
+   "budget": 60000,
+   "form_splits": true,
+   "train_acc": 1.0,
+   "test_acc": 0.4970445930957794,
+   "chance": 0.01639344262295082,
+   "forms_differ_on": 0.9674818515777588,
+   "matches": {
+    "true  a^2+ab+b^2": 0.4970445930957794,
+    "sign-flipped b  a^2-ab+b^2": 0.2047286331653595,
+    "(a+b)^2": 0.02579258382320404,
+    "a^2+b^2": 0.024180548265576363,
+    "a*b": 0.025255238637328148
+   },
+   "sign_flip_enrichment": 11.21010185778141,
+   "acc_where_forms_coincide": 0.6610169410705566,
+   "n_coincide": 59,
+   "either_form": 0.6808167695999146,
+   "frac_test_with_transpose_in_train": 0.4793122112751007,
+   "acc_transpose_in_train": 1.0,
+   "acc_transpose_held_out": 0.03405572846531868,
+   "predictions_symmetric": 0.9914001822471619,
+   "n_unseen": 941,
+   "unseen_predicts_flipped": 0.36344313621520996,
+   "unseen_flip_enrichment": 22.170031309127808,
+   "unseen_with_flipped_partner_trained": {
+    "n": 875,
+    "predicts_flipped": 0.38857144117355347
+   },
+   "unseen_with_only_double_flip_partner": {
+    "n": 46,
+    "correct": 0.021739130839705467
+   },
+   "embedding_cos_x_minus_x": 0.5768893957138062,
+   "embedding_cos_x_random": -0.001714628655463457,
+   "unseen_without_flipped_partner": {
+    "n": 66,
+    "predicts_flipped": 0.03030303120613098
+   },
+   "explained_by_memorisation_plus_symmetry": 0.4970446132231231
+  }
+ ]
+}

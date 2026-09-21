@@ -1,4 +1,20 @@
 {
+ "_provenance": {
+  "commit": "3d96319caff10e3ab22424f26acc59ef93efec3e",
+  "code_modified": false,
+  "argv": [
+   "scripts/analyze_sweep.py",
+   "--root",
+   ".",
+   "--pattern",
+   "S_p59_",
+   "--threads",
+   "2"
+  ],
+  "threads": 2,
+  "torch": "2.12.0+cpu",
+  "python": "3.13.12"
+ },
  "cells": [
   {
    "tag": "S_p59_wd0.1_f0.25",
@@ -51,7 +67,7 @@
    "key_rules_agree": false,
    "gini_W_E": 0.19472835912154432,
    "frac_power_in_key": 0.06566022494279106,
-   "logit_var_a+b": 0.015510040306623285,
+   "logit_var_a+b": 0.015510040305787953,
    "neuron_frac_above_85": 0.0
   },
   {
@@ -105,7 +121,7 @@
    "key_rules_agree": false,
    "gini_W_E": 0.20761982761397763,
    "frac_power_in_key": 0.27637382152926737,
-   "logit_var_a+b": 0.046130821675108624,
+   "logit_var_a+b": 0.0461308216781513,
    "neuron_frac_above_85": 0.0
   },
   {
@@ -138,7 +154,7 @@
    "key_rules_agree": false,
    "gini_W_E": 0.7361665478533266,
    "frac_power_in_key": 0.8505815659754639,
-   "logit_var_a+b": 0.9796986147539769,
+   "logit_var_a+b": 0.9796986147559462,
    "neuron_frac_above_85": 0.44921875
   },
   {
@@ -192,7 +208,7 @@
    "key_rules_agree": false,
    "gini_W_E": 0.24561032403529803,
    "frac_power_in_key": 0.0827413163288476,
-   "logit_var_a+b": 0.02613600588038334,
+   "logit_var_a+b": 0.026136005890112557,
    "neuron_frac_above_85": 0.0
   },
   {
@@ -246,7 +262,7 @@
    "key_rules_agree": false,
    "gini_W_E": 0.27011152379979503,
    "frac_power_in_key": 0.2667367103490385,
-   "logit_var_a+b": 0.07286790025377166,
+   "logit_var_a+b": 0.07286790025904188,
    "neuron_frac_above_85": 0.0
   },
   {
@@ -274,7 +290,7 @@
    "key_rules_agree": true,
    "gini_W_E": 0.8909280933812026,
    "frac_power_in_key": 0.9821471360320042,
-   "logit_var_a+b": 0.9906197950677637,
+   "logit_var_a+b": 0.9906197950665473,
    "neuron_frac_above_85": 0.806640625
   },
   {
@@ -328,7 +344,7 @@
    "key_rules_agree": false,
    "gini_W_E": 0.29847990021333426,
    "frac_power_in_key": 0.10417282532190211,
-   "logit_var_a+b": 0.04199134234372448,
+   "logit_var_a+b": 0.04199134235055124,
    "neuron_frac_above_85": 0.0
   },
   {
@@ -379,7 +395,7 @@
    "key_rules_agree": false,
    "gini_W_E": 0.44946407615850714,
    "frac_power_in_key": 0.1646816854240248,
-   "logit_var_a+b": 0.3617767947182804,
+   "logit_var_a+b": 0.3617767947258227,
    "neuron_frac_above_85": 0.0078125
   },
   {
@@ -407,7 +423,7 @@
    "key_rules_agree": true,
    "gini_W_E": 0.8921880914445421,
    "frac_power_in_key": 0.9887048130661701,
-   "logit_var_a+b": 0.9915746347039023,
+   "logit_var_a+b": 0.9915746347048705,
    "neuron_frac_above_85": 0.8203125
   },
   {
@@ -461,7 +477,7 @@
    "key_rules_agree": false,
    "gini_W_E": 0.29256657585392837,
    "frac_power_in_key": 0.11339629234060684,
-   "logit_var_a+b": 0.04586549146343932,
+   "logit_var_a+b": 0.04586549146725605,
    "neuron_frac_above_85": 0.0
   },
   {
@@ -490,7 +506,7 @@
    "key_rules_agree": true,
    "gini_W_E": 0.8489042646066823,
    "frac_power_in_key": 0.9619429617065963,
-   "logit_var_a+b": 0.9804351403515694,
+   "logit_var_a+b": 0.9804351403493895,
    "neuron_frac_above_85": 0.810546875
   },
   {
@@ -518,7 +534,7 @@
    "key_rules_agree": true,
    "gini_W_E": 0.8919406823690151,
    "frac_power_in_key": 0.983272971395178,
-   "logit_var_a+b": 0.9911586179123323,
+   "logit_var_a+b": 0.9911586179117378,
    "neuron_frac_above_85": 0.84375
   }
  ],

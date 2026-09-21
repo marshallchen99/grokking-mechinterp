@@ -84,20 +84,19 @@ def main():
         if analysis and analysis.get("complete") and hist:
             pb = phase_boundaries(hist["history"])
             g = int(pb["grokking_step"]) if pb["grokking_step"] else None
-            # Only measured events are shaded: memorisation (training accuracy
-            # reaches 99%) and the rise of test accuracy from 10% to 90%.
-            # Nanda et al.'s circuit-formation / cleanup boundary is not located
-            # on this run by any measurement here, so it is not drawn.  (An
-            # earlier version drew it at hand-picked fractions of the grokking
-            # step.)
+            # Only measured boundaries are drawn: training accuracy reaching 99%,
+            # test accuracy reaching 10%, and test accuracy reaching 90% (the
+            # orange line).  Nanda et al.'s circuit-formation / cleanup boundary
+            # is not located on this run by any measurement here, so it is not
+            # drawn.  (An earlier version drew it at hand-picked fractions of
+            # the grokking step.)
             from grokking.analysis.timing import crossing_step
             mem = pb["memorisation_step"]
             t10 = crossing_step(hist["history"], "test_acc", 0.10)
             phases = {}
-            if mem:
-                phases["memorised"] = (0, int(mem))
-            if t10 and g:
-                phases["test accuracy 10% to 90%"] = (int(t10), g)
+            if mem and t10 and g:
+                phases = {"memorising": (0, int(mem)), "memorised": (int(mem), int(t10)),
+                          "generalising": (int(t10), g)}
             fig = progress_panel(analysis["rows"], mode=mode, grok_step=g, phases=phases)
             save(fig, "fig3_progress_measures", figs, mode=mode); made.append("fig3")
         else:

@@ -7,7 +7,24 @@
   22,
   56
  ],
+ "_provenance": {
+  "commit": "3d96319caff10e3ab22424f26acc59ef93efec3e",
+  "code_modified": false,
+  "argv": [
+   "scripts/analyze_redundancy.py",
+   "--root",
+   ".",
+   "--tag",
+   "main_add_s0",
+   "--threads",
+   "2"
+  ],
+  "threads": 2,
+  "torch": "2.12.0+cpu",
+  "python": "3.13.12"
+ },
  "threshold": 0.9,
+ "max_subsets": 64,
  "rows": [
   {
    "subset": [],

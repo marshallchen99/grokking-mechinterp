@@ -381,8 +381,8 @@
     },
     "emb_key_frac": {
      "label": "power in key frequencies (final)",
-     "auc": 0.7564935064935064,
-     "rho": -0.778872468527641,
+     "auc": 0.032467532467532464,
+     "rho": -0.5030103995621238,
      "n_grok": 28,
      "n_censored": 11
     },
@@ -423,24 +423,24 @@
     },
     "restricted_loss_sum_train_live": {
      "label": "restricted loss (train pairs), leak-free",
-     "auc": null,
-     "rho": 0.43529411764705883,
-     "n_grok": 16,
-     "n_censored": 0
+     "auc": 0.9675324675324676,
+     "rho": 0.7033388067870827,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "excluded_loss_sum_live": {
      "label": "excluded loss (train pairs), leak-free",
-     "auc": null,
-     "rho": -0.7083333333333335,
-     "n_grok": 17,
-     "n_censored": 0
+     "auc": 0.9902597402597403,
+     "rho": -0.8166392993979202,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "emb_key_frac_live": {
      "label": "power in key frequencies, leak-free",
-     "auc": null,
-     "rho": -0.34313725490196084,
-     "n_grok": 17,
-     "n_censored": 0
+     "auc": 0.7012987012987013,
+     "rho": -0.6075533661740559,
+     "n_grok": 28,
+     "n_censored": 11
     }
    }
   },
@@ -470,8 +470,8 @@
     },
     "emb_key_frac": {
      "label": "power in key frequencies (final)",
-     "auc": 0.8084415584415584,
-     "rho": -0.8396278051450466,
+     "auc": 0.030844155844155844,
+     "rho": -0.5900383141762453,
      "n_grok": 28,
      "n_censored": 11
     },
@@ -512,24 +512,24 @@
     },
     "restricted_loss_sum_train_live": {
      "label": "restricted loss (train pairs), leak-free",
-     "auc": null,
-     "rho": 0.8294117647058824,
-     "n_grok": 16,
-     "n_censored": 0
+     "auc": 0.974025974025974,
+     "rho": 0.8866995073891627,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "excluded_loss_sum_live": {
      "label": "excluded loss (train pairs), leak-free",
-     "auc": null,
-     "rho": -0.7794117647058825,
-     "n_grok": 17,
-     "n_censored": 0
+     "auc": 0.9902597402597403,
+     "rho": -0.8598795840175152,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "emb_key_frac_live": {
      "label": "power in key frequencies, leak-free",
-     "auc": null,
-     "rho": -0.769607843137255,
-     "n_grok": 17,
-     "n_censored": 0
+     "auc": 0.775974025974026,
+     "rho": -0.8314176245210729,
+     "n_grok": 28,
+     "n_censored": 11
     }
    }
   },
@@ -559,8 +559,8 @@
     },
     "emb_key_frac": {
      "label": "power in key frequencies (final)",
-     "auc": 0.7792207792207793,
-     "rho": -0.9168035030103997,
+     "auc": 0.02922077922077922,
+     "rho": -0.738368910782704,
      "n_grok": 28,
      "n_censored": 11
     },
@@ -601,24 +601,24 @@
     },
     "restricted_loss_sum_train_live": {
      "label": "restricted loss (train pairs), leak-free",
-     "auc": null,
-     "rho": 0.8588235294117647,
-     "n_grok": 16,
-     "n_censored": 0
+     "auc": 0.9772727272727273,
+     "rho": 0.9354132457580735,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "excluded_loss_sum_live": {
      "label": "excluded loss (train pairs), leak-free",
-     "auc": null,
-     "rho": -0.536764705882353,
-     "n_grok": 17,
-     "n_censored": 0
+     "auc": 0.9448051948051948,
+     "rho": -0.7739463601532568,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "emb_key_frac_live": {
      "label": "power in key frequencies, leak-free",
-     "auc": null,
-     "rho": -0.5857843137254902,
-     "n_grok": 17,
-     "n_censored": 0
+     "auc": 0.7824675324675324,
+     "rho": -0.8429118773946361,
+     "n_grok": 28,
+     "n_censored": 11
     }
    }
   },
@@ -648,8 +648,8 @@
     },
     "emb_key_frac": {
      "label": "power in key frequencies (final)",
-     "auc": 0.8376623376623377,
-     "rho": -0.9507389162561578,
+     "auc": 0.017857142857142856,
+     "rho": -0.818281335522715,
      "n_grok": 28,
      "n_censored": 11
     },
@@ -690,24 +690,24 @@
     },
     "restricted_loss_sum_train_live": {
      "label": "restricted loss (train pairs), leak-free",
-     "auc": null,
-     "rho": 0.4647058823529412,
-     "n_grok": 16,
-     "n_censored": 0
+     "auc": 0.987012987012987,
+     "rho": 0.7980295566502464,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "excluded_loss_sum_live": {
      "label": "excluded loss (train pairs), leak-free",
-     "auc": null,
-     "rho": 0.48774509803921573,
-     "n_grok": 17,
-     "n_censored": 0
+     "auc": 0.9545454545454546,
+     "rho": -0.4504652435686919,
+     "n_grok": 28,
+     "n_censored": 11
     },
     "emb_key_frac_live": {
      "label": "power in key frequencies, leak-free",
-     "auc": null,
-     "rho": -0.6936274509803922,
-     "n_grok": 17,
-     "n_censored": 0
+     "auc": 0.8376623376623377,
+     "rho": -0.885057471264368,
+     "n_grok": 28,
+     "n_censored": 11
     }
    }
   }
@@ -787,301 +787,405 @@
     "grok": 2265.8000539609407
    }
   ],
+  "censored_members_dropped": [],
+  "excluded_other_budget": [
+   {
+    "tag": "S_p59_wd1.0_f0.5",
+    "budget": 20000,
+    "grok": 815.1739145147209
+   }
+  ],
   "at_steps": {
    "200": {
     "restricted_loss_sum_train": {
      "label": "restricted loss (train pairs) (final)",
      "rho": 0.7176470588235294,
+     "n": 16,
      "p_two_tailed": 0.0025199874000629997,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "excluded_loss_sum": {
      "label": "excluded loss (train pairs) (final)",
      "rho": -0.5970588235294118,
+     "n": 16,
      "p_two_tailed": 0.01660991695041525,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "emb_gini": {
      "label": "embedding Gini (no frequency choice)",
      "rho": -0.611764705882353,
+     "n": 16,
      "p_two_tailed": 0.013379933100334498,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "emb_key_frac": {
      "label": "power in key frequencies (final)",
      "rho": -0.31176470588235294,
+     "n": 16,
      "p_two_tailed": 0.23931880340598297,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained (no frequency choice)",
      "rho": -0.5764705882352941,
+     "n": 16,
      "p_two_tailed": 0.02150989245053775,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "weight_norm": {
      "label": "weight norm",
      "rho": 0.6735294117647059,
+     "n": 16,
      "p_two_tailed": 0.0054399728001359995,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "train_loss": {
      "label": "train loss",
      "rho": 0.5852941176470589,
+     "n": 16,
      "p_two_tailed": 0.019239903800480997,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "test_acc": {
      "label": "test accuracy (visible from outside)",
      "rho": -0.0029411764705882353,
+     "n": 16,
      "p_two_tailed": 0.9956350218248908,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "test_loss": {
      "label": "test loss (visible from outside)",
      "rho": 0.49117647058823527,
+     "n": 16,
      "p_two_tailed": 0.055009724951375245,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "restricted_loss_sum_train_live": {
      "label": "restricted loss (train pairs), leak-free",
      "rho": 0.43529411764705883,
+     "n": 16,
      "p_two_tailed": 0.09286453567732161,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "excluded_loss_sum_live": {
      "label": "excluded loss (train pairs), leak-free",
      "rho": -0.65,
+     "n": 16,
      "p_two_tailed": 0.007774961125194374,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "emb_key_frac_live": {
      "label": "power in key frequencies, leak-free",
      "rho": -0.40588235294117647,
+     "n": 16,
      "p_two_tailed": 0.11921940390298048,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     }
    },
    "500": {
     "restricted_loss_sum_train": {
      "label": "restricted loss (train pairs) (final)",
      "rho": 0.8088235294117647,
+     "n": 16,
      "p_two_tailed": 0.00027499862500687496,
-     "survives_bonferroni": true
+     "survives_bonferroni": true,
+     "survives_bonferroni_all_computed": true
     },
     "excluded_loss_sum": {
      "label": "excluded loss (train pairs) (final)",
      "rho": -0.7676470588235295,
+     "n": 16,
      "p_two_tailed": 0.0008849955750221249,
-     "survives_bonferroni": true
+     "survives_bonferroni": true,
+     "survives_bonferroni_all_computed": true
     },
     "emb_gini": {
      "label": "embedding Gini (no frequency choice)",
      "rho": -0.7235294117647059,
+     "n": 16,
      "p_two_tailed": 0.0022599887000565,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "emb_key_frac": {
      "label": "power in key frequencies (final)",
      "rho": -0.5147058823529411,
+     "n": 16,
      "p_two_tailed": 0.04313478432607837,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained (no frequency choice)",
      "rho": -0.6882352941176471,
+     "n": 16,
      "p_two_tailed": 0.004299978500107499,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "weight_norm": {
      "label": "weight norm",
      "rho": 0.788235294117647,
+     "n": 16,
      "p_two_tailed": 0.0005149974250128749,
-     "survives_bonferroni": true
+     "survives_bonferroni": true,
+     "survives_bonferroni_all_computed": true
     },
     "train_loss": {
      "label": "train loss",
      "rho": 0.8411764705882353,
+     "n": 16,
      "p_two_tailed": 0.00011499942500287499,
-     "survives_bonferroni": true
+     "survives_bonferroni": true,
+     "survives_bonferroni_all_computed": true
     },
     "test_acc": {
      "label": "test accuracy (visible from outside)",
      "rho": -0.5165564312363659,
+     "n": 16,
      "p_two_tailed": 0.04176479117604412,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "test_loss": {
      "label": "test loss (visible from outside)",
      "rho": 0.8647058823529412,
+     "n": 16,
      "p_two_tailed": 4.4999775001124996e-05,
-     "survives_bonferroni": true
+     "survives_bonferroni": true,
+     "survives_bonferroni_all_computed": true
     },
     "restricted_loss_sum_train_live": {
      "label": "restricted loss (train pairs), leak-free",
      "rho": 0.8294117647058824,
+     "n": 16,
      "p_two_tailed": 0.00016999915000424998,
-     "survives_bonferroni": true
+     "survives_bonferroni": true,
+     "survives_bonferroni_all_computed": true
     },
     "excluded_loss_sum_live": {
      "label": "excluded loss (train pairs), leak-free",
      "rho": -0.7352941176470589,
+     "n": 16,
      "p_two_tailed": 0.0017449912750436248,
-     "survives_bonferroni": true
+     "survives_bonferroni": true,
+     "survives_bonferroni_all_computed": false
     },
     "emb_key_frac_live": {
      "label": "power in key frequencies, leak-free",
      "rho": -0.7676470588235295,
+     "n": 16,
      "p_two_tailed": 0.0008849955750221249,
-     "survives_bonferroni": true
+     "survives_bonferroni": true,
+     "survives_bonferroni_all_computed": true
     }
    },
    "1000": {
     "restricted_loss_sum_train": {
      "label": "restricted loss (train pairs) (final)",
      "rho": 0.8411764705882353,
+     "n": 16,
      "p_two_tailed": 0.00011499942500287499,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "excluded_loss_sum": {
      "label": "excluded loss (train pairs) (final)",
      "rho": -0.5735294117647058,
+     "n": 16,
      "p_two_tailed": 0.02218988905055475,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "emb_gini": {
      "label": "embedding Gini (no frequency choice)",
      "rho": -0.8676470588235294,
+     "n": 16,
      "p_two_tailed": 3.9999800000999996e-05,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "emb_key_frac": {
      "label": "power in key frequencies (final)",
      "rho": -0.75,
+     "n": 16,
      "p_two_tailed": 0.001294993525032375,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained (no frequency choice)",
      "rho": -0.8941176470588236,
+     "n": 16,
      "p_two_tailed": 1.9999900000499998e-05,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "weight_norm": {
      "label": "weight norm",
      "rho": 0.9441176470588235,
+     "n": 16,
      "p_two_tailed": 4.9999750001249995e-06,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "train_loss": {
      "label": "train loss",
      "rho": 0.9676470588235294,
+     "n": 16,
      "p_two_tailed": 4.9999750001249995e-06,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "test_acc": {
      "label": "test accuracy (visible from outside)",
      "rho": -0.9588235294117647,
+     "n": 16,
      "p_two_tailed": 4.9999750001249995e-06,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "test_loss": {
      "label": "test loss (visible from outside)",
      "rho": 0.9558823529411765,
+     "n": 16,
      "p_two_tailed": 4.9999750001249995e-06,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "restricted_loss_sum_train_live": {
      "label": "restricted loss (train pairs), leak-free",
      "rho": 0.8588235294117647,
+     "n": 16,
      "p_two_tailed": 5.9999700001499995e-05,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "excluded_loss_sum_live": {
      "label": "excluded loss (train pairs), leak-free",
      "rho": -0.4441176470588235,
+     "n": 16,
      "p_two_tailed": 0.08554457227713862,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "emb_key_frac_live": {
      "label": "power in key frequencies, leak-free",
      "rho": -0.5088235294117647,
+     "n": 16,
      "p_two_tailed": 0.045749771251143746,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     }
    },
    "2000": {
     "restricted_loss_sum_train": {
      "label": "restricted loss (train pairs) (final)",
      "rho": 0.7970588235294118,
+     "n": 16,
      "p_two_tailed": 0.000384998075009625,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "excluded_loss_sum": {
      "label": "excluded loss (train pairs) (final)",
      "rho": 0.2823529411764706,
+     "n": 16,
      "p_two_tailed": 0.28826855865720674,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "emb_gini": {
      "label": "embedding Gini (no frequency choice)",
      "rho": -0.9294117647058824,
+     "n": 16,
      "p_two_tailed": 4.9999750001249995e-06,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "emb_key_frac": {
      "label": "power in key frequencies (final)",
      "rho": -0.8970588235294118,
+     "n": 16,
      "p_two_tailed": 1.9999900000499998e-05,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "logit_var_a+b": {
      "label": "(a+b) variance explained (no frequency choice)",
      "rho": -0.8323529411764706,
+     "n": 16,
      "p_two_tailed": 0.00014999925000374999,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "weight_norm": {
      "label": "weight norm",
      "rho": 0.9558823529411765,
+     "n": 16,
      "p_two_tailed": 4.9999750001249995e-06,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "train_loss": {
      "label": "train loss",
      "rho": 0.8441176470588235,
+     "n": 16,
      "p_two_tailed": 9.499952500237499e-05,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "test_acc": {
      "label": "test accuracy (visible from outside)",
      "rho": -0.7982824700322464,
+     "n": 16,
      "p_two_tailed": 0.00036999815000924994,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "test_loss": {
      "label": "test loss (visible from outside)",
      "rho": 0.7941176470588235,
+     "n": 16,
      "p_two_tailed": 0.00042999785001074993,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "restricted_loss_sum_train_live": {
      "label": "restricted loss (train pairs), leak-free",
      "rho": 0.4647058823529412,
+     "n": 16,
      "p_two_tailed": 0.07073464632676836,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     },
     "excluded_loss_sum_live": {
      "label": "excluded loss (train pairs), leak-free",
      "rho": 0.7852941176470588,
+     "n": 16,
      "p_two_tailed": 0.0005799971000144999,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": true
     },
     "emb_key_frac_live": {
      "label": "power in key frequencies, leak-free",
      "rho": -0.6323529411764706,
+     "n": 16,
      "p_two_tailed": 0.010274948625256873,
-     "survives_bonferroni": false
+     "survives_bonferroni": false,
+     "survives_bonferroni_all_computed": false
     }
    }
   },
@@ -1115,7 +1219,146 @@
     "500"
    ],
    "method": "two-tailed permutation test, 200,000 draws",
-   "critical_rho_two_tailed": 0.7264705882352941
+   "critical_rho_two_tailed": 0.7264705882352941,
+   "all_computed": {
+    "n_tests": 48,
+    "alpha": 0.0010416666666666667,
+    "critical_rho_two_tailed": 0.7588235294117647
+   }
+  },
+  "bootstrap": {
+   "200": {
+    "draws": 10000,
+    "rho_ci95": {
+     "restricted_loss_sum_train": [
+      0.32007854369462974,
+      0.9164179104477613
+     ],
+     "excluded_loss_sum": [
+      -0.8463855421686747,
+      -0.11773472429210136
+     ],
+     "emb_gini": [
+      -0.8807882296231765,
+      -0.11308684824078011
+     ],
+     "emb_key_frac": [
+      -0.7194134395088642,
+      0.22638680659670166
+     ],
+     "logit_var_a+b": [
+      -0.8526315789473683,
+      -0.10252010480587104
+     ],
+     "weight_norm": [
+      0.30664094955489607,
+      0.8704819277108434
+     ],
+     "train_loss": [
+      0.10846050359423319,
+      0.8597614340869434
+     ],
+     "test_acc": [
+      -0.46026986506746626,
+      0.4888817508937255
+     ],
+     "test_loss": [
+      0.010397289605515989,
+      0.7781402259220611
+     ],
+     "restricted_loss_sum_train_live": [
+      -0.0643043867013398,
+      0.8241455538996524
+     ],
+     "excluded_loss_sum_live": [
+      -0.9023980537534754,
+      -0.21193808734107247
+     ],
+     "emb_key_frac_live": [
+      -0.8148244742507037,
+      0.09496255475483951
+     ]
+    },
+    "best_plain": "weight_norm",
+    "best_mechanistic_leak_free": "excluded_loss_sum_live",
+    "abs_rho_difference": 0.02352941176470591,
+    "abs_rho_difference_ci95": [
+     -0.2279873292562347,
+     0.25970149253731345
+    ]
+   },
+   "500": {
+    "draws": 10000,
+    "rho_ci95": {
+     "restricted_loss_sum_train": [
+      0.4382865054707552,
+      0.9671654024957184
+     ],
+     "excluded_loss_sum": [
+      -0.9199999999999998,
+      -0.4080192088882947
+     ],
+     "emb_gini": [
+      -0.926605504587156,
+      -0.28807311300078914
+     ],
+     "emb_key_frac": [
+      -0.8325921959708185,
+      0.02083488805970147
+     ],
+     "logit_var_a+b": [
+      -0.9078751857355127,
+      -0.24849342668047375
+     ],
+     "weight_norm": [
+      0.445770488249851,
+      0.9615853658536578
+     ],
+     "train_loss": [
+      0.5134933139417445,
+      0.963963963963964
+     ],
+     "test_acc": [
+      -0.8200931507244145,
+      -0.04467537593688477
+     ],
+     "test_loss": [
+      0.6029550242842254,
+      0.9730134932533733
+     ],
+     "restricted_loss_sum_train_live": [
+      0.5478702504900109,
+      0.9554896142433235
+     ],
+     "excluded_loss_sum_live": [
+      -0.928251121076233,
+      -0.34334670520647653
+     ],
+     "emb_key_frac_live": [
+      -0.9349427168576104,
+      -0.4221457606396745
+     ]
+    },
+    "best_plain": "test_loss",
+    "best_mechanistic_leak_free": "restricted_loss_sum_train_live",
+    "abs_rho_difference": 0.03529411764705881,
+    "abs_rho_difference_ci95": [
+     -0.21719625350140045,
+     0.3058515950679992
+    ]
+   }
   }
+ },
+ "_provenance": {
+  "commit": "3d96319caff10e3ab22424f26acc59ef93efec3e",
+  "code_modified": false,
+  "argv": [
+   "scripts/analyze_prediction.py",
+   "--root",
+   "."
+  ],
+  "threads": 6,
+  "torch": "2.12.0+cpu",
+  "python": "3.13.12"
  }
 }
