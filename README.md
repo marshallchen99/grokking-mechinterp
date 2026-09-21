@@ -337,6 +337,23 @@ Each run uses the identical configuration; only the operation (and, in one pair,
 
 ![operations](figures/fig5_operations.png)
 
+### The quadratic form, and a model that stops at exactly half
+
+<!-- BEGIN:quadratic -->
+`a^2 + ab + b^2` factors into linear forms over F_p exactly when p = 1 (mod 3). If factorability governed learnability, p = 61 and p = 59 should behave differently. Both were given a 60,000-step budget at a training fraction where plain addition groks in under a thousand.
+
+| modulus |  | the form over F_p | test accuracy | predicts a^2-ab+b^2 | one of the two | chance |
+|:--|--:|--:|--:|--:|--:|--:|
+| p = 59 | 2 mod 3 | irreducible | 0.4951 | 0.2005 | 0.6766 | 0.0169 |
+| p = 61 | 1 mod 3 | splits | 0.4970 | 0.2047 | 0.6808 | 0.0164 |
+
+**Neither groks, and both stop at almost exactly one half.** So the factorability question gets a null answer here -- but a much more informative null than the earlier censored runs, because a plateau at exactly 50% is not a model that failed to learn. It is a model that learned something specific.
+
+What it learned is visible in its mistakes. About a fifth of its test predictions are exactly `a^2 - ab + b^2`, which is the same form evaluated at (a, -b) -- roughly 11 times more often than chance. **The circuit has lost the sign of b.** That is the error a construction out of cosines would make, since cos(wb) = cos(-wb): a representation that carries only the cosine components cannot tell b from -b, and the two forms disagree on 97% of pairs, so a model that cannot choose between them lands at one half.
+
+**This does not account for all of it.** If sign-blindness were the whole story the model would be near-perfect on the pairs where the two forms coincide, and it is only 52% at p=59, 66% at p=61. A third of its predictions are neither form. The sign confusion is a large, identifiable component of the failure, not an explanation of it.
+<!-- END:quadratic -->
+
 ### Multiplication, and the discrete logarithm
 
 <!-- BEGIN:dlog -->
@@ -442,90 +459,104 @@ The ordering is strictly monotone in both seeds: more weight decay, earlier grok
 ## 7. Can the transition be predicted in advance?
 
 <!-- BEGIN:prediction -->
-Section 4 shows the progress measures moving before the accuracy does *within one run*. That is a much weaker claim than being able to look at an unseen run at step 1,000 and say what happens at step 10,000. With 21 runs that have a full trajectory (9 of which never reached 90% inside their budget), both questions can at least be asked.
+Section 4 shows the progress measures moving before the accuracy does *within one run*. That is a much weaker claim than being able to look at an unseen run at step 1,000 and say what happens at step 10,000. With 39 runs that have a full trajectory (11 of which never reached 90% inside their budget), both questions can at least be asked.
 
-**Measured at step 200** (21 runs):
-
-| signal | AUC: will grok vs will not | rank correlation with the grokking step |
-|:--|--:|--:|
-| embedding Gini | **0.815** | -0.66 |
-| (a+b) variance explained | 0.778 | -0.66 |
-| excluded loss | 0.713 | -0.71 |
-| test accuracy (the visible one) | 0.676 | -0.69 |
-| restricted loss | 0.667 | 0.6 |
-| power in key frequencies | 0.593 | -0.65 |
-| train loss | 0.306 | 0.22 |
-| weight norm | 0.25 | 0.59 |
-
-**Measured at step 500** (21 runs):
+**Measured at step 200** (39 runs):
 
 | signal | AUC: will grok vs will not | rank correlation with the grokking step |
 |:--|--:|--:|
-| embedding Gini | **0.833** | -0.68 |
-| (a+b) variance explained | 0.815 | -0.68 |
-| test accuracy (the visible one) | 0.667 | -0.71 |
-| restricted loss | 0.639 | 0.65 |
-| power in key frequencies | 0.62 | -0.64 |
-| excluded loss | 0.556 | -0.71 |
-| weight norm | 0.296 | 0.61 |
-| train loss | 0.287 | 0.34 |
+| embedding Gini | **0.929** | -0.87 |
+| (a+b) variance explained | 0.909 | -0.84 |
+| excluded loss | 0.899 | -0.64 |
+| restricted loss | 0.883 | 0.8 |
+| test accuracy (the visible one) | 0.808 | -0.63 |
+| power in key frequencies | 0.701 | -0.61 |
+| weight norm | 0.539 | 0.74 |
+| train loss | 0.127 | -0.26 |
 
-**Measured at step 1,000** (21 runs):
-
-| signal | AUC: will grok vs will not | rank correlation with the grokking step |
-|:--|--:|--:|
-| embedding Gini | 0.843 | -0.68 |
-| (a+b) variance explained | **0.843** | -0.68 |
-| restricted loss | 0.667 | 0.7 |
-| test accuracy (the visible one) | 0.667 | -0.69 |
-| power in key frequencies | 0.648 | -0.64 |
-| excluded loss | 0.556 | -0.71 |
-| weight norm | 0.315 | 0.66 |
-| train loss | 0.287 | 0.32 |
-
-**Measured at step 2,000** (21 runs):
+**Measured at step 500** (39 runs):
 
 | signal | AUC: will grok vs will not | rank correlation with the grokking step |
 |:--|--:|--:|
-| (a+b) variance explained | **0.833** | -0.66 |
-| embedding Gini | 0.824 | -0.68 |
-| restricted loss | 0.722 | 0.71 |
-| power in key frequencies | 0.676 | -0.64 |
-| test accuracy (the visible one) | 0.676 | -0.7 |
-| excluded loss | 0.639 | -0.6 |
-| weight norm | 0.398 | 0.61 |
-| train loss | 0.231 | 0.31 |
+| embedding Gini | **0.935** | -0.91 |
+| (a+b) variance explained | 0.922 | -0.9 |
+| restricted loss | 0.873 | 0.9 |
+| excluded loss | 0.831 | -0.66 |
+| test accuracy (the visible one) | 0.818 | -0.81 |
+| power in key frequencies | 0.776 | -0.83 |
+| weight norm | 0.607 | 0.78 |
+| train loss | 0.123 | -0.19 |
+
+**Measured at step 1,000** (39 runs):
+
+| signal | AUC: will grok vs will not | rank correlation with the grokking step |
+|:--|--:|--:|
+| embedding Gini | **0.938** | -0.95 |
+| (a+b) variance explained | 0.932 | -0.95 |
+| restricted loss | 0.883 | 0.94 |
+| excluded loss | 0.828 | -0.51 |
+| test accuracy (the visible one) | 0.818 | -0.97 |
+| power in key frequencies | 0.782 | -0.84 |
+| weight norm | 0.666 | 0.93 |
+| train loss | 0.127 | -0.17 |
+
+**Measured at step 2,000** (39 runs):
+
+| signal | AUC: will grok vs will not | rank correlation with the grokking step |
+|:--|--:|--:|
+| (a+b) variance explained | **0.935** | -0.94 |
+| embedding Gini | 0.932 | -0.96 |
+| restricted loss | 0.903 | 0.9 |
+| excluded loss | 0.86 | -0.37 |
+| power in key frequencies | 0.838 | -0.89 |
+| test accuracy (the visible one) | 0.828 | -0.92 |
+| weight norm | 0.724 | 0.95 |
+| train loss | 0.114 | 0.05 |
 
 AUC is the probability that a run which will grok scores above one that will not, so 0.5 is chance and 1.0 is perfect separation.
 
 **That table is confounded and should not be read as a result.** The runs that never grokked are almost all low-training-fraction sweep cells, and the training fraction is itself what decides whether grokking happens, so any signal that merely tracks it scores well. The clean question has to be asked inside a single configuration.
 
-**Within one configuration.** These 5 runs share the task (`add`), the modulus (p = 113), the training fraction (0.3) and the weight decay (1.0). What differs is the random draw, and the grokking step still spans more than a factor of two:
+**Within one configuration.** These 17 runs share the task (`add`), the modulus (p = 59), the training fraction (0.5) and the weight decay (1.0). What differs is the random draw, and the grokking step still spans more than a factor of two:
 
 | run | grokking step |
 |:--|--:|
-| B_add_s1 | 6,228 |
-| C_add_f32 | 6,734 |
-| B_add_s0 | 7,083 |
-| C_add_nowarm | 9,764 |
-| main_add_s0 | 14,536 |
+| F_seed16 | 760 |
+| F_seed15 | 779 |
+| F_seed10 | 805 |
+| S_p59_wd1.0_f0.5 | 815 |
+| F_seed23 | 913 |
+| F_seed19 | 1,025 |
+| F_seed21 | 1,159 |
+| F_seed20 | 1,238 |
+| F_seed11 | 1,282 |
+| F_seed22 | 1,296 |
+| F_seed12 | 1,336 |
+| F_seed25 | 1,399 |
+| F_seed17 | 1,452 |
+| F_seed24 | 1,518 |
+| F_seed14 | 1,559 |
+| F_seed18 | 2,223 |
+| F_seed13 | 2,266 |
 
-Rank correlation between the signal measured early and the step at which the run eventually generalises. Negative means a higher reading predicts an earlier transition:
+Rank correlation between the signal measured early and the step at which the run eventually generalises; negative means a higher reading predicts an earlier transition. The earliest of these runs groks at step 760, so only readings before that are forecasts -- steps 1000, 2000 are dropped, since a reading taken after some runs have already transitioned measures the outcome rather than predicting it.
 
-| signal | at step 200 | at step 500 | at step 1,000 | at step 2,000 |
-|:--|--:|--:|--:|--:|
-| restricted loss | 0.6 | 0.6 | 0.7 | 0.9 |
-| excluded loss | -0.9 | -1.0 | -1.0 | -0.7 |
-| embedding Gini | -0.8 | -0.9 | -0.9 | -0.9 |
-| power in key frequencies | -1.0 | -0.9 | -0.9 | -1.0 |
-| (a+b) variance explained | -0.9 | -0.9 | -0.9 | -0.7 |
-| weight norm | 0.9 | 1.0 | 0.9 | 0.2 |
-| train loss | -0.7 | -0.7 | -0.5 | -0.6 |
-| test accuracy (the visible one) | -0.3 | -0.4 | -0.1 | -0.3 |
+| signal | at step 200 | at step 500 |
+|:--|--:|--:|
+| restricted loss | 0.66 | 0.84 |
+| excluded loss | -0.33 | -0.4 |
+| embedding Gini | -0.57 | -0.71 |
+| power in key frequencies | -0.43 | -0.73 |
+| (a+b) variance explained | -0.48 | -0.68 |
+| weight norm | 0.64 | 0.8 |
+| train loss | 0.59 | 0.86 |
+| test accuracy (the visible one) | 0.17 | -0.27 |
 
-At step 500 -- six to fourteen thousand steps before anything happens -- several internal signals rank these runs almost perfectly, while the one quantity an observer can actually see, the test accuracy, does not rank them at all.
+With n = 17 and 16 tests, a Bonferroni-corrected threshold is about |rho| > 0.66. Several signals clear it well before any run transitions, **while the one quantity an observer can actually see -- the test accuracy -- does not come close.**
 
-**How much to believe.** n = 5, and 8 signals were checked at 4 time points, so no single coefficient here survives a correction for multiple comparisons. What is worth something is that every internal signal points the same way at every time point while the external one does not. And the deflationary reading deserves equal billing: the plain weight norm does as well as any mechanistic measure, so on this evidence predicting grokking may not require interpretability at all.
+**The deflationary reading is the main one.** The plain training loss is the single best predictor here, ahead of every mechanistic measure, and the weight norm is close behind. On this evidence forecasting the transition does not require interpretability; it requires looking at something other than the test accuracy.
+
+An earlier version of this table ran on five runs instead of 17, and reported the excluded loss ranking them at rho = -1.00. At this sample size it is -0.40 and not significant. That is what five points buys, and it is left recorded here rather than quietly replaced.
 <!-- END:prediction -->
 
 ---

@@ -626,6 +626,44 @@ def readout(root: Path, _tag: str) -> Optional[str]:
     ])
 
 
+def quadratic(root: Path, _tag: str) -> Optional[str]:
+    """A run that stops at exactly half is computing something specific."""
+    d = load_json(root, "quadratic_form.json")
+    if not d:
+        return None
+    rows = [[f"p = {r['p']}", f"{r['p_mod_3']} mod 3",
+             "splits" if r["form_splits"] else "irreducible",
+             r["test_acc"], r["matches"]["sign-flipped b  a^2-ab+b^2"],
+             r["either_form"], r["chance"]] for r in d]
+    tbl = table(["modulus", "", "the form over F_p", "test accuracy",
+                 "predicts a^2-ab+b^2", "one of the two", "chance"], rows)
+    enr = sum(r["sign_flip_enrichment"] for r in d) / len(d)
+    coin = ", ".join(f"{r['acc_where_forms_coincide']:.0%} at p={r['p']}" for r in d)
+    return "\n\n".join([
+        "`a^2 + ab + b^2` factors into linear forms over F_p exactly when p = 1 (mod 3). "
+        "If factorability governed learnability, p = 61 and p = 59 should behave "
+        "differently. Both were given a 60,000-step budget at a training fraction where "
+        "plain addition groks in under a thousand.",
+        tbl,
+        "**Neither groks, and both stop at almost exactly one half.** So the "
+        "factorability question gets a null answer here -- but a much more informative "
+        "null than the earlier censored runs, because a plateau at exactly 50% is not a "
+        "model that failed to learn. It is a model that learned something specific.",
+        f"What it learned is visible in its mistakes. About a fifth of its test "
+        f"predictions are exactly `a^2 - ab + b^2`, which is the same form evaluated at "
+        f"(a, -b) -- roughly {enr:.0f} times more often than chance. **The circuit has "
+        f"lost the sign of b.** That is the error a construction out of cosines would "
+        f"make, since cos(wb) = cos(-wb): a representation that carries only the cosine "
+        f"components cannot tell b from -b, and the two forms disagree on 97% of pairs, "
+        f"so a model that cannot choose between them lands at one half.",
+        f"**This does not account for all of it.** If sign-blindness were the whole "
+        f"story the model would be near-perfect on the pairs where the two forms "
+        f"coincide, and it is only {coin}. A third of its predictions are neither form. "
+        f"The sign confusion is a large, identifiable component of the failure, not an "
+        f"explanation of it.",
+    ])
+
+
 def prediction(root: Path, _tag: str) -> Optional[str]:
     """Can an early signal forecast whether, and when, a run will grok?"""
     d = load_json(root, "prediction_summary.json")
@@ -674,7 +712,12 @@ def prediction(root: Path, _tag: str) -> Optional[str]:
             f"weight decay ({c['weight_decay']}). What differs is the random draw, and "
             f"the grokking step still spans more than a factor of two:")
         parts.append(table(["run", "grokking step"], rows))
-        steps = sorted(w["at_steps"], key=int)
+        # Only time points before EVERY run's transition are predictions; a
+        # reading taken after some runs have already grokked is a measurement of
+        # what happened, and would flatter any signal that tracks the outcome.
+        earliest = min(r["grok"] for r in w["runs"])
+        steps = [s for s in sorted(w["at_steps"], key=int) if int(s) < earliest]
+        dropped = [s for s in sorted(w["at_steps"], key=int) if int(s) >= earliest]
         keys = [k for k, _, _ in FEATURES if any(k in w["at_steps"][s] for s in steps)]
         body = []
         for k in keys:
@@ -684,23 +727,30 @@ def prediction(root: Path, _tag: str) -> Optional[str]:
                 (lambda v: None if v is None else round(v, 2))(
                     w["at_steps"][s].get(k, {}).get("rho")) for s in steps])
         parts.append(
-            "Rank correlation between the signal measured early and the step at which "
-            "the run eventually generalises. Negative means a higher reading predicts "
-            "an earlier transition:")
+            f"Rank correlation between the signal measured early and the step at which "
+            f"the run eventually generalises; negative means a higher reading predicts "
+            f"an earlier transition. The earliest of these runs groks at step "
+            f"{earliest:,.0f}, so only readings before that are forecasts"
+            + (f" -- steps {', '.join(dropped)} are dropped, since a reading taken after "
+               f"some runs have already transitioned measures the outcome rather than "
+               f"predicting it." if dropped else "."))
         parts.append(table(["signal", *[f"at step {int(s):,}" for s in steps]], body))
         parts.append(
-            f"At step 500 -- six to fourteen thousand steps before anything happens -- "
-            f"several internal signals rank these runs almost perfectly, while the one "
-            f"quantity an observer can actually see, the test accuracy, does not rank "
-            f"them at all.")
+            f"With n = {w['n']} and {len(keys) * len(steps)} tests, a Bonferroni-corrected "
+            f"threshold is about |rho| > 0.66. Several signals clear it well before any "
+            f"run transitions, **while the one quantity an observer can actually see -- "
+            f"the test accuracy -- does not come close.**")
         parts.append(
-            f"**How much to believe.** n = {w['n']}, and {len(keys)} signals were checked "
-            f"at {len(steps)} time points, so no single coefficient here survives a "
-            f"correction for multiple comparisons. What is worth something is that every "
-            f"internal signal points the same way at every time point while the external "
-            f"one does not. And the deflationary reading deserves equal billing: the "
-            f"plain weight norm does as well as any mechanistic measure, so on this "
-            f"evidence predicting grokking may not require interpretability at all.")
+            "**The deflationary reading is the main one.** The plain training loss is "
+            "the single best predictor here, ahead of every mechanistic measure, and "
+            "the weight norm is close behind. On this evidence forecasting the "
+            "transition does not require interpretability; it requires looking at "
+            "something other than the test accuracy.")
+        parts.append(
+            "An earlier version of this table ran on five runs instead of "
+            f"{w['n']}, and reported the excluded loss ranking them at rho = -1.00. At "
+            f"this sample size it is -0.40 and not significant. That is what five points "
+            f"buys, and it is left recorded here rather than quietly replaced.")
     return "\n\n".join(parts)
 
 
@@ -848,6 +898,7 @@ GENERATORS = {
     "load_bearing": load_bearing,
     "prediction": prediction,
     "readout": readout,
+    "quadratic": quadratic,
     "disagreement": disagreement,
     "replicates": replicates,
 }

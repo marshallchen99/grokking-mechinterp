@@ -1,0 +1,22 @@
+114 checkpoints, steps 0 .. 60000
+key frequencies from the FINAL checkpoint (step 60000):
+    rule_a_embedding_norm    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+    rule_b_neuron_cluster    []
+    rule_c_power_gap         [10, 18, 29]
+    -> used                  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]   Jaccard 0.000 agree=False
+    NOTE: rules disagree; the union is used and this must be stated in the write-up
+  key frequencies carry 0.1358 of embedding power; Gini(W_E) 0.1213; 0.0000 of neurons above 0.85 explained
+  [1/114] step      0 test_acc 0.015 restr 4.12e+00 excl 4.118 a+b 0.0003 (0s)
+  [11/114] step     11 test_acc 0.034 restr 4.12e+00 excl 4.083 a+b 0.0002 (1s)
+  [21/114] step     54 test_acc 0.028 restr 4.15e+00 excl 3.279 a+b 0.0004 (2s)
+  [31/114] step    265 test_acc 0.409 restr 9.74e+00 excl 0.020 a+b 0.0078 (4s)
+  [41/114] step   1307 test_acc 0.474 restr 1.12e+01 excl 0.000 a+b 0.0107 (5s)
+  [51/114] step   4000 test_acc 0.489 restr 1.01e+01 excl 0.000 a+b 0.0115 (6s)
+  [61/114] step   9000 test_acc 0.494 restr 9.93e+00 excl 0.000 a+b 0.0124 (7s)
+  [71/114] step  16000 test_acc 0.494 restr 9.07e+00 excl 0.000 a+b 0.0127 (8s)
+  [81/114] step  23049 test_acc 0.498 restr 8.64e+00 excl 0.000 a+b 0.0129 (10s)
+  [91/114] step  31707 test_acc 0.497 restr 8.59e+00 excl 0.000 a+b 0.0133 (11s)
+  [101/114] step  40000 test_acc 0.500 restr 8.72e+00 excl 0.000 a+b 0.0134 (12s)
+  [111/114] step  49000 test_acc 0.497 restr 8.56e+00 excl 0.000 a+b 0.0137 (13s)
+  [114/114] step  60000 test_acc 0.497 restr 8.20e+00 excl 0.000 a+b 0.0138 (13s)
+wrote /mnt/d/Portfolio/grokking-mechinterp/results/Q_sqx_p61_analysis.json  (14s)
