@@ -83,6 +83,13 @@ PUBLISHED: Dict[str, Fact] = {
     "furuta_prime": Fact(
         97, "the prime used for all of Furuta et al.'s experiments", FURUTA_2024,
         "97 = 1 (mod 3), so a^2+ab+b^2 splits over F_97"),
+    "furuta_sqx_scratch_frac": Fact(
+        0.8, "smallest training fraction at which a^2+ab+b^2 groks when trained from scratch",
+        FURUTA_2024, "p = 97; Table 1 ('From Scratch' column) and Table 5"),
+    "furuta_sqx_acc_at_half": Fact(
+        {"train_frac": 0.5, "test_acc": 0.56},
+        "test accuracy of a^2+ab+b^2 trained from scratch at training fraction 0.5",
+        FURUTA_2024, "p = 97; Table 5, which reports the accuracy reached where it does not grok"),
     "chen_prime_modulus": Fact(
         113, "a prime modulus among those Chen et al. train on, with 0 included", CHEN_2026),
     "power_headline_optimizer": Fact(

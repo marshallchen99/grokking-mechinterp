@@ -28,6 +28,7 @@ from .literature import (
     NANDA_2023, NGUYEN_2026, NOTSAWO_2023, POWER_2022, PUBLISHED,
 )
 from .report import is_finished, load_analysis, load_history, load_json, table
+from .runinfo import run_config
 
 PENDING = "_Not yet run._"
 
@@ -45,6 +46,7 @@ MID_ACC = 0.50
 FULL_ACC = 0.99
 NEURON_FRAC = 0.85       # the neuron-clustering rule's variance threshold
 HALFWAY = 0.50           # "half of a signal's total change"
+END_CHECKPOINTS = 8      # a progress signal's final level: median of this many last checkpoints
 EARLY_SAMPLE_MULT = 5    # where the headline samples test accuracy: 5x the memorisation step
 LATE_SAMPLE_FRAC = 0.8   # ... and at 80% of the way to its 10% crossing
 
@@ -520,11 +522,12 @@ def phases(root: Path, tag: str) -> Optional[str]:
     rows = a["rows"]
     step = np.array([r["step"] for r in rows], float)
 
-    def cross(key, frac):
+    def cross(key, frac, last_only=False):
         if key not in rows[0]:
             return None
         y = np.array([r.get(key, np.nan) for r in rows], float)
-        start, end = y[0], float(np.median(y[-8:]))
+        start = y[0]
+        end = float(y[-1]) if last_only else float(np.median(y[-END_CHECKPOINTS:]))
         target = start + frac * (end - start)
         for i in range(1, len(y)):
             if (y[i] >= target) if end > start else (y[i] <= target):
@@ -540,10 +543,14 @@ def phases(root: Path, tag: str) -> Optional[str]:
             ("excluded loss", "excluded_loss_sum"),
             (f"neurons explained >{NEURON_FRAC:.0%} by one frequency", "neuron_frac_above_85pct")]
     ref = cross("test_acc", HALFWAY)
-    body = []
+    ref_last = cross("test_acc", HALFWAY, last_only=True)
+    body, leads = [], {}
     for name, key in sigs:
-        v = cross(key, HALFWAY)
-        body.append([name, st(v), st(ref - v) if (ref and v) else None])
+        v, v_last = cross(key, HALFWAY), cross(key, HALFWAY, last_only=True)
+        lead = st(ref - v) if (ref and v) else None
+        lead_last = st(ref_last - v_last) if (ref_last and v_last) else None
+        leads[name] = (lead, lead_last)
+        body.append([name, st(v), lead, lead_last])
 
     g = _crossings(h["history"])["t90"]
     near = sorted(s for s in step if g and 0.7 * g <= s <= 1.2 * g)
@@ -551,41 +558,71 @@ def phases(root: Path, tag: str) -> Optional[str]:
     spacing = float(np.median(gaps)) if gaps else None
     rl = [(r["step"], r["restricted_loss_sum_all"]) for r in rows]
     rl_peak = max(rl, key=lambda x: x[1])
-    lead_rl = next((b[2] for b in body if b[0] == "restricted loss"), None)
 
     parts = [
         f"The progress measures and the three-phase account are {cite(NANDA_2023)}'s. Each "
-        f"signal is measured against its own range, from initialisation to final value, and "
-        f"the table gives the step at which it has made half its total change. A positive "
-        f"lead means it gets there before test accuracy does.",
-        table(["signal", f"reaches {HALFWAY:.0%} of its change", "lead over test accuracy"], body),
+        f"signal is measured against its own range, from its value at initialisation to its "
+        f"final level, taken as the median of the last {END_CHECKPOINTS} checkpoints (steps "
+        f"{st(step[-END_CHECKPOINTS]):,} to {st(step[-1]):,}); the table gives the step at "
+        f"which it has made half that change. A positive lead means it gets there before test "
+        f"accuracy does. The last column repeats the lead with the final level taken as the "
+        f"last checkpoint alone, to show which leads depend on that choice.",
+        table(["signal", f"reaches {HALFWAY:.0%} of its change", "lead over test accuracy",
+               "lead, final level = last checkpoint"], body),
     ]
+    rl_lead = leads.get("restricted loss", (None, None))
+    ex_lead = leads.get("excluded loss", (None, None))
     if spacing:
-        leads = [(b[0], b[2]) for b in body[1:] if b[2] is not None]
-        ahead = [n for n, v in leads if v > spacing]
-        behind = [n for n, v in leads if v < -spacing]
-        tied = [n for n, v in leads if -spacing <= v <= spacing]
+        def verdict(pair):
+            x, y = pair
+            if x is None or y is None:
+                return None
+            if abs(x - y) > spacing:
+                return "unplaced"
+            if min(x, y) > spacing:
+                return "ahead"
+            if max(x, y) < -spacing:
+                return "behind"
+            if max(abs(x), abs(y)) <= spacing:
+                return "within"
+            return "edge"
+        groups = {}
+        for name, _ in sigs[1:]:
+            groups.setdefault(verdict(leads[name]), []).append(name)
+        labels = [("ahead", "ahead by more than the spacing"),
+                  ("edge", "at the edge of resolution"),
+                  ("within", "within it"),
+                  ("behind", "behind by more than it"),
+                  ("unplaced", "moved by more than the spacing when the final level is "
+                               "chosen the other way")]
         parts.append(
             f"**Resolution.** Checkpoints near the transition are about {spacing:,.0f} steps "
             f"apart, so a lead smaller than that is not distinguishable from zero. Against "
-            f"that: " + "; ".join(x for x in [
-                ("ahead by more than the spacing: " + ", ".join(ahead)) if ahead else "",
-                ("within it: " + ", ".join(tied)) if tied else "",
-                ("behind by more than it: " + ", ".join(behind)) if behind else ""] if x)
+            f"that: " + "; ".join(f"{lab}: " + ", ".join(groups[k])
+                                  for k, lab in labels if groups.get(k))
             + f". The restricted loss is also not monotone: it first rises, to "
             f"{rl_peak[1]:.2f} at step {rl_peak[0]:,}, before it falls.")
-    lead_rl = next((b[2] for b in body if b[0] == "restricted loss"), None)
-    lead_ex = next((b[2] for b in body if b[0] == "excluded loss"), None)
-    if lead_rl is not None:
+    if rl_lead[0] is not None and rl_lead[1] is not None:
+        same = rl_lead[0] == rl_lead[1]
+        ex_sentence = ""
+        if ex_lead[0] is not None and ex_lead[1] is not None and spacing and (
+                verdict(ex_lead) == "unplaced"):
+            ex_y = np.array([r["excluded_loss_sum"] for r in rows[-END_CHECKPOINTS:]], float)
+            ex_sentence = (
+                f" The excluded loss cannot be placed: after the transition it swings between "
+                f"{ex_y.min():.1f} and {ex_y.max():.1f} from one checkpoint to the next, so its "
+                f"final level is not well defined, and its lead is {ex_lead[0]:+,} steps with "
+                f"one choice and {ex_lead[1]:+,} with the other.")
         parts.append(
-            f"So: the restricted loss reaches the midpoint of its change {lead_rl:,} steps "
-            f"before test accuracy reaches its own midpoint"
-            + (f", while the excluded loss -- the measure that tracks removal of the memorised "
-               f"solution -- is within resolution of test accuracy ({lead_ex:+,} steps)"
-               if lead_ex is not None and spacing and abs(lead_ex) <= spacing else "")
-            + f". That order is consistent with {cite(NANDA_2023)}'s account. This is one run, "
-            f"and test accuracy has already begun to rise by then; the lead is over its "
-            f"midpoint, not over its first movement.")
+            f"So: the restricted loss reaches the midpoint of its change "
+            + (f"{rl_lead[0]:,} steps before test accuracy reaches its own midpoint, with "
+               f"either choice of final level." if same else
+               f"{rl_lead[0]:,} steps (or {rl_lead[1]:,}, with the other choice of final "
+               f"level) before test accuracy reaches its own midpoint.")
+            + ex_sentence
+            + f" The restricted loss leading is consistent with {cite(NANDA_2023)}'s account. "
+            f"This is one run, and test accuracy has already begun to rise by then; the lead "
+            f"is over its midpoint, not over its first movement.")
     return "\n\n".join(parts)
 
 
@@ -680,6 +717,8 @@ def quadratic(root: Path, _tag: str) -> Optional[str]:
                  "acc on the rest", "chance"], rows)
     none_grok = all(r["test_acc"] < GROK_ACC for r in d)
     budgets = sorted({r["budget"] for r in d})
+    fracs = sorted({run_config(root, r["tag"])["train_frac"] for r in d})
+    frac_text = " and ".join(f"{f}" for f in fracs)
     part_rows = [[f"`{r['tag']}`",
                   r["unseen_with_flipped_partner_trained"]["n"],
                   r["unseen_with_flipped_partner_trained"]["predicts_flipped"],
@@ -692,17 +731,22 @@ def quadratic(root: Path, _tag: str) -> Optional[str]:
         f"literature: {cite(FURUTA_2024)} call the form non-factorisable in the sense of not "
         f"being expressible through (a +- b), and {cite(DOSHI_2024)}'s Hypothesis 5.1 "
         f"concerns forms h(g1(a) + g2(b)); neither is about splitting over F_p. "
-        f"{cite(FURUTA_2024)} also already report that it does not grok at "
-        f"p = {PUBLISHED['furuta_prime'].value}, where it does split.",
+        f"{cite(FURUTA_2024)} do train this form: at p = {PUBLISHED['furuta_prime'].value}, "
+        f"where it splits, it groks from scratch only with a training fraction of at least "
+        f"{PUBLISHED['furuta_sqx_scratch_frac'].value}, and at "
+        f"{PUBLISHED['furuta_sqx_acc_at_half'].value['train_frac']} it reaches "
+        f"{PUBLISHED['furuta_sqx_acc_at_half'].value['test_acc']:.0%} test accuracy "
+        f"(their Tables 1 and 5). "
+        f"The runs here use a training fraction of {frac_text}.",
         tbl,
-        (f"**Neither generalises within {budgets[-1]:,} steps**, consistent with "
-         f"{cite(FURUTA_2024)}'s result: splitting over F_p does not appear to matter here. "
-         if none_grok else "")
+        (f"**Neither generalises within {budgets[-1]:,} steps.** " if none_grok else "")
         + f"Both sit near {sum(r['test_acc'] for r in d) / len(d):.0%} test accuracy, and the cause is not partial learning of the "
         "form. It is symmetric in a and b while the train/test split is over *ordered* "
         "pairs, so about half the held-out pairs have their transpose in the training set; "
         "the model gets essentially all of those right and is near chance on the rest. It "
-        "has memorised the training table and learned that the table is symmetric.",
+        "has memorised the training table and learned that the table is symmetric."
+        + (" Since both primes sit at that floor, this pair says nothing either way about "
+           "whether splitting over F_p matters." if none_grok else ""),
         "Its *mistakes* are structured, though. `a^2 - ab + b^2` is the same form with "
         "the sign of one input flipped, and on the held-out pairs it cannot answer from "
         "memory, the model often predicts exactly that. Whether it does depends on "
@@ -727,8 +771,10 @@ def quadratic(root: Path, _tag: str) -> Optional[str]:
         "circuit that had 'lost the sign of b'; that explained neither the accuracy, which "
         "symmetry accounts for, nor the dependence of these errors on which partners were "
         "trained. Splitting "
-        "on unordered pairs would remove both effects and make this a fair test of "
-        "factorability.",
+        "on unordered pairs would remove the transpose effect only. Removing the sign-flip "
+        "one as well needs whole orbits {(+-a, +-b), (+-b, +-a)} held out together, so that "
+        "no held-out pair has a transpose or a sign-flipped partner in training; and with "
+        "one seed per prime, even that would be a first look rather than a test.",
     ])
 
 
