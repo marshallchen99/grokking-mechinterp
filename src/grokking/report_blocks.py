@@ -51,8 +51,8 @@ CI_LEVEL = 0.95          # confidence level of every interval in the report
 Z95 = 1.96               # its two-sided normal quantile
 PLAIN_SIGNALS = ("train_loss", "test_loss", "test_acc", "weight_norm")   # no mechanism needed
 END_CHECKPOINTS = 8      # a progress signal's final level: median of this many last checkpoints
-OTHER_FRACS = (0.25, 0.75)
-SETTLE_STEP = 10_000     # "settled" training loss: median over logged steps after this   # the phase-lead comparison repeated at these fractions of the change
+OTHER_FRACS = (0.25, 0.75)   # the phase-lead comparison repeated at these fractions of the change
+SETTLE_STEP = 10_000     # "settled" training loss: median over logged steps after this
 EARLY_SAMPLE_MULT = 5    # where the headline samples test accuracy: 5x the memorisation step
 LATE_SAMPLE_FRAC = 0.8   # ... and at 80% of the way to its 10% crossing
 
