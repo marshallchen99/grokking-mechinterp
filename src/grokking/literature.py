@@ -5,7 +5,14 @@ Every reference string below was checked against the arXiv metadata API
 given only where the arXiv record or the proceedings confirm them.  An earlier
 version carried an author list for Notsawo et al. that was reconstructed from
 memory and wrong in three of six names; that is why this is checked rather
-than recalled.
+than recalled.  A later audit (same day) checked what each paper is *said to
+report* against the paper's own text and tables, and corrected several
+characterisations; metadata checks alone had not caught them.
+
+Four references are to one group whose names arXiv lists family name first
+(Truong Xuan Khanh, ...).  They are written here the way the group's own
+bibliographies write them ("Xuan Khanh Truong, ..."), so they cite as
+Truong et al.; `CITE_SUFFIX` tells their 2026 papers apart.
 
 Every value in this module comes from a paper, carries its reference, and may
 appear in the write-up only in a column headed "published".  Nothing here is
@@ -45,7 +52,13 @@ NOTSAWO_2023 = "Notsawo, Zhou, Pezeshki, Rish, Dumas, 'Predicting Grokking Long 
 LYU_2023 = "Lyu, Jin, Li, Du, Lee, Hu, 'Dichotomy of Early and Late Phase Implicit Biases Can Provably Induce Grokking', ICLR 2024, arXiv:2311.18817"
 NGUYEN_2026 = "Nguyen, 'The Discrete-Log Clock: How a Transformer Learns Modular Multiplication', Mechanistic Interpretability Workshop at ICML 2026, arXiv:2606.17399"
 CHEN_2026 = "Chen, Hasan, Srinivasan, Bandi, Alper, 'Multiplication Beyond Groups: Stratified Fourier Mechanisms in Transformer Circuits', Mechanistic Interpretability Workshop at ICML 2026, arXiv:2607.07066"
-KHANH_2026 = "Khanh, Hoa, Trung, Duc, 'First-Passage Prediction of Grokking Delay: A Calibrated Law under AdamW with Causal Validation', arXiv:2605.18845"
+_TRUONG = "Xuan Khanh Truong, Quynh Hoa Truong, Duc Trung Luu, Thanh Duc Phan"
+TRUONG_2026A = _TRUONG + ", 'The Norm-Separation Delay Law of Grokking: A First-Principles Theory of Delayed Generalization', arXiv:2603.13331"
+TRUONG_2026B = _TRUONG + ", 'Spectral Entropy Collapse as a Phase Transition in Delayed Generalisation: An Interventional and Predictive Framework for Grokking', arXiv:2604.13123"
+TRUONG_2026C = _TRUONG + ", 'First-Passage Prediction of Grokking Delay: A Calibrated Law under AdamW with Causal Validation', arXiv:2605.18845"
+HOWE_2026 = "Gunner Levi Howe, 'Capability Emergence Can Be Forecast: Per-Seed, In Advance, With Calibrated Intervals, Certified False Alarms, and a Blind Pre-Registered Gate', arXiv:2609.19000"
+
+CITE_SUFFIX = {TRUONG_2026A: "a", TRUONG_2026B: "b", TRUONG_2026C: "c"}
 
 PUBLISHED: Dict[str, Fact] = {
     "uniform_loss_p113": Fact(
@@ -63,15 +76,18 @@ PUBLISHED: Dict[str, Fact] = {
     "phase_cleanup_end": Fact(
         14_000, "end of the cleanup phase, in steps", NANDA_2023),
     "gini_W_E_range": Fact(
-        [0.55, 0.80], "range of Gini(W_E) across the paper's weight-decay settings",
-        NANDA_2023, "Table 5; the vector it is computed over is not specified"),
+        [0.55, 0.80], "range of Gini(W_E) over the non-dropout models of Table 5",
+        NANDA_2023, "Gini of the norms of the Fourier components of W_E (Sec. 5.1); rows vary "
+        "training fraction, depth and modulus, not weight decay; the dropout models are "
+        "0.19-0.26"),
     "gini_W_L_range": Fact(
-        [0.68, 0.91], "range of Gini(W_L) across the paper's weight-decay settings",
-        NANDA_2023, "Table 5"),
+        [0.68, 0.91], "range of Gini(W_L) over the non-dropout models of Table 5",
+        NANDA_2023, "same definition, for the neuron-logit map W_L = W_U W_out"),
     "n_key_freqs_range": Fact(
         [2, 9], "number of key frequencies observed across settings", NANDA_2023),
     "logit_var_from_five_coeffs": Fact(
-        0.95, "fraction of logit variance from five cube coefficients", NANDA_2023),
+        0.95, "fraction of logit variance explained by fitting five coefficients (one per "
+        "key frequency) over the whole logit tensor", NANDA_2023),
     "attention_zero_ablation_loss": Fact(
         24.3, "loss after zero-ablating attention", NANDA_2023),
     "grokking_train_frac_window": Fact(
@@ -79,7 +95,7 @@ PUBLISHED: Dict[str, Fact] = {
         NANDA_2023, "at >=60% generalisation is immediate; at 10-20% it does not occur"),
     "power_sensitivity": Fact(
         [0.40, 0.50], "relative increase in median time-to-generalisation per 1% less data",
-        POWER_2022, "near 25-30% training data"),
+        POWER_2022, "for the product in the group S5, near 25-30% training data"),
     "furuta_prime": Fact(
         97, "the prime used for all of Furuta et al.'s experiments", FURUTA_2024,
         "97 = 1 (mod 3), so a^2+ab+b^2 splits over F_97"),
@@ -116,9 +132,10 @@ RELATED_WORK = {
     "discrete_log_for_multiplication": (
         DOSHI_2024,
         "Gives an analytic construction for modular multiplication that explicitly "
-        "uses the discrete logarithm, and a learnability hypothesis (Hyp. 5.1) for forms "
-        "h(g1(a) + g2(b)) mod p. The reduction is therefore published prior art: "
-        "this repository tests it causally, it does not claim it."),
+        "uses the discrete logarithm, shows trained MLPs on multiplication become periodic "
+        "in the discrete-log basis (0 excluded), and states a learnability hypothesis "
+        "(Hyp. 5.1) for forms h(g1(a) + g2(b)) mod p. The reduction is therefore published "
+        "prior art: this repository tests it causally, it does not claim it."),
     "group_representations": (
         CHUGHTAI_2023,
         "The learned features are irreducible representations of the underlying "
@@ -137,7 +154,9 @@ RELATED_WORK = {
         "semi-grokking."),
     "init_scale": (
         LIU_2022,
-        "Initialisation scale controls the grokking delay; large init lengthens it."),
+        "Initialisation scale controls the grokking delay; large init lengthens it. Also "
+        "argues that with weight decay gamma the time to generalise goes like 1/gamma, and "
+        "shows it in a teacher-student model (their Fig. 2c)."),
     "causal_irrep_ablation": (
         CHUGHTAI_2023,
         "Runs restricted loss, excluded loss and ablations of irreducible-representation "
@@ -157,13 +176,19 @@ RELATED_WORK = {
     "forecasting": (
         NOTSAWO_2023,
         "Forecasts grokking from early training-loss curves. Forecasting from early "
-        "signals is therefore prior art; this repository's contribution is a comparison of "
-        "which signals do it, within one configuration."),
+        "signals is therefore prior art. Per-seed prediction at a fixed configuration is "
+        "also published: Truong et al. 2026a (arXiv:2603.13331) predict each seed's delay "
+        "from the norm at memorisation, 2026b (arXiv:2604.13123) from spectral entropy, and "
+        "Howe 2026 (arXiv:2609.19000) finds, for induction heads, that a loss rule ties a "
+        "mechanistic precursor in ranking seeds. The comparison of many signals here is a "
+        "small instance of the same question for grokking."),
     "weight_decay_scaling": (
         LYU_2023,
-        "Proves grokking time scales like 1/lambda in weight decay; Khanh et al. 2026 "
-        "(arXiv:2605.18845) give a calibrated delay law with the same dependence. The phase "
-        "diagram here reproduces it rather than settling an open question."),
+        "Proves grokking time scales like 1/lambda in weight decay, counted from "
+        "initialisation, in a large-initialisation limit. Liu et al. 2022 (Omnigrok) argued "
+        "and showed the same dependence first; Truong et al. 2026c (arXiv:2605.18845) fit a "
+        "delay law, counted from memorisation, under AdamW. The phase diagram here "
+        "reproduces it rather than settling an open question."),
 }
 
 

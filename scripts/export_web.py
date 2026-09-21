@@ -21,6 +21,8 @@ sys.path.insert(0, str(ROOT / "src"))
 from grokking.analysis.timing import crossing_step, phase_boundaries   # noqa: E402
 from grokking.report import is_finished                                # noqa: E402
 from grokking.report_blocks import OP_TAGS                             # noqa: E402
+from grokking.runinfo import training_choice                           # noqa: E402
+import math                                                            # noqa: E402
 
 
 def load(root, name):
@@ -93,6 +95,14 @@ def main():
             "weight_decay": hist["train_cfg"]["weight_decay"],
             "chance": 1.0 / hist["data"]["p"],
             "wall_clock_s": round(hist["history"][-1]["elapsed"]),
+            # labels the page would otherwise have to type
+            "chance_pct": f"{1.0 / hist['data']['p']:.2%}",
+            "uniform_loss": f"{math.log(hist['data']['p']):.2f}",
+            "n_freqs": (hist["data"]["p"] - 1) // 2,
+            "n_keys": len(analysis["key_freqs"]),
+            "d_model": hist["model_cfg"]["d_model"], "n_heads": hist["model_cfg"]["n_heads"],
+            "d_mlp": hist["model_cfg"]["d_mlp"], "lr": hist["train_cfg"]["lr"],
+            "threads": training_choice(root, args.tag, "num_threads"),
         },
         "phases": {k: (round(v) if v is not None else None) for k, v in pb.items()},
         "curve": curve,

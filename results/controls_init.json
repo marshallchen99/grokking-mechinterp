@@ -1,6 +1,20 @@
 {
  "a": "main_add_s0",
  "b": "B_add_s0",
+ "step_a": 0,
+ "step_b": 0,
+ "_provenance": {
+  "commit": "3d96319caff10e3ab22424f26acc59ef93efec3e",
+  "code_modified": false,
+  "argv": [
+   "scripts/analyze_controls_init.py",
+   "--root",
+   "."
+  ],
+  "threads": 6,
+  "torch": "2.12.0+cpu",
+  "python": "3.13.12"
+ },
  "tensors": {
   "W_E": {
    "shape_a": [
@@ -112,5 +126,11 @@
   }
  },
  "n_tensors": 9,
- "n_identical": 8
+ "n_identical": 8,
+ "extra_column": {
+  "index": 113,
+  "checkpoints_checked": 133,
+  "decay_per_step": 0.999,
+  "max_relative_deviation_from_pure_decay": 0.0005138831937828551
+ }
 }

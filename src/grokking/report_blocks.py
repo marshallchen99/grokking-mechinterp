@@ -24,7 +24,8 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from .literature import (
-    CHEN_2026, CHUGHTAI_2023, DOSHI_2024, FURUTA_2024, KHANH_2026, LYU_2023,
+    CHEN_2026, CHUGHTAI_2023, DOSHI_2024, FURUTA_2024, HOWE_2026, LIU_2022, LYU_2023,
+    TRUONG_2026A, TRUONG_2026B, TRUONG_2026C,
     NANDA_2023, NGUYEN_2026, NOTSAWO_2023, POWER_2022, PUBLISHED,
 )
 from .report import is_finished, load_analysis, load_history, load_json, table
@@ -46,7 +47,12 @@ MID_ACC = 0.50
 FULL_ACC = 0.99
 NEURON_FRAC = 0.85       # the neuron-clustering rule's variance threshold
 HALFWAY = 0.50           # "half of a signal's total change"
+CI_LEVEL = 0.95          # confidence level of every interval in the report
+Z95 = 1.96               # its two-sided normal quantile
+PLAIN_SIGNALS = ("train_loss", "test_loss", "test_acc", "weight_norm")   # no mechanism needed
 END_CHECKPOINTS = 8      # a progress signal's final level: median of this many last checkpoints
+OTHER_FRACS = (0.25, 0.75)
+SETTLE_STEP = 10_000     # "settled" training loss: median over logged steps after this   # the phase-lead comparison repeated at these fractions of the change
 EARLY_SAMPLE_MULT = 5    # where the headline samples test accuracy: 5x the memorisation step
 LATE_SAMPLE_FRAC = 0.8   # ... and at 80% of the way to its 10% crossing
 
@@ -67,7 +73,9 @@ def cite(ref: str) -> str:
     else:
         year = next((t for t in ref.replace(",", " ").split()
                      if t.isdigit() and len(t) == 4), "")
-    return f"{first}{' et al.' if etal or len(authors) > 1 else ''} ({year})"
+    from .literature import CITE_SUFFIX
+    return (f"{first}{' et al.' if etal or len(authors) > 1 else ''} "
+            f"({year}{CITE_SUFFIX.get(ref, '')})")
 
 
 def arxiv(ref: str) -> str:
@@ -159,11 +167,14 @@ def headline(root: Path, tag: str) -> Optional[str]:
         f"{h['data']['n_train'] + h['data']['n_test']:,} pairs used for training "
         f"({h['data']['train_frac']:.0%}), a {h['n_params']:,}-parameter one-layer transformer, "
         f"full-batch AdamW with weight decay {h['train_cfg']['weight_decay']}, "
-        f"{h['train_cfg']['steps']:,} steps, CPU only. The architecture and optimiser follow "
-        f"{cite(NANDA_2023)}; the phenomenon is {cite(POWER_2022)}. This first run also had "
+        f"{h['train_cfg']['steps']:,} steps, CPU only. Width, heads, MLP size, the absence "
+        f"of LayerNorm and the optimiser follow {cite(NANDA_2023)}; unlike theirs, the MLP has "
+        f"no biases, as in {cite(FURUTA_2024)}. The phenomenon is {cite(POWER_2022)}. This "
+        f"first run also had "
         + ("a float32 loss, " if _tc(root, tag, "loss_dtype") == "float32" else "")
         + ("no learning-rate schedule, " if not _tc(root, tag, "warmup_steps") else "")
-        + "and an output column for the '=' token; section 5 tests whether those mattered.")
+        + "and an output column for the '=' token that was cut off before the loss; section 5 "
+          "looks at what those changed.")
     return "\n".join(lines)
 
 
@@ -186,7 +197,8 @@ def mechanism(root: Path, tag: str) -> Optional[str]:
                   align="lll")
     n = m["neurons"]
     census = table(["frequency", "neurons assigned"],
-                   [[f, v] for f, v in sorted(n["counts_by_freq"].items(), key=lambda kv: -kv[1])],
+                   [[f if str(f) != "0" else "none (dead)", v]
+                    for f, v in sorted(n["counts_by_freq"].items(), key=lambda kv: -kv[1])],
                    align="lr")
     s = m["structure"]
     chance = 1.0 / m["p"]
@@ -199,6 +211,14 @@ def mechanism(root: Path, tag: str) -> Optional[str]:
                  [[int(f), v["sum_frac"]] for f, v in sorted(t["per_freq"].items(), key=lambda kv: int(kv[0]))]
                  + [["**mean**", t["mean_sum_frac"]]])
     lo, hi = PUBLISHED["gini_W_E_range"].value
+    lo_l, hi_l = PUBLISHED["gini_W_L_range"].value
+    ge, gl = k.get("gini_W_E_nanda"), k.get("gini_W_L_nanda")
+
+    def where(v, a, b):
+        return "inside" if a <= v <= b else ("below" if v < a else "above")
+    dead = n.get("n_dead", 0)
+    live = n["n_total"] - dead
+    sr = m.get("structure_recentred")
     return "\n\n".join([
         f"The mechanism described here is {cite(NANDA_2023)}'s; what follows re-derives it "
         f"on this repository's own model. Three rules are applied to the final checkpoint "
@@ -207,11 +227,21 @@ def mechanism(root: Path, tag: str) -> Optional[str]:
         f"views rather than three. They agree with Jaccard {k['jaccard']:.3f}:",
         rules,
         f"Those {len(k['used'])} frequencies carry **{k['frac_power_in_key']:.1%}** of the "
-        f"embedding's Fourier power, out of {(m['p'] - 1) // 2} available. The spectrum's Gini "
-        f"coefficient is {k['gini_W_E']:.4f}; {cite(NANDA_2023)} report {lo}-{hi} across their "
-        f"settings, but do not say which vector they compute it over, so the two may not be "
-        f"comparable.",
-        f"Every one of the {n['n_total']} MLP neurons is dominated by one of these frequencies"
+        f"embedding's Fourier power, out of {(m['p'] - 1) // 2} available. The Gini "
+        f"coefficient of that per-frequency power is {k['gini_W_E']:.4f}. {cite(NANDA_2023)} "
+        f"define their Gini differently, over the norms of the Fourier components (squaring "
+        f"them, as power does, makes the Gini much larger)"
+        + (f". On their definition this model's embedding scores {ge:.2f}, {where(ge, lo, hi)} "
+           f"the {lo:.2f}-{hi:.2f} of their non-dropout models, and its neuron-logit map W_L "
+           f"scores {gl:.2f}, {where(gl, lo_l, hi_l)} their {lo_l:.2f}-{hi_l:.2f}."
+           if ge is not None else "."),
+        (f"Every one of the {n['n_total']} MLP neurons is dominated by one of these frequencies"
+         if not dead else
+         f"Of the {n['n_total']} MLP neurons, {dead} {'is' if dead == 1 else 'are'} dead "
+         f"(constant output) and every one of the other {live} is dominated by one of these "
+         f"frequencies" if n["all_on_key_freqs"] else
+         f"Of the {n['n_total']} MLP neurons, {dead} {'is' if dead == 1 else 'are'} dead "
+         f"(constant output); the others are dominated by one of these frequencies")
         + (":" if n["all_on_key_freqs"] else ", with exceptions:"),
         census,
         f"{n['frac_above_85']:.1%} of neurons have more than {NEURON_FRAC:.0%} of their variance explained "
@@ -219,6 +249,11 @@ def mechanism(root: Path, tag: str) -> Optional[str]:
         f"{n['min_dominant_frac']:.4f}).",
         f"**What it computes.** Chance for the variance-explained column is {chance:.4f}:",
         struct,
+        *([f"These are computed on the raw logits. Removing first, for every input pair, the "
+           f"mean over the answer c -- a component softmax ignores, which the readout below "
+           f"also removes -- gives {sr['a+b']:.4f} for (a + b) and "
+           f"{m['trig_recentred_mean_sum_frac']:.4f} for the mean trigonometric measure below."]
+          if sr else []),
         "**The trigonometric identity.** Within each key frequency, the dependence on (a, b) "
         "splits into a part that is a function of (a+b) and a part that is a function of "
         "(a-b); the identity `cos(w(a+b)) = cos(wa)cos(wb) - sin(wa)sin(wb)` predicts it is "
@@ -243,7 +278,7 @@ def describe_run(root: Path, tag: str) -> str:
     bits = [d.get("op", "?"), f"{dtype} loss" if dtype else "loss precision not recorded"]
     w = training_choice(root, tag, "warmup_steps")
     bits.append(f"{w}-step warmup" if w and w > 1 else
-                ("warmup_steps = 1" if w == 1 else "no LR schedule"))
+                ("one-step warmup (zero learning rate on step 0)" if w == 1 else "no LR schedule"))
     if mc.get("d_vocab_out", mc.get("d_vocab")) and d.get("p") and \
             mc.get("d_vocab_out", mc.get("d_vocab")) > d["p"]:
         bits.append("extra W_U column")
@@ -288,9 +323,10 @@ def readout(root: Path, _tag: str) -> Optional[str]:
             f"In the float64 addition runs the readout is essentially exact "
             f"({min(f64):.3f} to {max(f64):.3f} at the predicted frequency)."
             + (f" Subtraction reads {own['B_sub_s0'][0]:.3f} in the (a-b) direction it actually "
-               f"uses, and {own['B_sub_s0'][2]['sum']['own']:.3f} if read in the (a+b) direction "
-               f"-- a model read in the wrong coordinate looks unstructured."
-               if "B_sub_s0" in own else ""))
+               f"uses. In the (a+b) direction there is almost nothing to read: the amplitudes "
+               f"there carry {own['B_sub_s0'][2]['sum']['total'] / own['B_sub_s0'][2]['diff']['total']:.1e} "
+               f"times the energy of the (a-b) ones, so the fractions of it are not meaningful."
+               if "B_sub_s0" in own and "total" in own["B_sub_s0"][2]["sum"] else ""))
     if f32 and f64:
         parts.append(
             f"The {len(f32)} float32 runs are measurably less clean ({min(f32):.3f} to "
@@ -303,10 +339,28 @@ def readout(root: Path, _tag: str) -> Optional[str]:
             + (f" (though `C_add_nowarm`, float64 and read at step "
                f"{steps_read['C_add_nowarm']:,}, is as clean as the others)"
                if "C_add_nowarm" in steps_read else "")
-            + ". An earlier version of this section attributed the difference to a "
-            f"per-answer bias that float32 prevented from being cleaned up. That was wrong: "
-            f"the component it measured was the softmax-invariant one removed above, which "
-            f"no loss gradient acts on at any precision.")
+            + ".")
+        inv = {t: (load_json(root, f"{t}_mechanism.json") or {}).get("W_U_softmax_invariant")
+               for t in add_runs}
+        i32 = {t: v for t, v in inv.items() if v and t in own
+               and training_choice(root, t, "loss_dtype") == "float32"}
+        i64 = {t: v for t, v in inv.items() if v and t in own
+               and training_choice(root, t, "loss_dtype") == "float64"}
+        if i32 and i64:
+            parts.append(
+                "An earlier version attributed the difference to a per-answer bias that "
+                "float32 prevented from being cleaned up; a later one said that no gradient "
+                "acts on that component at any precision. Neither holds up. The component is "
+                "real, and float32 does keep it: rounding gives the float32 gradient a part "
+                "along the direction softmax ignores, and that part of W_U grows during the "
+                "float32 runs ("
+                + "; ".join(f"`{t}` from {v['step0']:.2f} to {v['final']:.2f}, "
+                            f"{v['final_frac_of_W_U']:.0%} of W_U" for t, v in i32.items())
+                + f") while it shrinks in the float64 ones (to between "
+                f"{min(v['final'] for v in i64.values()):.3f} and "
+                f"{max(v['final'] for v in i64.values()):.3f}). But it is exactly the "
+                f"component removed before measuring, so it cannot change a prediction and "
+                f"does not explain the difference in this table.")
     return "\n\n".join(parts)
 
 
@@ -343,10 +397,23 @@ def ablations(root: Path, tag: str) -> Optional[str]:
                        for k in order if k in comp])
 
     npf = m.get("ablation_neuron_per_freq", {})
-    neuron = table(["MLP neurons mean-ablated", "train acc", "test acc", "test loss"],
-                   [[k.replace("_", " "), v["train_acc"], v["test_acc"], v["test_loss"]]
-                    for k, v in npf.items()]) if npf else ""
-    worst_loss = max((v["test_loss"] for v in npf.values()), default=None)
+    sm = m.get("ablation_neuron_size_matched", {})
+    nrows, verdict = [], {}
+    for kk in K:
+        d_, k_ = npf.get(f"drop_freq_{kk}"), npf.get(f"keep_only_freq_{kk}")
+        r_ = sm.get(str(kk))
+        if not (d_ and k_ and r_):
+            continue
+        ra = sorted(r_["test_acc"])
+        med = ra[len(ra) // 2] if len(ra) % 2 else (ra[len(ra) // 2 - 1] + ra[len(ra) // 2]) / 2
+        verdict[kk] = ("below" if d_["test_acc"] < ra[0] else
+                       "above" if d_["test_acc"] > ra[-1] else "within")
+        nrows.append([kk, r_["n_neurons"], d_["test_acc"],
+                      f"{med:.4f} ({ra[0]:.4f} to {ra[-1]:.4f})", k_["test_acc"]])
+    n_draws = next(iter(sm.values()))["n_draws"] if sm else 0
+    neuron = table(["frequency", "neurons in its cluster", "test acc, cluster mean-ablated",
+                    f"test acc, as many other neurons mean-ablated: median (range of {n_draws})",
+                    "test acc, only this cluster kept"], nrows) if nrows else ""
 
     pr = m["progress"]
     prog = table(["logit-space edit", "split", "loss", "accuracy"],
@@ -371,17 +438,28 @@ def ablations(root: Path, tag: str) -> Optional[str]:
             f"The norm-restored row does: with the key frequencies deleted and the rest scaled "
             f"back up to the original norm, test accuracy is "
             f"{fa['drop_key_freqs_norm_restored']['test_acc']:.2%}.")
-    parts += [
-        "**Neuron surgery.** Each key frequency's neuron cluster, mean-ablated:",
-        neuron,
-    ]
-    if worst_loss is not None:
-        parts.append(
-            f"Two caveats. The clusters differ in size and there is no size-matched random "
-            f"control, so a cluster being survivable to drop may partly reflect its size. And "
-            f"losses as high as {worst_loss:,.0f}, far above the {math.log(m['p']):.2f} of a "
-            f"uniform guess, mean the ablated network is confidently wrong, so these rows say "
-            f"which clusters matter, not by how much.")
+    if nrows:
+        below = [k_ for k_, v in verdict.items() if v == "below"]
+        within = [k_ for k_, v in verdict.items() if v == "within"]
+        kept = [r[4] for r in nrows]
+        parts += [
+            "**Neuron surgery.** Each MLP neuron is assigned to the frequency that explains "
+            "most of its variance. A cluster is mean-ablated by replacing its neurons' "
+            "outputs with their average over all inputs; the control does the same to as "
+            "many neurons drawn at random from outside the cluster:",
+            neuron,
+            (f"Removing the cluster for {'frequency' if len(below) == 1 else 'each of frequencies'} "
+             f"{', '.join(str(x) for x in below)} costs more test accuracy than removing as many "
+             f"random other neurons does in any of the {n_draws} draws" if below else
+             "No cluster costs more than every random draw")
+            + (f"; for {', '.join(str(x) for x in within)} it is within the random range"
+               if within else "")
+            + f". No single cluster is enough on its own (test accuracy {min(kept):.2%} to "
+              f"{max(kept):.2%} with only it kept). An earlier version of this table added the "
+              f"removed neurons' average output at the model's input instead of at the MLP's "
+              f"output, so it went through attention and the MLP a second time; its numbers, "
+              f"and a caveat about test losses above a thousand, were artefacts of that bug.",
+        ]
     parts += [
         "**Whole components.**",
         component,
@@ -623,6 +701,16 @@ def phases(root: Path, tag: str) -> Optional[str]:
             + f" The restricted loss leading is consistent with {cite(NANDA_2023)}'s account. "
             f"This is one run, and test accuracy has already begun to rise by then; the lead "
             f"is over its midpoint, not over its first movement.")
+        other = []
+        for fr in OTHER_FRACS:
+            a_, b_ = cross("test_acc", fr), cross("restricted_loss_sum_all", fr)
+            if a_ is not None and b_ is not None:
+                other.append(f"{st(a_ - b_):,} steps at {fr:.0%}")
+        parts.append(
+            "The halfway point, the window that defines the final level and the resolution "
+            "rule were all chosen after these curves had been seen."
+            + (" Measured at other fractions of each signal's change, the restricted loss "
+               "leads test accuracy by " + " and ".join(other) + "." if other else ""))
     return "\n\n".join(parts)
 
 
@@ -685,17 +773,20 @@ def operations(root: Path, tags: List[str]) -> Optional[str]:
     ]
     sub_tag = next((t for t in got if (load_history(root, t) or {}).get("data", {}).get("op") == "sub"), None)
     if sub_tag and ADD_REFERENCE in got and got[sub_tag] and got[ADD_REFERENCE]:
-        pred = load_json(root, "prediction_summary.json") or {}
-        gs = [r["grok"] for r in (pred.get("within_config") or {}).get("runs", [])]
-        spread = (max(gs) / min(gs)) if len(gs) > 1 else None
+        ratios, w = _seed_ratios(root)
         sub_budget = load_history(root, sub_tag)["train_cfg"]["steps"]
+        r_sub = got[sub_tag] / got[ADD_REFERENCE]
         parts.append(
             f"Subtraction's output tracks (a-b) rather than (a+b). It grokked at step "
             f"{st(got[sub_tag]):,} against {st(got[ADD_REFERENCE]):,} for `{ADD_REFERENCE}`, "
-            f"a factor of {got[sub_tag] / got[ADD_REFERENCE]:.1f}"
-            + (f"; seeds of a single configuration elsewhere in this project span a factor of "
-               f"{spread:.1f} (at a different modulus and training fraction)" if spread else "")
-            + f". With one seed per operation this is weak evidence either way. It grokked "
+            f"a factor of {r_sub:.1f}"
+            + (f". Among the {len(ratios)} pairs of seeds in the one configuration run many "
+               f"times, " + (f"{_frac_at_least(ratios, r_sub):.0%} differ"
+                             if _frac_at_least(ratios, r_sub) else "none differs")
+               + f" by that factor or more; but "
+               f"that configuration has a different modulus and training fraction, and seed "
+               f"noise here was not measured" if ratios else "")
+            + f". With one seed per operation this is suggestive at most. Subtraction grokked "
             f"{sub_budget - st(got[sub_tag]):,} steps before its budget ran out, so its "
             f"mechanism was read much closer to the transition than addition's.")
     if notes:
@@ -790,8 +881,9 @@ def dlog_block(root: Path, tag: str = "B_mul_s0") -> Optional[str]:
         f"The nonzero residues mod p form a cyclic group of order p-1 under multiplication, "
         f"so re-indexing them by discrete logarithm turns `a * b` into "
         f"`dlog(a) + dlog(b) mod (p-1)`. None of this is new. The reduction is "
-        f"{cite(DOSHI_2024)} ({arxiv(DOSHI_2024)}); a transformer trained on multiplication "
-        f"has been shown sparse in this basis ({cite(NGUYEN_2026)}, {arxiv(NGUYEN_2026)}); and "
+        f"{cite(DOSHI_2024)} ({arxiv(DOSHI_2024)}), who also show that MLPs trained on "
+        f"multiplication become periodic in this basis; a transformer trained on it has been "
+        f"shown sparse in it ({cite(NGUYEN_2026)}, {arxiv(NGUYEN_2026)}); and "
         f"restricted/excluded-loss ablations in the irreducible-representation basis of a "
         f"cyclic group -- which is what the discrete-log Fourier basis is -- are "
         f"{cite(CHUGHTAI_2023)} ({arxiv(CHUGHTAI_2023)}). What follows reproduces those on "
@@ -803,8 +895,15 @@ def dlog_block(root: Path, tag: str = "B_mul_s0") -> Optional[str]:
                 "--" if o["jaccard"] == 0 else o["frac_power_in_key"], o["jaccard"]],
                [f"discrete log (g = {d['primitive_root']}, n = {d['n']})", len(s["used"]),
                 s["gini_W_E"], s["frac_power_in_key"], s["jaccard"]]]),
-        f"In the ordinary basis the three rules share no frequency at all, so there is no "
-        f"key set to report; in the discrete-log basis they agree exactly. How much of the "
+        f"In the ordinary basis the rules pick "
+        + "; ".join(f"{RULE_LABELS[r][0]}: "
+                    + ((f"all {len(v)}" if len(v) == (m['p'] - 1) // 2 else f"{len(v)} frequencies")
+                       if len(v) > 3 else (str(v) if v else "none"))
+                    for r, v in o["by_rule"].items())
+        + ", with no frequency common to all three, so there is no key set to report; in the "
+        + ("discrete-log basis they agree exactly. " if s["jaccard"] == 1 else
+           f"discrete-log basis they agree with Jaccard {s['jaccard']:.2f}. ")
+        + f"How much of the "
         f"logits' variance is a function of a*b does not depend on the basis "
         f"({m['structure']['a*b']:.3f}); only the sparsity does.",
     ]
@@ -862,8 +961,9 @@ def dlog_block(root: Path, tag: str = "B_mul_s0") -> Optional[str]:
             f"the {one['residues_probed']} nonzero residues in either input position, and "
             f"score only pairs whose other input is untouched: the model answers 0 on "
             f"{one['frac_predicted_0_zeroed']:.1%} of {one['pairs_scored']:,} pairs when zeroed "
-            f"and {one['frac_predicted_0_mean']:.1%} when averaged. Blank *both* inputs' rows "
-            f"and it answers {both['most_common_prediction']}, never 0, on the "
+            f"and {one['frac_predicted_0_mean']:.1%} when averaged. Zero *both* inputs' rows "
+            f"(the averaged version was not tried) and it answers "
+            f"{both['most_common_prediction']}, never 0, on the "
             f"{both['pairs_scored']} pairs tested ({both['frac_predicted_0']:.0%} answer 0). "
             f"Every such pair then presents the same input, so their agreeing is automatic; "
             f"which class they agree on is the measurement. The real pair (0, 0), once 0's own "
@@ -878,6 +978,50 @@ def dlog_block(root: Path, tag: str = "B_mul_s0") -> Optional[str]:
 
 CONTROL_NOTES: Dict[str, str] = {}
 CONTROL_ORDER = ["main_add_s0", "B_add_s0", "C_add_f32", "C_add_nowarm", "B_add_s1"]
+
+
+def loss_precision(root: Path, _tag: str) -> Optional[str]:
+    """The method note on float32 vs float64, with the levels measured."""
+    import statistics
+    import torch
+    lv = {"float32": [], "float64": []}
+    for tag in CONTROL_ORDER:
+        h = load_history(root, tag)
+        dt = _tc(root, tag, "loss_dtype")
+        if not is_finished(h) or dt not in lv:
+            continue
+        late = [r["train_loss"] for r in h["history"] if r["step"] >= SETTLE_STEP]
+        if late:
+            lv[dt].append((tag, statistics.median(late)))
+    if not (lv["float32"] and lv["float64"]):
+        return None
+    eps = float(torch.finfo(torch.float32).eps)
+    f32 = [v for _, v in lv["float32"]]
+    f64 = [v for _, v in lv["float64"]]
+    return (
+        f"**Loss in float64, except in the first run and its float32 control.** In float32, "
+        f"`log_softmax` quantises at about {eps:.1e}. After step {SETTLE_STEP:,}, the "
+        f"training loss of the {len(f64)} float64 runs settles at a median of "
+        f"{min(f64):.1e} to {max(f64):.1e}, near that level; that of the {len(f32)} float32 "
+        f"runs ({', '.join(f'`{t}`' for t, _ in lv['float32'])}) stays around "
+        f"{min(f32):.1e} to {max(f32):.1e}, about {min(f32) / max(f64):.0f} times higher, and "
+        f"its readings are quantised whenever they come near {eps:.1e}. Section 5 compares "
+        f"the two precisions directly.")
+
+
+def _seed_ratios(root: Path):
+    """|log| grokking-step ratios between every pair of seeds of the one configuration
+    that was run many times, and that configuration.  The only direct measure of how
+    far two runs can differ by chance alone."""
+    w = (load_json(root, "prediction_summary.json") or {}).get("within_config")
+    if not w:
+        return None, None
+    g = [r["grok"] for r in w["runs"]]
+    return [abs(math.log(a / b)) for i, a in enumerate(g) for b in g[i + 1:]], w
+
+
+def _frac_at_least(ratios, r):
+    return sum(x >= abs(math.log(r)) - 1e-12 for x in ratios) / len(ratios)
 
 
 def controls(root: Path, _tag: str) -> Optional[str]:
@@ -895,32 +1039,52 @@ def controls(root: Path, _tag: str) -> Optional[str]:
     if len(rows) < 2:
         return None
     init = load_json(root, "controls_init.json")
+    first = (f"The corrected configuration grokked at step {st(g['B_add_s0']):,}, against "
+             f"{st(g['main_add_s0']):,} for the first run. "
+             if {"B_add_s0", "main_add_s0"} <= set(g) else "")
     parts = [
         "The first run used float32 cross-entropy, no warmup, and an unembedding with a "
-        "column for the '=' token that can never be correct. The corrected configuration "
-        "grokked in about half the steps. Each control below changes one training choice, "
-        "one run each; their step budgets also differ, which does not affect the grokking "
-        "step but does change the step at which the mechanism is read.",
+        "column for the '=' token that was cut off before the loss. " + first
+        + "Each control below changes one training choice, one run each; their step budgets "
+        "also differ, which does not affect the grokking step (the learning rate is constant "
+        "after warmup) but does change the step at which the mechanism is read.",
         table(["run", "what differs", "grokking step"], rows, align="llr"),
     ]
-    if {"B_add_s0", "C_add_f32", "C_add_nowarm", "main_add_s0"} <= set(g):
-        spread = abs(g.get("B_add_s1", g["B_add_s0"]) - g["B_add_s0"])
+    ratios, w = _seed_ratios(root)
+    if {"B_add_s0", "C_add_f32", "C_add_nowarm", "main_add_s0"} <= set(g) and ratios:
+        b = st(g["B_add_s0"])
+        eff = {"f32": g["C_add_f32"] / g["B_add_s0"], "warm": g["C_add_nowarm"] / g["B_add_s0"],
+               "gap": g["main_add_s0"] / g["B_add_s0"]}
+        c = w["config"]
         parts.append(
-            f"Changing only the loss precision moves the step by "
-            f"{st(g['C_add_f32'] - g['B_add_s0']):+,}; removing the warmup by "
-            f"{st(g['C_add_nowarm'] - g['B_add_s0']):+,}. For scale, two seeds of the "
-            f"corrected configuration differ by {st(spread):,}. So neither change, alone, "
-            f"accounts for the gap to the original's {st(g['main_add_s0']):,}.")
+            f"Changing only the loss precision moves the step by {st(g['C_add_f32']) - b:+,}; "
+            f"reducing the warmup to a single step, whose learning rate is zero, by "
+            f"{st(g['C_add_nowarm']) - b:+,}. With one run per arm, these have to be read "
+            f"against how far two seeds can differ by chance. The only configuration run with "
+            f"many seeds is a different one ({w['n']} seeds of `{c['op']}` at p = {c['p']}, "
+            f"training fraction {c['train_frac']}); there, "
+            f"{_frac_at_least(ratios, eff['f32']):.0%} of seed pairs differ by a larger factor "
+            f"than the precision change, {_frac_at_least(ratios, eff['warm']):.0%} by a larger "
+            f"factor than the warmup change, and {_frac_at_least(ratios, eff['gap']):.0%} by "
+            f"one at least as large as the whole gap between the first run and the corrected "
+            f"one ({eff['gap']:.2f}x). If seed noise at p = {load_history(root, 'B_add_s0')['data']['p']} "
+            f"is similar, these runs cannot say whether either change matters, or whether the "
+            f"gap itself is chance.")
     if init:
+        ec = init.get("extra_column")
         parts.append(
             f"What else differs is narrower than it might seem. At step 0 the two runs share "
             f"{init['n_identical']} of their {init['n_tensors']} weight tensors bit for bit; "
             f"only W_U is drawn differently, because it is drawn last and its shape changed. "
-            f"The remaining gap is therefore some combination of W_U's initialisation, the "
-            f"extra column itself, an interaction between float32 and no warmup (never run "
-            f"jointly), and chance. These single runs cannot separate them, and an earlier "
-            f"claim that the original was simply 'a slow draw' went beyond them. Note also "
-            f"that `warmup_steps = 1` still gives a zero learning rate on the first step.")
+            + (f"The extra column itself can matter only through floating-point rounding: it "
+               f"received no gradient, and at every "
+               f"one of {ec['checkpoints_checked']} checkpoints its weights equal their step-0 "
+               f"values times the pure weight-decay factor (largest relative deviation "
+               f"{ec['max_relative_deviation_from_pure_decay']:.1e}). " if ec else "")
+            + "What remains is W_U's initial draw, an interaction between float32 and no "
+            "warmup (never run jointly), and chance. These single runs cannot separate them, "
+            "and an earlier claim that the original was simply 'a slow draw' went beyond "
+            "them.")
     return "\n\n".join(parts)
 
 
@@ -954,30 +1118,84 @@ def phase_diagram_block(root: Path, _tag: str) -> Optional[str]:
     in_top = [c for c in cells if c["train_frac"] == top]
     full = sorted((c for c in in_top if not c["censored"]), key=lambda c: c["weight_decay"])
     if len(full) >= 3 and len(full) == len(in_top):
+        import glob
+        from .analysis.timing import crossing_step
         seq = [c["grok_step"] for c in full]
         mono = all(a > b for a, b in zip(seq, seq[1:]))
         prod = [c["grok_step"] * c["weight_decay"] for c in full]
-        import math as _m
-        xs = [_m.log(c["weight_decay"]) for c in full]
+        dprod = [(c["grok_step"] - c["memorisation_step"]) * c["weight_decay"] for c in full]
+        pts = [(c["weight_decay"], c["grok_step"], c["memorisation_step"]) for c in full]
+        # the seed replicates at the same modulus and fraction, where they grokked
+        n_rep = 0
+        for hp in sorted(glob.glob(str(root / "results" / "R_*_history.json"))):
+            h = json.loads(Path(hp).read_text())
+            if h["data"]["p"] != p_ or h["data"]["train_frac"] != top or not is_finished(h):
+                continue
+            gr = crossing_step(h["history"], "test_acc", GROK_ACC)
+            if gr is not None:
+                pts.append((h["train_cfg"]["weight_decay"], gr,
+                            crossing_step(h["history"], "train_acc", MEMORISED_ACC)))
+                n_rep += 1
+        xs = [math.log(w) for w, _, _ in pts]
+        mx = sum(xs) / len(xs)
+        sxx = sum((x - mx) ** 2 for x in xs)
 
         def slope(ys):
-            mx, my = sum(xs) / len(xs), sum(ys) / len(ys)
-            return sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / sum((x - mx) ** 2 for x in xs)
+            my = sum(ys) / len(ys)
+            return sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / sxx
 
-        s_total = slope([_m.log(c["grok_step"]) for c in full])
-        s_delay = slope([_m.log(c["grok_step"] - (c["memorisation_step"] or 0)) for c in full])
-        parts.append(
+        s_total = slope([math.log(g) for _, g, _ in pts])
+        s_delay = slope([math.log(g - m) for _, g, m in pts])
+        # uncertainty from seed noise measured directly: the many-seed configuration is
+        # one of these cells (same modulus, fraction and budget family)
+        _, wc = _seed_ratios(root)
+        noise = None
+        if wc and wc["config"]["p"] == p_ and wc["config"]["train_frac"] == top:
+            lg, ld = [], []
+            for r in wc["runs"]:
+                hh = load_history(root, r["tag"])
+                mm = crossing_step(hh["history"], "train_acc", MEMORISED_ACC)
+                lg.append(math.log(r["grok"]))
+                ld.append(math.log(r["grok"] - mm))
+
+            def sd(v):
+                m_ = sum(v) / len(v)
+                return (sum((x - m_) ** 2 for x in v) / (len(v) - 1)) ** 0.5
+            noise = (sd(lg), sd(ld), wc["n"], wc["config"]["weight_decay"])
+
+        def verdict(sl, se):
+            lo_, hi_ = sl - Z95 * se, sl + Z95 * se
+            rel = ("consistent with -1" if lo_ <= -1 <= hi_ else
+                   "steeper than -1" if hi_ < -1 else "shallower than -1")
+            return f"{sl:.2f} ({CI_LEVEL:.0%} interval {lo_:.2f} to {hi_:.2f}, {rel})"
+
+        text = (
             f"Within the one training fraction where every cell grokked ({top}), the "
             f"grokking step {'falls monotonically' if mono else 'is not monotone'} as weight "
-            f"decay rises: " + ", ".join(f"{st(s):,}" for s in seq) + ". Step times weight "
+            f"decay rises: " + ", ".join(f"{st(v):,}" for v in seq) + ". Step times weight "
             f"decay stays between {min(prod):,.0f} and {max(prod):,.0f} while weight decay "
-            f"spans a factor of {full[-1]['weight_decay'] / full[0]['weight_decay']:.0f}. "
-            f"On log axes the slope is {s_total:.2f} counting from step 0, and {s_delay:.2f} "
-            f"counting from the end of memorisation, which is the delay the published law "
-            f"is about. One seed and four points; consistent with a roughly 1/lambda "
-            f"dependence, which {cite(LYU_2023)} ({arxiv(LYU_2023)}) prove in a large-"
-            f"initialisation limit and {cite(KHANH_2026)} fit under AdamW. This reproduces "
-            f"that; it does not discover it.")
+            f"spans a factor of {full[-1]['weight_decay'] / full[0]['weight_decay']:.0f}; the "
+            f"delay after memorisation times weight decay goes from {dprod[0]:,.0f} to "
+            f"{dprod[-1]:,.0f}. Fitting log step against log weight decay over these "
+            f"{len(full)} cells and the {n_rep} seed-1 replicates that grokked "
+            f"({len(pts)} points) ")
+        if noise:
+            sdg, sdd, n_s, w_s = noise
+            text += (
+                f"gives, counted from step 0, a slope of "
+                f"{verdict(s_total, sdg / math.sqrt(sxx))}, and counted from the end of "
+                f"memorisation, {verdict(s_delay, sdd / math.sqrt(sxx))}. The intervals take the "
+                f"seed-to-seed spread measured at one of these cells ({n_s} seeds at weight "
+                f"decay {w_s}) as the noise on every point.")
+        else:
+            text += f"gives slopes of {s_total:.2f} from step 0 and {s_delay:.2f} from memorisation."
+        text += (
+            f" {cite(LIU_2022)} argued that the time to generalise goes like 1/lambda and "
+            f"showed it in a teacher-student model; {cite(LYU_2023)} ({arxiv(LYU_2023)}) prove "
+            f"it in a large-initialisation limit, counting from initialisation; "
+            f"{cite(TRUONG_2026C)} fit a law for the delay after memorisation under AdamW. "
+            f"This reproduces that dependence; it does not discover it.")
+        parts.append(text)
     return "\n\n".join(parts)
 
 
@@ -1059,6 +1277,7 @@ def prediction(root: Path, _tag: str) -> Optional[str]:
                          f"{v['rho']:+.2f}" + (" *" if v.get("survives_bonferroni") else ""))
         body.append([lab] + cells)
     b = w["bonferroni"]
+    ball = b.get("all_computed")
     acc = w.get("test_acc_at_step", {})
     last = steps[-1]
     surv = sorted(((v["label"], v["rho"]) for v in w["at_steps"][last].values()
@@ -1066,17 +1285,26 @@ def prediction(root: Path, _tag: str) -> Optional[str]:
     none_first = not any(v.get("survives_bonferroni") for v in w["at_steps"][steps[0]].values())
     best = surv[0] if surv else None
     parts = [
-        f"{cite(NOTSAWO_2023)} ({arxiv(NOTSAWO_2023)}) predict *whether* grokking will occur "
-        f"from oscillations in the early training-loss curve, and {cite(KHANH_2026)} "
-        f"({arxiv(KHANH_2026)}) predict *when*, across hyperparameter settings, from the "
-        f"parameter norm. The question here is narrower still: within a single configuration, "
-        f"where only the random draw differs, which early signals rank runs by when they "
-        f"generalise.",
+        f"Forecasting grokking from early signals is not new. {cite(NOTSAWO_2023)} "
+        f"({arxiv(NOTSAWO_2023)}) predict *whether* it will occur from oscillations in the "
+        f"early training loss. At a fixed configuration, {cite(TRUONG_2026A)} "
+        f"({arxiv(TRUONG_2026A)}) predict each seed's delay from the parameter norm at "
+        f"memorisation, and {cite(TRUONG_2026B)} ({arxiv(TRUONG_2026B)}) forecast it from the "
+        f"spectral entropy of the representation; {cite(TRUONG_2026C)} ({arxiv(TRUONG_2026C)}) "
+        f"fit the delay across hyperparameter settings. For a different emergence, induction "
+        f"heads, {cite(HOWE_2026)} ({arxiv(HOWE_2026)}) finds that a loss rule ranks seeds as "
+        f"well as a mechanistic precursor does. The question here is a small instance of the "
+        f"same kind: within one configuration of this task, where only the random draw "
+        f"differs, how do a dozen early signals compare at ranking runs by when they "
+        f"generalise?",
         f"{w['n']} runs share the task (`{c['op']}`), modulus ({c['p']}), training fraction "
         f"({c['train_frac']}), weight decay ({c['weight_decay']}) and budget "
         f"({c['budget']:,} steps). They grok between step {earliest:,.0f} and "
         f"{latest:,.0f}. A reading taken after some run has grokked measures the outcome, so "
-        f"only readings before step {earliest:,.0f} are used.",
+        f"only readings before step {earliest:,.0f} are used."
+        + "".join(f" `{e['tag']}` has the same configuration but a {e['budget']:,}-step budget, "
+                  f"so a different checkpoint schedule, and is left out."
+                  for e in w.get("excluded_other_budget", [])),
     ]
     if acc:
         parts.append(
@@ -1090,31 +1318,57 @@ def prediction(root: Path, _tag: str) -> Optional[str]:
         f"Spearman correlation with the grokking step; positive means a higher reading goes "
         f"with a later transition. `*` marks coefficients whose two-tailed permutation "
         f"p-value survives Bonferroni over the {b['n_tests']} tests at the {len(steps)} "
-        f"reported steps (|rho| of at least {b['critical_rho_two_tailed']:.3f}); readings at "
-        f"later steps were also computed and are excluded, as above. Rows marked `(final)` "
-        f"use the finished model's key frequencies and so borrow information from after the "
-        f"transition; their 'leak-free' counterparts use the frequencies each checkpoint would "
-        f"pick itself:",
+        f"reported steps (|rho| of at least {b['critical_rho_two_tailed']:.3f}). Rows marked "
+        f"`(final)` use the finished model's key frequencies and so borrow information from "
+        f"after the transition; their 'leak-free' counterparts use the frequencies each "
+        f"checkpoint would pick itself:",
         table(["signal", *[f"at step {int(s):,}" for s in steps]], body),
     ]
-    plain = {"train_loss", "test_loss", "test_acc", "weight_norm"}
+    if ball:
+        surv_all = [v["label"] for v in w["at_steps"][last].values()
+                    if v.get("survives_bonferroni_all_computed")]
+        dropped = [lab for lab, _ in surv if lab not in surv_all]
+        parts.append(
+            f"That family of {b['n_tests']} tests was chosen after the results were seen. The "
+            f"first version corrected over all {ball['n_tests']} tests computed, at every "
+            f"step (|rho| of at least {ball['critical_rho_two_tailed']:.3f}); under that "
+            f"family {len(surv_all)} signals survive at step {int(last):,} instead of "
+            f"{len(surv)}"
+            + (f", the {', '.join(dropped)} dropping out." if dropped else "."))
     first = w["at_steps"][steps[0]]
-    top_first = max(first.items(), key=lambda kv: abs(kv[1]["rho"]))
+    clean = {k: v for k, v in first.items() if "(final)" not in v["label"]}
+    top_any = max(first.items(), key=lambda kv: abs(kv[1]["rho"]))
+    top_clean = max(clean.items(), key=lambda kv: abs(kv[1]["rho"]))
     if none_first:
         parts.append(
             f"At step {int(steps[0]):,} nothing survives the correction. The largest point "
-            f"estimate there is the {top_first[1]['label']} ({top_first[1]['rho']:+.2f}), "
-            + ("a plain loss signal" if top_first[0] in plain else "a mechanistic measure")
-            + ", but none of these is reliable at this n.")
-    if best:
+            f"estimate among signals that use no information from after the transition is "
+            f"the {top_clean[1]['label']} ({top_clean[1]['rho']:+.2f})"
+            + (f"; the {top_any[1]['label']} is higher ({top_any[1]['rho']:+.2f}) but uses the "
+               f"final model's frequencies" if top_any[0] != top_clean[0] else "")
+            + ". None of these is reliable at this n.")
+    bs = (w.get("bootstrap") or {}).get(last)
+    if best and bs:
+        lab = lambda k: w["at_steps"][last][k]["label"]       # noqa: E731
+        lo_, hi_ = bs["abs_rho_difference_ci95"]
+        plain_top = best[0] in [lab(k) for k in PLAIN_SIGNALS if k in w["at_steps"][last]]
         parts.append(
-            f"At step {int(last):,}, {len(surv)} signals do. The strongest is the "
-            f"**{best[0]}** (rho {best[1]:+.2f}), and the survivors are not distinguishable "
-            f"from one another at n = {w['n']}. In this one configuration, then, plain losses "
-            f"rank the runs as well as the mechanistic measures do by step {int(last):,}, and "
-            f"the ordinary test loss -- visible from outside -- is among the best. An earlier "
-            f"version of this section claimed the visible quantity could not rank the runs; it "
-            f"had looked only at test accuracy.")
+            f"At step {int(last):,}, {len(surv)} signals survive. The strongest is the "
+            f"**{best[0]}** (rho {best[1]:+.2f}), "
+            + ("a plain loss that needs no mechanistic analysis. " if plain_top else
+               "a mechanistic measure. ")
+            + f"Resampling the {w['n']} runs, the difference in |rho| between the best plain "
+            f"signal ({lab(bs['best_plain'])}) and the best mechanistic one that uses no "
+            f"future information ({lab(bs['best_mechanistic_leak_free'])}) is "
+            f"{bs['abs_rho_difference']:+.2f}, with a {CI_LEVEL:.0%} bootstrap interval of "
+            f"{lo_:+.2f} to {hi_:+.2f}. "
+            + ("So in this one configuration neither kind ranks the runs detectably better "
+               "than the other; the data cannot show that they are equal either. "
+               if lo_ <= 0 <= hi_ else
+               ("The plain signal ranks the runs better. " if lo_ > 0 else
+                "The mechanistic signal ranks the runs better. "))
+            + "An earlier version of this section claimed the visible quantity could not rank "
+            "the runs; it had looked only at test accuracy.")
     parts.append(
         "Earlier versions of this table were also wrong for a mechanical reason: runs with a "
         "non-zero data seed were analysed on the seed-0 train/test split, which corrupted "
@@ -1133,6 +1387,7 @@ GENERATORS = {
     "load_bearing": load_bearing,
     "redundancy": redundancy,
     "phases": phases,
+    "loss_precision": loss_precision,
     "runtime": runtime,
     "quadratic": quadratic,
     "controls": controls,

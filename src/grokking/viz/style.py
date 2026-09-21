@@ -227,6 +227,7 @@ def save(fig, name: str, outdir: str | Path = "figures", mode: str = "light",
     paths = []
     for ext in formats:
         p = outdir / f"{stem}.{ext}"
-        fig.savefig(p, format=ext)
+        # no creation date in the PDF, so an unchanged figure regenerates byte for byte
+        fig.savefig(p, format=ext, metadata={"CreationDate": None} if ext == "pdf" else None)
         paths.append(p)
     return paths

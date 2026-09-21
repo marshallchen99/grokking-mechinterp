@@ -249,8 +249,8 @@ footer p{ font-size:.86rem; }
       <h1>A network that memorised first, and <span class="hl">learned trigonometry</span> later</h1>
       <p class="lede hero-sub">
         A one-layer transformer is shown part of the addition table mod <span data-meta="p"></span>
-        and asked to fill in the rest. It memorises what it was shown almost at once, does
-        nothing useful on the rest for thousands of steps, and then generalises. This page
+        and asked to fill in the rest. It memorises what it was shown almost at once,
+        improves only slowly on the rest for thousands of steps, and then generalises. This page
         reproduces that and takes the finished network apart, using methods from the
         published work it names as it goes.
       </p>
@@ -298,10 +298,12 @@ footer p{ font-size:.86rem; }
     <p class="eyebrow">03 &middot; the instrument</p>
     <h2 style="max-width:var(--col)">Drag through training and watch the circuit form</h2>
     <p style="max-width:var(--col)">
-      Each of the 113 input symbols gets a 128-dimensional embedding. Take the Fourier
-      transform of that embedding across the 113 symbols and you get 56 frequencies. Below
-      is how the embedding's power is distributed across them, at whatever step you choose.
-      Four bars are coloured: the frequencies the <em>finished</em> model ends up using.
+      Each of the <span data-meta="p"></span> input symbols gets a
+      <span data-meta="d_model"></span>-dimensional embedding. Take the Fourier transform of
+      that embedding across the <span data-meta="p"></span> symbols and you get
+      <span data-meta="n_freqs"></span> frequencies. Below is how the embedding's power is
+      distributed across them, at whatever step you choose. <span data-meta="n_keys"></span>
+      bars are coloured: the frequencies the <em>finished</em> model ends up using.
     </p>
     <figure>
       <div class="panel instrument">
@@ -309,9 +311,9 @@ footer p{ font-size:.86rem; }
           <div><div id="spectrum"></div></div>
           <div class="readouts">
             <div class="ro" id="ro-step"><span class="k">training step</span><span class="v num" id="v-step">0</span></div>
-            <div class="ro" id="ro-test"><span class="k">test accuracy</span><span class="v num" id="v-test">0.8%</span><span class="sub" id="s-test">chance is 0.88%</span></div>
-            <div class="ro" id="ro-key"><span class="k">power on the 4</span><span class="v num" id="v-key">7%</span><span class="sub">of 56 frequencies</span></div>
-            <div class="ro" id="ro-restr"><span class="k">restricted loss</span><span class="v num" id="v-restr">4.73</span><span class="sub">uniform guess is 4.73</span></div>
+            <div class="ro" id="ro-test"><span class="k">test accuracy</span><span class="v num" id="v-test">0.8%</span><span class="sub" id="s-test">chance is <span data-meta="chance_pct"></span></span></div>
+            <div class="ro" id="ro-key"><span class="k">power on the <span data-meta="n_keys"></span></span><span class="v num" id="v-key">7%</span><span class="sub">of <span data-meta="n_freqs"></span> frequencies</span></div>
+            <div class="ro" id="ro-restr"><span class="k">restricted loss</span><span class="v num" id="v-restr">4.73</span><span class="sub">uniform guess is <span data-meta="uniform_loss"></span></span></div>
           </div>
         </div>
         <div class="controls">
@@ -420,9 +422,11 @@ footer p{ font-size:.86rem; }
     <p class="eyebrow">Run configuration</p>
     <div class="kv" id="config-kv"></div>
     <p style="margin-top:1.6rem; color:var(--ink-3); font-size:.82rem">
-      The findings and measured numbers in sections 02 and 04&ndash;10 are rendered from the
-      same generator as the repository README. The chart labels and readouts are computed from
-      the same data; the short introductions to sections 01, 03 and 04 are hand-written.
+      The findings and measured numbers in sections 02 and 04&ndash;09 are rendered from the
+      same generator as the repository README, and section 10 is the README's own
+      hand-written closing section. Every number in the charts, readouts and labels is
+      computed from the same data. The title, the section headings and the short
+      introductions to sections 01, 03 and 04 are hand-written.
     </p>
   </div></div>
 </footer>
@@ -434,6 +438,17 @@ footer p{ font-size:.86rem; }
   var D = JSON.parse(document.getElementById("data").textContent);
   var M = D.meta, FR = D.frames, MECH = D.mechanism, RED = D.redundancy;
   var KEY = D.key_freqs, KEYSET = {}; KEY.forEach(function(k){ KEYSET[k]=1; });
+  var THREADS = M.threads ? M.threads + " CPU threads" : "CPU (thread count not recorded)";
+  // spectrum y-axis cap: the largest share any single frequency reaches in any frame
+  var CAP = (function(){
+    var mx = 0;
+    FR.forEach(function(f){
+      var pw = f.pw.slice(1), tot = 0, j;
+      for (j=0;j<pw.length;j++) tot += pw[j];
+      for (j=0;j<pw.length;j++) if (tot && pw[j]/tot > mx) mx = pw[j]/tot;
+    });
+    return Math.max(0.1, Math.ceil(mx*10)/10);
+  })();
   var NS = "http://www.w3.org/2000/svg";
 
   function el(tag, attrs, text){
@@ -550,14 +565,17 @@ footer p{ font-size:.86rem; }
     var iw = SW-sMargins.l-sMargins.r, ih = SH-sMargins.t-sMargins.b;
     specSvg = el("svg",{viewBox:"0 0 "+SW+" "+SH, role:"img",
                         "aria-label":"share of embedding power by frequency"});
-    [0,0.1,0.2,0.3,0.4].forEach(function(v){
-      var y = sMargins.t + (1-v/0.4)*ih;
+    // y axis: up to the largest single-frequency share any frame reaches, in steps of 10%
+    var ticks = [];
+    for (var t = 0; t <= CAP + 1e-9; t += 0.1) ticks.push(Math.round(t*10)/10);
+    ticks.forEach(function(v){
+      var y = sMargins.t + (1-v/CAP)*ih;
       specSvg.appendChild(el("line",{x1:sMargins.l,x2:sMargins.l+iw,y1:y,y2:y,
                                      stroke:css("--rule"),"stroke-width":1}));
       specSvg.appendChild(el("text",{x:sMargins.l-7,y:y+4,"text-anchor":"end","font-size":"10"},
                              Math.round(v*100)+"%"));
     });
-    var n = 56, bw = iw/n;
+    var n = M.n_freqs, bw = iw/n;
     for (var k=1;k<=n;k++){
       var r = el("rect",{x:(sMargins.l + (k-1)*bw + bw*0.13).toFixed(2), y:sMargins.t+ih,
                          width:Math.max(bw*0.74,1).toFixed(2), height:0,
@@ -580,7 +598,7 @@ footer p{ font-size:.86rem; }
     for (j=0;j<bars.length;j++){
       var share = tot ? pw[j]/tot : 0;
       if (KEYSET[j+1]) keyshare += share;
-      var h = Math.max(0, Math.min(1, share/0.4)) * ih;
+      var h = Math.max(0, Math.min(1, share/CAP)) * ih;
       bars[j].setAttribute("height", h.toFixed(2));
       bars[j].setAttribute("y", (sMargins.t + ih - h).toFixed(2));
     }
@@ -647,7 +665,7 @@ footer p{ font-size:.86rem; }
     var nk = document.getElementById("nkeys"); if (nk) nk.textContent = String(KEY.length);
     var by = document.getElementById("byline");
     [commas(M.n_params) + " parameters", commas(M.n_train) + " training pairs",
-     commas(M.steps) + " steps", Math.round(M.wall_clock_s/60) + " minutes on 6 CPU threads"]
+     commas(M.steps) + " steps", Math.round(M.wall_clock_s/60) + " minutes on " + THREADS]
       .forEach(function(t){ var s = document.createElement("span"); s.textContent = t; by.appendChild(s); });
   })();
 
@@ -657,11 +675,11 @@ footer p{ font-size:.86rem; }
     var rows = [
       ["task", "(" + M.op + ") mod " + M.p],
       ["training data", commas(M.n_train) + " of " + commas(M.n_train+M.n_test) + " pairs (" + pct(M.train_frac,0) + ")"],
-      ["model", "1 layer, d_model 128, 4 heads, MLP 512, no LayerNorm, no biases"],
+      ["model", "1 layer, d_model " + M.d_model + ", " + M.n_heads + " heads, MLP " + M.d_mlp + ", no LayerNorm, no biases"],
       ["parameters", commas(M.n_params)],
-      ["optimiser", "full-batch AdamW, lr 1e-3, weight decay " + M.weight_decay],
+      ["optimiser", "full-batch AdamW, lr " + M.lr + ", weight decay " + M.weight_decay],
       ["steps", commas(M.steps)],
-      ["wall clock", Math.round(M.wall_clock_s/60) + " minutes on 6 CPU threads"],
+      ["wall clock", Math.round(M.wall_clock_s/60) + " minutes on " + THREADS],
       ["key frequencies", KEY.join(", ") + "  (of " + ((M.p - 1) / 2) + ")"]
     ];
     rows.forEach(function(r){
