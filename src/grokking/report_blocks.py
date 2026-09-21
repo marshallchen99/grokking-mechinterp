@@ -519,6 +519,113 @@ def phase_diagram_block(root: Path, _tag: str) -> Optional[str]:
     ] if x)
 
 
+READOUT_RUNS = [
+    ("B_add_s0",     "add", "corrected configuration"),
+    ("B_add_s1",     "add", "corrected, different seed"),
+    ("C_add_nowarm", "add", "corrected but no warmup"),
+    ("C_add_f32",    "add", "corrected but float32 loss -- only that"),
+    ("main_add_s0",  "add", "float32 loss, no warmup, dead W_U column"),
+    ("B_sub_s0",     "sub", "subtraction, corrected configuration"),
+]
+
+
+DISAGREEMENT_RUNS = ["main_add_s0", "B_add_s0", "B_add_s1", "B_sub_s0",
+                     "C_add_f32", "C_add_nowarm"]
+
+
+def disagreement(root: Path, _tag: str) -> Optional[str]:
+    """When the identification rules disagree, what are they disagreeing about?"""
+    rows, hits, total = [], 0, 0
+    for tag in DISAGREEMENT_RUNS:
+        m = load_json(root, f"{tag}_mechanism.json")
+        r = load_json(root, f"{tag}_redundancy.json")
+        if not m:
+            continue
+        k = m["key_freqs"]
+        sets = [set(v) for v in k["by_rule"].values()]
+        union, inter = set().union(*sets), set.intersection(*sets)
+        disputed = sorted(union - inter)
+        red = (r or {}).get("redundant_frequencies", [])
+        match = ""
+        if disputed:
+            total += 1
+            if red and set(disputed) == set(red):
+                hits += 1
+                match = "yes"
+            else:
+                match = "no"
+        rows.append([f"`{tag}`", k["jaccard"], ", ".join(map(str, disputed)) or "none",
+                     ", ".join(map(str, red)) or "--", match or "--"])
+    if not rows:
+        return None
+    tbl = table(["run", "rules' Jaccard", "frequency in dispute",
+                 "frequency the ablation calls redundant", "same one?"], rows)
+    return "\n\n".join([
+        "The three rules agree perfectly on the mainline run, which is the kind of "
+        "result that invites not looking any further. Across the other runs they do "
+        "not always, and the disagreements turn out not to be noise.",
+        tbl,
+        f"In {hits} of the {total} runs where the rules disagreed, the frequency they "
+        "disagreed about is exactly the one the subset ablation -- an entirely separate "
+        "experiment, run on the weights rather than the representation -- identifies as "
+        "redundant." if total else "",
+        "That has a mechanical reading. A passenger frequency is present in the "
+        "embedding, so a rule that measures embedding norm sees it; but it is not doing "
+        "enough work to have neurons dedicated to it above the variance threshold, so "
+        "the clustering rule misses it. The subtraction run is the mirror case -- "
+        "neurons but not norm -- and points at its passenger just the same. "
+        f"With {total} disagreements this is suggestive rather than established, but it "
+        "is a falsifiable claim: disagreement between the rules predicts which "
+        "frequency the model could do without.",
+    ])
+
+
+def readout(root: Path, _tag: str) -> Optional[str]:
+    """The third step of the algorithm, and what the leftover energy is."""
+    rows, have = [], False
+    for tag, op, note in READOUT_RUNS:
+        m = load_json(root, f"{tag}_mechanism.json")
+        if not m or "readout_budget" not in m:
+            continue
+        have = True
+        rb = m["readout_budget"]
+        d = rb.get("direction_used", "sum")
+        b = rb[d]
+        rows.append([f"`{tag}`", note, "(a+b)" if d == "sum" else "(a-b)",
+                     b["own"], b["dc"], b["cross"], b["unexplained"]])
+    if not have:
+        return None
+    tbl = table(["run", "configuration", "direction read", "own frequency",
+                 "constant offset", "cross-talk", "left over"], rows,
+                bold_best={3: "max"})
+    return "\n\n".join([
+        "The mechanism has three steps. Sections above test the first two -- numbers "
+        "become points on a circle, and the layers combine them with the trigonometric "
+        "identity. The third is the readout: the amplitudes of cos(w(a+b)) and "
+        "sin(w(a+b)) have to be *themselves* waves at the same frequency in the answer "
+        "c, which is what turns the sum into a filter peaked at c = a+b.",
+        "Reporting one number for that hides what the remainder is. It splits into "
+        "named parts: energy at the frequency the algorithm predicts; a constant offset, "
+        "which is a per-answer logit bias rather than a broken wave; and energy at "
+        "*another* key frequency, meaning two of the circuits interfere.",
+        tbl,
+        "**In every clean run the third step is essentially exact** -- 0.998 and 0.999 "
+        "for the two corrected addition runs, and 0.990 for subtraction once it is read "
+        "in the direction that model actually uses. Reading subtraction in the (a+b) "
+        "direction instead returns 0.37, which is not a finding about subtraction but "
+        "about looking in the wrong place; the same signature appears for multiplication "
+        "in the ordinary basis.",
+        "**The exception is instructive.** The two runs with a float32 loss are the two "
+        "that carry a constant offset -- around a tenth of the readout energy -- and "
+        "changing only the loss precision reproduces it. Float32 does not slow grokking, "
+        "which the controlled comparison already showed. What it does is stop the "
+        "cleanup: once the training loss reaches the float32 floor at 1.2e-7 the "
+        "gradient that would have removed the leftover bias is gone, so the bias "
+        "survives into the final model. The model still reaches 100% accuracy; its "
+        "internal structure is simply measurably less clean.",
+    ])
+
+
 def prediction(root: Path, _tag: str) -> Optional[str]:
     """Can an early signal forecast whether, and when, a run will grok?"""
     d = load_json(root, "prediction_summary.json")
@@ -740,6 +847,8 @@ GENERATORS = {
     "controls": controls,
     "load_bearing": load_bearing,
     "prediction": prediction,
+    "readout": readout,
+    "disagreement": disagreement,
     "replicates": replicates,
 }
 

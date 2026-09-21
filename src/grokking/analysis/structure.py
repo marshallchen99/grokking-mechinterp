@@ -135,3 +135,56 @@ def trig_identity_report(logits: torch.Tensor, F: torch.Tensor, p: int,
     out["mean_sum_frac"] = sum(fr) / len(fr) if fr else 0.0
     out["mean_readout_frac"] = sum(rd) / len(rd) if rd else 0.0
     return out
+
+
+def readout_budget(logits: torch.Tensor, F: torch.Tensor, p: int, freqs: List[int],
+                   sign: int = +1) -> Dict[str, float]:
+    """Where the third step of the algorithm's energy actually goes.
+
+    `trig_identity_report` checks the first two steps -- that each frequency's
+    dependence on (a, b) is a function of (a+b) rather than (a-b).  The third
+    step is the readout: the claim that the amplitudes A(c) and B(c) of
+    cos(w(a+b)) and sin(w(a+b)) are themselves waves at the same frequency in
+    the answer c, which is what makes the sum a matched filter peaked at
+    c = a + b.
+
+    Reporting a single "fraction at frequency k" for that hides what the rest
+    is.  It splits cleanly into three named things:
+
+        own        the wave the algorithm predicts
+        dc         a constant offset in A(c) or B(c), which is a per-answer
+                   logit bias rather than a failure of the wave structure
+        cross      energy at a DIFFERENT key frequency -- the circuits for two
+                   frequencies interfering with each other
+
+    and whatever is left over. `sign=-1` reads the (a-b) amplitudes instead,
+    which is the direction a subtraction model uses; reading a model in the
+    wrong direction returns noise, and that is itself diagnostic.
+    """
+    from .spectra import block_indices
+    from ..fourier import frequency_of_index
+
+    C = fourier_2d(logits.to(F.dtype), F)
+    keys = set(freqs)
+    tot = own = dc = cross = 0.0
+    for k in freqs:
+        ck, sk = block_indices(k, p)
+        if ck == sk:                      # Nyquist has no sine partner
+            continue
+        cc, cs, sc, ss = C[ck, ck], C[ck, sk], C[sk, ck], C[sk, sk]
+        if sign > 0:
+            A, B = (cc - ss) / 2, (sc + cs) / 2
+        else:
+            A, B = (cc + ss) / 2, (sc - cs) / 2
+        e = fourier_1d(torch.stack([A, B]), F, dim=1).pow(2).sum(0)
+        tot += float(e.sum())
+        own += float(e[ck] + e[sk])
+        dc += float(e[0])
+        for i in range(1, p):
+            f = frequency_of_index(i)
+            if f in keys and f != k:
+                cross += float(e[i])
+    if tot <= 0:
+        return {"own": 0.0, "dc": 0.0, "cross": 0.0, "unexplained": 1.0}
+    return {"own": own / tot, "dc": dc / tot, "cross": cross / tot,
+            "unexplained": max(0.0, 1.0 - (own + dc + cross) / tot)}

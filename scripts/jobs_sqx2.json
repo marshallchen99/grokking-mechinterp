@@ -1,0 +1,34 @@
+[
+ {
+  "tag": "Q_sqx_p59",
+  "op": "sq_sum_cross",
+  "p": 59,
+  "steps": 60000,
+  "weight_decay": 1.0,
+  "train_frac": 0.5,
+  "model_seed": 0,
+  "data_seed": 0,
+  "n_log_checkpoints": 70,
+  "dense_from": 2000,
+  "dense_to": 50000,
+  "dense_every": 1000,
+  "threads": 3,
+  "log_every": 50
+ },
+ {
+  "tag": "Q_sqx_p61",
+  "op": "sq_sum_cross",
+  "p": 61,
+  "steps": 60000,
+  "weight_decay": 1.0,
+  "train_frac": 0.5,
+  "model_seed": 0,
+  "data_seed": 0,
+  "n_log_checkpoints": 70,
+  "dense_from": 2000,
+  "dense_to": 50000,
+  "dense_every": 1000,
+  "threads": 3,
+  "log_every": 50
+ }
+]

@@ -31,7 +31,7 @@ from grokking.analysis.progress import (                       # noqa: E402
 )
 from grokking.analysis.spectra import key_freqs_consensus      # noqa: E402
 from grokking.analysis.structure import (                      # noqa: E402
-    additive_structure, trig_identity_report,
+    additive_structure, readout_budget, trig_identity_report,
 )
 from grokking.data import make_dataset                         # noqa: E402
 from grokking.fourier import make_fourier_basis                # noqa: E402
@@ -104,6 +104,17 @@ def main():
                               "readout_frac": v["readout_frac"]}
                      for k, v in trig["per_freq"].items()},
     }
+    # The readout is read in whichever direction this model actually uses;
+    # reading it in the wrong one returns noise, which is why both are recorded.
+    out["readout_budget"] = {
+        "sum": readout_budget(snap.logits, F, p, K, sign=+1),
+        "diff": readout_budget(snap.logits, F, p, K, sign=-1),
+    }
+    best = max(("sum", "diff"), key=lambda kk: out["readout_budget"][kk]["own"])
+    out["readout_budget"]["direction_used"] = best
+    print(f"  readout budget ({best}): own {out['readout_budget'][best]['own']:.4f} "
+          f"dc {out['readout_budget'][best]['dc']:.4f} "
+          f"cross {out['readout_budget'][best]['cross']:.4f}", flush=True)
     print(f"  (a+b) variance {out['structure']['a+b']:.4f}; "
           f"trig sum-fraction {trig['mean_sum_frac']:.4f}", flush=True)
 
