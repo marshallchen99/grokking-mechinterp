@@ -1,6 +1,6 @@
 {
  "_provenance": {
-  "commit": "6712242f48cfa1302d68db0ac7ec8205310f98a1",
+  "commit": "ef15c71c2ffac15f587caa40da5ad5748b54e410",
   "code_modified": false,
   "argv": [
    "scripts/record_splits.py",
@@ -11,564 +11,350 @@
   "torch": "2.12.0+cpu",
   "python": "3.13.12"
  },
+ "loss_rtol": 0.001,
  "runs": {
   "B_add_s0": {
    "split_hash": "aec84ad3dac16b13",
    "checked_at_step": 40000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.9919605303746536e-09,
+   "other_split_loss_rel_diff": 1.980478634270013,
    "matches": true
   },
   "B_add_s1": {
    "split_hash": "150720ca43e3a594",
    "checked_at_step": 30000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 6.265953137526014e-09,
+   "other_split_loss_rel_diff": 0.42426525698642414,
    "matches": true
   },
   "B_mul_s0": {
    "split_hash": "aec84ad3dac16b13",
    "checked_at_step": 40000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 3.314102590826921e-09,
+   "other_split_loss_rel_diff": 0.6211272328321539,
    "matches": true
   },
   "B_sqx_p109": {
    "split_hash": "ef4f0d22a6090e49",
    "checked_at_step": 30000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    0.08933509886264801,
-    0.08933509886264801
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.4621803730072332e-08,
+   "other_split_loss_rel_diff": 67515541.54541324,
    "matches": true
   },
   "B_sqx_p113": {
    "split_hash": "aec84ad3dac16b13",
    "checked_at_step": 30000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    0.11377111822366714,
-    0.11377111822366714
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.4770628880663577e-09,
+   "other_split_loss_rel_diff": 63378759.08418047,
    "matches": true
   },
   "B_sub_s0": {
    "split_hash": "aec84ad3dac16b13",
    "checked_at_step": 30000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.7774423264060134e-09,
+   "other_split_loss_rel_diff": 0.23653713759819228,
    "matches": true
   },
   "C_add_f32": {
    "split_hash": "aec84ad3dac16b13",
    "checked_at_step": 25000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    0.9997762441635132,
-    0.9997762441635132
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.7400221442046828e-10,
+   "other_split_loss_rel_diff": 244.59036462787824,
    "matches": true
   },
   "C_add_nowarm": {
    "split_hash": "aec84ad3dac16b13",
    "checked_at_step": 25000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 8.04729010908735e-10,
+   "other_split_loss_rel_diff": 1.2759305064292166,
    "matches": true
   },
   "F_seed10": {
    "split_hash": "03dfc5d200379f83",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 3.932500674509124e-09,
+   "other_split_loss_rel_diff": 3.1884644552423627,
    "matches": true
   },
   "F_seed11": {
    "split_hash": "bca034a3354b4a25",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 8.635483311282444e-09,
+   "other_split_loss_rel_diff": 0.6355514509073638,
    "matches": true
   },
   "F_seed12": {
    "split_hash": "4e29359c5e9df507",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.8247894997672348e-09,
+   "other_split_loss_rel_diff": 0.5805865043963094,
    "matches": true
   },
   "F_seed13": {
    "split_hash": "9f1d1e5193583433",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    0.9965537190437317,
-    0.9965537190437317
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 6.3193362372099355e-09,
+   "other_split_loss_rel_diff": 182637.10341694346,
    "matches": true
   },
   "F_seed14": {
    "split_hash": "bf7d8057c2afb800",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 4.658397608242393e-10,
+   "other_split_loss_rel_diff": 4.969341063420957,
    "matches": true
   },
   "F_seed15": {
    "split_hash": "c00b265fce817844",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 6.178588714769899e-09,
+   "other_split_loss_rel_diff": 6.2495088991660515,
    "matches": true
   },
   "F_seed16": {
    "split_hash": "dc440ed0e4951d97",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.0901959574262536e-08,
+   "other_split_loss_rel_diff": 0.44632485587711723,
    "matches": true
   },
   "F_seed17": {
    "split_hash": "54d2cc1839edad28",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.764588689839416e-09,
+   "other_split_loss_rel_diff": 7.787069375572924,
    "matches": true
   },
   "F_seed18": {
    "split_hash": "c020a90f735a577d",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 2.111925680717882e-09,
+   "other_split_loss_rel_diff": 3.2467838066238706,
    "matches": true
   },
   "F_seed19": {
    "split_hash": "c308a7accc3f0894",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 4.128486972164089e-09,
+   "other_split_loss_rel_diff": 134.38380138877,
    "matches": true
   },
   "F_seed20": {
    "split_hash": "a1824ae5f906be02",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 3.132736344056354e-09,
+   "other_split_loss_rel_diff": 1.5581676526295993,
    "matches": true
   },
   "F_seed21": {
    "split_hash": "f6c9a0e27eaf027d",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 3.287764087848574e-09,
+   "other_split_loss_rel_diff": 2.3519440368121662,
    "matches": true
   },
   "F_seed22": {
    "split_hash": "c09a29734223815c",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 7.789117695398352e-09,
+   "other_split_loss_rel_diff": 0.5727258782181592,
    "matches": true
   },
   "F_seed23": {
    "split_hash": "8674a482764df4df",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    0.9965537190437317,
-    0.9965537190437317
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 8.198984522747679e-10,
+   "other_split_loss_rel_diff": 284581.19332357374,
    "matches": true
   },
   "F_seed24": {
    "split_hash": "9ab01b586b3a76a6",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 4.129290563229674e-09,
+   "other_split_loss_rel_diff": 0.6552540933753049,
    "matches": true
   },
   "F_seed25": {
    "split_hash": "506a850fb5229246",
    "checked_at_step": 6000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 8.750703874457702e-09,
+   "other_split_loss_rel_diff": 40.14498004662366,
    "matches": true
   },
   "Q_sqx_p59": {
    "split_hash": "fee1e06f1601356c",
    "checked_at_step": 60000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    0.49511775374412537,
-    0.49511775374412537
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 5.629919739556652e-09,
+   "other_split_loss_rel_diff": 54063134.45115577,
    "matches": true
   },
   "Q_sqx_p61": {
    "split_hash": "8e72a5a262026cd6",
    "checked_at_step": 60000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    0.4970445930957794,
-    0.4970445930957794
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 2.2218860230456332e-09,
+   "other_split_loss_rel_diff": 50021591.30771573,
    "matches": true
   },
   "R_p59_wd0.1_f0.5_s1": {
    "split_hash": "875ce5d0a2a953ae",
    "checked_at_step": 12000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    0.7869040966033936,
-    0.7869040966033936
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.0895431033278418e-08,
+   "other_split_loss_rel_diff": 84458692.45260811,
    "matches": true
   },
   "R_p59_wd0.3_f0.5_s1": {
    "split_hash": "875ce5d0a2a953ae",
    "checked_at_step": 12000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 5.7576914149394835e-09,
+   "other_split_loss_rel_diff": 1.4122976676745995,
    "matches": true
   },
   "R_p59_wd1.0_f0.5_s1": {
    "split_hash": "875ce5d0a2a953ae",
    "checked_at_step": 12000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.31750556347235e-08,
+   "other_split_loss_rel_diff": 0.8193832338488685,
    "matches": true
   },
   "R_p59_wd3.0_f0.5_s1": {
    "split_hash": "875ce5d0a2a953ae",
    "checked_at_step": 12000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 2.7172579862749385e-08,
+   "other_split_loss_rel_diff": 0.4492539388042542,
    "matches": true
   },
   "S_p59_wd0.1_f0.25": {
    "split_hash": "446dfee61462cbe2",
    "checked_at_step": 20000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    0.00880888570100069,
-    0.00880888570100069
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 3.5547834423522914e-08,
+   "other_split_loss_rel_diff": 3000826350.310122,
    "matches": true
   },
   "S_p59_wd0.1_f0.35": {
    "split_hash": "5625c02abae81000",
    "checked_at_step": 20000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    0.045514803379774094,
-    0.045514803379774094
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.072532983006823e-08,
+   "other_split_loss_rel_diff": 1739883999.0228586,
    "matches": true
   },
   "S_p59_wd0.1_f0.5": {
    "split_hash": "fee1e06f1601356c",
    "checked_at_step": 20000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.8274548832727355e-09,
+   "other_split_loss_rel_diff": 30.425213226575156,
    "matches": true
   },
   "S_p59_wd0.3_f0.25": {
    "split_hash": "446dfee61462cbe2",
    "checked_at_step": 20000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    0.00880888570100069,
-    0.00880888570100069
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.2895497447022594e-08,
+   "other_split_loss_rel_diff": 901401737.4331826,
    "matches": true
   },
   "S_p59_wd0.3_f0.35": {
    "split_hash": "5625c02abae81000",
    "checked_at_step": 20000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    0.05435262992978096,
-    0.05435262992978096
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.4562885795097388e-08,
+   "other_split_loss_rel_diff": 504618588.30557525,
    "matches": true
   },
   "S_p59_wd0.3_f0.5": {
    "split_hash": "fee1e06f1601356c",
    "checked_at_step": 20000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 3.0030169660453498e-09,
+   "other_split_loss_rel_diff": 1.3765713868673985,
    "matches": true
   },
   "S_p59_wd1.0_f0.25": {
    "split_hash": "446dfee61462cbe2",
    "checked_at_step": 20000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    0.013021830469369888,
-    0.013021830469369888
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.7426960382795475e-08,
+   "other_split_loss_rel_diff": 223157927.38033274,
    "matches": true
   },
   "S_p59_wd1.0_f0.35": {
    "split_hash": "5625c02abae81000",
    "checked_at_step": 20000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    0.16526734828948975,
-    0.16526734828948975
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.3227095221597216e-09,
+   "other_split_loss_rel_diff": 81854536.57149315,
    "matches": true
   },
   "S_p59_wd1.0_f0.5": {
    "split_hash": "fee1e06f1601356c",
    "checked_at_step": 20000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 2.7795301061826724e-09,
+   "other_split_loss_rel_diff": 1.1694583301803079,
    "matches": true
   },
   "S_p59_wd3.0_f0.25": {
    "split_hash": "446dfee61462cbe2",
    "checked_at_step": 20000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    0.009957870468497276,
-    0.009957870468497276
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.1303175626465971e-08,
+   "other_split_loss_rel_diff": 49144366.45558794,
    "matches": true
   },
   "S_p59_wd3.0_f0.35": {
    "split_hash": "5625c02abae81000",
    "checked_at_step": 20000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 1.4748458232279118e-09,
+   "other_split_loss_rel_diff": 28.26679705803559,
    "matches": true
   },
   "S_p59_wd3.0_f0.5": {
    "split_hash": "fee1e06f1601356c",
    "checked_at_step": 20000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": false,
+   "loss_rel_diff": 3.0703901063356797e-09,
+   "other_split_loss_rel_diff": 1.0376005417016116,
    "matches": true
   },
   "main_add_s0": {
    "split_hash": "aec84ad3dac16b13",
    "checked_at_step": 40000,
-   "train_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
-   "test_acc_logged_vs_rebuilt": [
-    1.0,
-    1.0
-   ],
+   "logged_in_float32": true,
+   "loss_rel_diff": 0.0,
+   "other_split_loss_rel_diff": 19.327009209303636,
    "matches": true
   }
  }
