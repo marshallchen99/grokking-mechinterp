@@ -21,8 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from grokking.analysis.core import checkpoint_paths, load_snapshot   # noqa: E402
-from grokking.data import make_dataset
-from grokking.runinfo import run_config, run_dataset  # noqa: E402                               # noqa: E402
+from grokking.runinfo import provenance, run_config, run_dataset   # noqa: E402
 
 
 def main():
@@ -141,7 +140,7 @@ def main():
               f"{rec['acc_where_forms_coincide']:.4f} ({rec['n_coincide']} pairs)", flush=True)
 
     path = root / "results" / "quadratic_form.json"
-    path.write_text(json.dumps(out, indent=1))
+    path.write_text(json.dumps({"_provenance": provenance(root), "runs": out}, indent=1))
     print(f"wrote {path}")
 
 

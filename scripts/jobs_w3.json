@@ -17,6 +17,7 @@
   "model_seed": 0,
   "data_seed": 0,
   "threads": 5,
-  "dense_to": 25000
+  "dense_to": 25000,
+  "d_vocab_out": 113
  }
 ]

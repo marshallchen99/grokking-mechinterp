@@ -39,7 +39,7 @@ from grokking.analysis.structure import (                            # noqa: E40
 )
 from grokking.data import make_dataset                               # noqa: E402
 from grokking.fourier import make_fourier_basis
-from grokking.runinfo import run_config, run_dataset                      # noqa: E402
+from grokking.runinfo import provenance, run_config, run_dataset          # noqa: E402
 
 
 def analyse_one(snap, F, key_freqs, p, with_neurons=True):
@@ -97,6 +97,8 @@ def _write(out_path, args, key_freqs, cons, final, final_spec, rows, complete=Fa
     """
     out_path.write_text(json.dumps({
         "complete": complete,
+        "_provenance": provenance(args.root),
+        "with_neurons": not args.no_neurons,
         "n_checkpoints_analysed": len(rows),
         "tag": args.tag, "op": args.op, "p": args.p,
         "key_freqs": key_freqs,
@@ -117,8 +119,6 @@ def main():
     ap.add_argument("--p", type=int, default=None)
     ap.add_argument("--train-frac", type=float, default=None)
     ap.add_argument("--every", type=int, default=1)
-    ap.add_argument("--key-method", default="gap", choices=["gap", "topk", "zscore"])
-    ap.add_argument("--key-k", type=int, default=5)
     ap.add_argument("--no-neurons", action="store_true")
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--root", default=str(ROOT))

@@ -126,6 +126,17 @@ class ModularDataset:
     def all(self) -> Tuple[torch.Tensor, torch.Tensor]:
         return self.inputs, self.labels
 
+    def split_hash(self) -> str:
+        """Fingerprint of the train/test split.
+
+        The split is not stored; it is rebuilt from (p, op, train_frac, seed)
+        through torch.randperm.  If a torch version ever changed randperm's
+        output, every analysis of a shipped checkpoint would silently use a
+        different split, so the fingerprint is recorded and checked.
+        """
+        import hashlib
+        return hashlib.sha256(self.train_idx.to(torch.int64).numpy().tobytes()).hexdigest()[:16]
+
     def train_mask(self) -> torch.Tensor:
         """(p, p) bool grid, True where the pair is in the training set."""
         mask = torch.zeros(self.p * self.p, dtype=torch.bool)

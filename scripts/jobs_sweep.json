@@ -13,7 +13,8 @@
   "dense_to": 18000,
   "dense_every": 500,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  },
  {
   "tag": "S_p59_wd0.1_f0.35",
@@ -29,7 +30,8 @@
   "dense_to": 18000,
   "dense_every": 500,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  },
  {
   "tag": "S_p59_wd0.1_f0.5",
@@ -45,7 +47,8 @@
   "dense_to": 18000,
   "dense_every": 500,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  },
  {
   "tag": "S_p59_wd0.3_f0.25",
@@ -61,7 +64,8 @@
   "dense_to": 18000,
   "dense_every": 500,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  },
  {
   "tag": "S_p59_wd0.3_f0.35",
@@ -77,7 +81,8 @@
   "dense_to": 18000,
   "dense_every": 500,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  },
  {
   "tag": "S_p59_wd0.3_f0.5",
@@ -93,7 +98,8 @@
   "dense_to": 18000,
   "dense_every": 500,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  },
  {
   "tag": "S_p59_wd1.0_f0.25",
@@ -109,7 +115,8 @@
   "dense_to": 18000,
   "dense_every": 500,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  },
  {
   "tag": "S_p59_wd1.0_f0.35",
@@ -125,7 +132,8 @@
   "dense_to": 18000,
   "dense_every": 500,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  },
  {
   "tag": "S_p59_wd1.0_f0.5",
@@ -141,7 +149,8 @@
   "dense_to": 18000,
   "dense_every": 500,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  },
  {
   "tag": "S_p59_wd3.0_f0.25",
@@ -157,7 +166,8 @@
   "dense_to": 18000,
   "dense_every": 500,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  },
  {
   "tag": "S_p59_wd3.0_f0.35",
@@ -173,7 +183,8 @@
   "dense_to": 18000,
   "dense_every": 500,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  },
  {
   "tag": "S_p59_wd3.0_f0.5",
@@ -189,6 +200,7 @@
   "dense_to": 18000,
   "dense_every": 500,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  }
 ]

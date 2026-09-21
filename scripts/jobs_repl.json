@@ -13,7 +13,8 @@
   "dense_to": 12000,
   "dense_every": 400,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  },
  {
   "tag": "R_p59_wd0.3_f0.5_s1",
@@ -29,7 +30,8 @@
   "dense_to": 12000,
   "dense_every": 400,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  },
  {
   "tag": "R_p59_wd1.0_f0.5_s1",
@@ -45,7 +47,8 @@
   "dense_to": 12000,
   "dense_every": 400,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  },
  {
   "tag": "R_p59_wd3.0_f0.5_s1",
@@ -61,6 +64,7 @@
   "dense_to": 12000,
   "dense_every": 400,
   "threads": 3,
-  "log_every": 20
+  "log_every": 20,
+  "d_vocab_out": 113
  }
 ]

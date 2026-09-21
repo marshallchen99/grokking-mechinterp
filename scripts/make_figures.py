@@ -84,12 +84,21 @@ def main():
         if analysis and analysis.get("complete") and hist:
             pb = phase_boundaries(hist["history"])
             g = int(pb["grokking_step"]) if pb["grokking_step"] else None
-            mem = int(pb["memorisation_step"]) if pb["memorisation_step"] else 200
-            fig = progress_panel(analysis["rows"], mode=mode, grok_step=g,
-                                 phases={"memorisation": (0, mem),
-                                         "circuit formation": (mem, int(g * 0.9) if g else 13000),
-                                         "cleanup": (int(g * 0.9) if g else 13000,
-                                                     int(g * 1.15) if g else 16500)})
+            # Only measured events are shaded: memorisation (training accuracy
+            # reaches 99%) and the rise of test accuracy from 10% to 90%.
+            # Nanda et al.'s circuit-formation / cleanup boundary is not located
+            # on this run by any measurement here, so it is not drawn.  (An
+            # earlier version drew it at hand-picked fractions of the grokking
+            # step.)
+            from grokking.analysis.timing import crossing_step
+            mem = pb["memorisation_step"]
+            t10 = crossing_step(hist["history"], "test_acc", 0.10)
+            phases = {}
+            if mem:
+                phases["memorised"] = (0, int(mem))
+            if t10 and g:
+                phases["test accuracy 10% to 90%"] = (int(t10), g)
+            fig = progress_panel(analysis["rows"], mode=mode, grok_step=g, phases=phases)
             save(fig, "fig3_progress_measures", figs, mode=mode); made.append("fig3")
         else:
             skipped.append("fig3 (trajectory analysis incomplete)")

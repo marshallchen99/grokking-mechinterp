@@ -25,8 +25,7 @@ from grokking.analysis.ablation import (                      # noqa: E402
 )
 from grokking.analysis.core import checkpoint_paths, load_snapshot  # noqa: E402
 from grokking.analysis.spectra import key_freqs_consensus     # noqa: E402
-from grokking.data import make_dataset
-from grokking.runinfo import run_config, run_dataset  # noqa: E402                        # noqa: E402
+from grokking.runinfo import provenance, run_config, run_dataset   # noqa: E402
 from grokking.fourier import make_fourier_basis               # noqa: E402
 
 
@@ -77,7 +76,8 @@ def main():
     minimal = min((r["size"] for r in good), default=None)
     out = {
         "tag": args.tag, "step": snap.step, "key_freqs": K,
-        "threshold": args.threshold,
+        "_provenance": provenance(root),
+        "threshold": args.threshold, "max_subsets": args.max_subsets,
         "rows": rows,
         "sufficient_subsets": [r["subset"] for r in good],
         "minimal_size": minimal,

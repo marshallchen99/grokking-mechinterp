@@ -13,7 +13,8 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  },
  {
   "tag": "F_seed11",
@@ -29,7 +30,8 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  },
  {
   "tag": "F_seed12",
@@ -45,7 +47,8 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  },
  {
   "tag": "F_seed13",
@@ -61,7 +64,8 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  },
  {
   "tag": "F_seed14",
@@ -77,7 +81,8 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  },
  {
   "tag": "F_seed15",
@@ -93,7 +98,8 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  },
  {
   "tag": "F_seed16",
@@ -109,7 +115,8 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  },
  {
   "tag": "F_seed17",
@@ -125,7 +132,8 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  },
  {
   "tag": "F_seed18",
@@ -141,7 +149,8 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  },
  {
   "tag": "F_seed19",
@@ -157,7 +166,8 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  },
  {
   "tag": "F_seed20",
@@ -173,7 +183,8 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  },
  {
   "tag": "F_seed21",
@@ -189,7 +200,8 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  },
  {
   "tag": "F_seed22",
@@ -205,7 +217,8 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  },
  {
   "tag": "F_seed23",
@@ -221,7 +234,8 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  },
  {
   "tag": "F_seed24",
@@ -237,7 +251,8 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  },
  {
   "tag": "F_seed25",
@@ -253,6 +268,7 @@
   "dense_to": 4000,
   "dense_every": 100,
   "threads": 3,
-  "log_every": 10
+  "log_every": 10,
+  "d_vocab_out": 113
  }
 ]

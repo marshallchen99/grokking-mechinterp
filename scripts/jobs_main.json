@@ -1,0 +1,13 @@
+[
+ {
+  "tag": "main_add_s0",
+  "op": "add",
+  "steps": 40000,
+  "model_seed": 0,
+  "data_seed": 0,
+  "loss_dtype": "float32",
+  "warmup_steps": 0,
+  "d_vocab_out": 114,
+  "threads": 6
+ }
+]

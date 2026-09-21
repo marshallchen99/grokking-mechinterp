@@ -15,6 +15,12 @@ Two questions, kept separate because they have different sample sizes:
 
 Both are reported with the number of runs behind them, because that number is
 small and the reader has to be able to discount accordingly.
+
+Only the second is used in the write-up.  The classification across
+configurations is computed and saved (``at_steps``) but not reported: which runs
+fail to grok is decided mostly by the training fraction and the operation, so a
+signal that merely tracks those scores well.  It is kept so that the tests run
+on these data are all visible.
 """
 from __future__ import annotations
 
@@ -29,6 +35,10 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from grokking.analysis.timing import crossing_step     # noqa: E402
 from grokking.report import is_finished                # noqa: E402
+from grokking.runinfo import provenance                # noqa: E402
+
+PLAIN = {"train_loss", "test_loss", "test_acc", "weight_norm"}   # no mechanism needed
+BOOT_DRAWS = 10_000
 
 FEATURES = [
     # Everything a forecast may use must be computable from TRAINING pairs, or
@@ -79,41 +89,6 @@ def spearman(x, y):
     return num / (dx * dy) if dx and dy else None
 
 
-def spearman_p_two_tailed(rho, n):
-    """Two-tailed p for a Spearman coefficient, via the t approximation.
-
-    Two-tailed because the table reports signals in both directions; a one-
-    tailed test would need the direction fixed in advance for every signal.
-    """
-    import math
-    if rho is None or n < 4:
-        return None
-    if abs(rho) >= 1:
-        return 0.0
-    t = abs(rho) * math.sqrt((n - 2) / (1 - rho * rho))
-    df = n - 2
-    # survival function of Student's t, by numerical integration of the pdf
-    c = math.exp(math.lgamma((df + 1) / 2) - math.lgamma(df / 2)) / math.sqrt(df * math.pi)
-    hi, N = t + 60.0, 60000
-    h = (hi - t) / N
-    area = sum(c * (1 + (t + i * h) ** 2 / df) ** (-(df + 1) / 2) * (0.5 if i in (0, N) else 1)
-               for i in range(N + 1)) * h
-    return min(1.0, 2 * area)
-
-
-def critical_rho(n, alpha):
-    """Smallest |rho| that is significant at two-tailed level alpha."""
-    lo, hi = 0.0, 0.999999
-    for _ in range(60):
-        mid = (lo + hi) / 2
-        pv = spearman_p_two_tailed(mid, n)
-        if pv is not None and pv < alpha:
-            hi = mid
-        else:
-            lo = mid
-    return hi
-
-
 def permutation_null(n, draws=200_000, seed=0):
     """|rho| under the null of no association, by Monte Carlo over permutations.
 
@@ -136,6 +111,28 @@ def perm_p_two_tailed(rho, null):
         return None
     k = len(null) - np.searchsorted(null, abs(rho) - 1e-12, side="left")
     return float((k + 1) / (len(null) + 1))
+
+
+def bootstrap_rhos(xs_by_key, ys, draws=BOOT_DRAWS, seed=0):
+    """Spearman rho of every signal on the same bootstrap resamples of the runs.
+
+    Resampling runs (not signals) keeps the pairing, so differences between two
+    signals' coefficients get an honest interval.  Returns {key: array of rho}.
+    """
+    import numpy as np
+    rng = np.random.default_rng(seed)
+    n = len(ys)
+    idx = rng.integers(0, n, size=(draws, n))
+    out = {k: np.full(draws, np.nan) for k in xs_by_key}
+    ys = list(ys)
+    for d in range(draws):
+        ii = idx[d]
+        yy = [ys[i] for i in ii]
+        for k, xs in xs_by_key.items():
+            r = spearman([xs[i] for i in ii], yy)
+            if r is not None:
+                out[k][d] = r
+    return out
 
 
 def perm_critical(null, alpha):
@@ -235,13 +232,21 @@ def main():
         groups.setdefault((r["op"], r["p"], r["frac"], r["wd"], r["budget"]), []).append(r)
     best = max(groups.items(), key=lambda kv: sum(not x["censored"] for x in kv[1]))
     cfg, members = best
+    censored_members = [m["tag"] for m in members if m["censored"]]
     members = [m for m in members if not m["censored"]]
+    # runs of the same configuration left out only because their budget differs
+    other_budget = [{"tag": r["tag"], "budget": r["budget"], "grok": r["grok"]}
+                    for r in runs if (r["op"], r["p"], r["frac"], r["wd"]) == cfg[:4]
+                    and r["budget"] != cfg[4]]
     if len(members) >= 4:
         members.sort(key=lambda m: m["grok"])
         within = {"config": {"op": cfg[0], "p": cfg[1], "train_frac": cfg[2],
                              "weight_decay": cfg[3], "budget": cfg[4]},
                   "n": len(members),
                   "runs": [{"tag": m["tag"], "grok": m["grok"]} for m in members],
+                  # A censored member would be dropped by its outcome; say so.
+                  "censored_members_dropped": censored_members,
+                  "excluded_other_budget": other_budget,
                   "at_steps": {}}
         print(f"=== within one configuration: {cfg[0]}, p={cfg[1]}, frac={cfg[2]}, wd={cfg[3]}, budget={cfg[4]} "
               f"({len(members)} runs, only the random draw differs) ===")
@@ -256,8 +261,7 @@ def main():
                     xs.append(row[key]); ys.append(m["grok"])
                 rho = spearman(xs, ys) if len(xs) >= 3 else None
                 if rho is not None:
-                    rec[key] = {"label": label, "rho": rho,
-                                "p_two_tailed": spearman_p_two_tailed(rho, len(xs))}
+                    rec[key] = {"label": label, "rho": rho, "n": len(xs)}
             within["at_steps"][str(at)] = rec
             accs = [min(m["rows"], key=lambda x: abs(x["step"] - at))["test_acc"] for m in members]
             within.setdefault("test_acc_at_step", {})[str(at)] = {
@@ -274,26 +278,66 @@ def main():
         # actually reported: readings before the earliest transition only.  A
         # reading after some run has grokked measures the outcome and is not
         # shown, so it must not inflate the denominator either.
+        #
+        # That family was chosen after the results were seen.  The first version
+        # corrected over every test computed, at every step; both are recorded
+        # so the write-up can say what the narrowing changed.
         earliest = min(m["grok"] for m in members)
         reported = [s for s in within["at_steps"] if int(s) < earliest]
-        null = permutation_null(len(members))
+        nulls = {}
+
+        def null_for(n):
+            if n not in nulls:
+                nulls[n] = permutation_null(n)
+            return nulls[n]
+
         n_tests = sum(len(within["at_steps"][s]) for s in reported)
-        alpha = 0.05 / max(n_tests, 1)
+        n_all = sum(len(r) for r in within["at_steps"].values())
+        alpha, alpha_all = 0.05 / max(n_tests, 1), 0.05 / max(n_all, 1)
         for at, rec in within["at_steps"].items():
             for v in rec.values():
-                v["p_two_tailed"] = perm_p_two_tailed(v["rho"], null)
-                v["survives_bonferroni"] = (at in reported and v["p_two_tailed"] is not None
-                                            and v["p_two_tailed"] < alpha)
+                v["p_two_tailed"] = perm_p_two_tailed(v["rho"], null_for(v["n"]))
+                v["survives_bonferroni"] = (at in reported and v["p_two_tailed"] < alpha)
+                v["survives_bonferroni_all_computed"] = v["p_two_tailed"] < alpha_all
+        null = null_for(len(members))
         within["bonferroni"] = {
             "n_tests": n_tests, "alpha": alpha, "reported_steps": reported,
             "method": f"two-tailed permutation test, {len(null):,} draws",
-            "critical_rho_two_tailed": perm_critical(null, alpha)}
+            "critical_rho_two_tailed": perm_critical(null, alpha),
+            "all_computed": {"n_tests": n_all, "alpha": alpha_all,
+                             "critical_rho_two_tailed": perm_critical(null, alpha_all)}}
+
+        # How precisely are the coefficients known?  Bootstrap the runs and
+        # compare the best plain signal with the best mechanistic one.
+        import numpy as np
+        within["bootstrap"] = {}
+        for at in reported:
+            rec = within["at_steps"][at]
+            xs_by_key = {}
+            for key in rec:
+                xs = [min(m["rows"], key=lambda x: abs(x["step"] - int(at)))[key] for m in members]
+                xs_by_key[key] = xs
+            boot = bootstrap_rhos(xs_by_key, [m["grok"] for m in members])
+            ci = {k: [float(np.nanpercentile(v, 2.5)), float(np.nanpercentile(v, 97.5))]
+                  for k, v in boot.items()}
+            plain = [k for k in rec if k in PLAIN]
+            mech = [k for k in rec if k not in PLAIN and "(final)" not in rec[k]["label"]]
+            bp = max(plain, key=lambda k: abs(rec[k]["rho"]))
+            bm = max(mech, key=lambda k: abs(rec[k]["rho"]))
+            diff = np.abs(boot[bp]) - np.abs(boot[bm])
+            within["bootstrap"][at] = {
+                "draws": BOOT_DRAWS, "rho_ci95": ci,
+                "best_plain": bp, "best_mechanistic_leak_free": bm,
+                "abs_rho_difference": float(abs(rec[bp]["rho"]) - abs(rec[bm]["rho"])),
+                "abs_rho_difference_ci95": [float(np.nanpercentile(diff, 2.5)),
+                                            float(np.nanpercentile(diff, 97.5))]}
         print(f"  Bonferroni over {n_tests} reported tests (steps {reported}), alpha "
               f"{alpha:.5f}; permutation critical |rho| = "
               f"{within['bonferroni']['critical_rho_two_tailed']:.3f}")
         out["within_config"] = within
         print()
 
+    out["_provenance"] = provenance(root)
     path = root / "results" / "prediction_summary.json"
     path.write_text(json.dumps(out, indent=1))
     print(f"wrote {path}")

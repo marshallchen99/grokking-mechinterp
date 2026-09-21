@@ -12,11 +12,12 @@ Architecture (following the configuration used in the grokking literature):
     x        = x + MLP(x)                               residual
     logits   = x @ W_U                                  (B, n_ctx, d_vocab)
 
-There is deliberately NO LayerNorm and there are NO biases.  Both are omitted
-in the canonical grokking setup, and both would make the Fourier analysis
-messier: LayerNorm makes every readout depend on the norm of the whole residual
-stream, and biases add constant terms that show up as spurious "const"
-components in the spectrum.
+There is deliberately NO LayerNorm and there are NO biases.  Nanda et al.
+(2023) also have no LayerNorm, but their MLP does have biases (b_in, b_out);
+Furuta et al. (2024) drop all biases, as this model does.  Both choices keep the
+Fourier analysis cleaner: LayerNorm makes every readout depend on the norm of
+the whole residual stream, and biases add constant terms that show up as
+"const" components in the spectrum.
 """
 
 from __future__ import annotations
@@ -31,9 +32,10 @@ import torch.nn as nn
 @dataclass
 class ModelConfig:
     d_vocab: int = 114          # p + 1, the extra token is "="
-    d_vocab_out: int = 113      # p -- the answer is always a residue, never "=".
-    #                             The default is only right for p = 113: callers
-    #                             must set it, which run_train.py now does.
+    d_vocab_out: Optional[int] = None   # p -- the answer is always a residue,
+    #                             never "=".  None means d_vocab - 1.  (It once
+    #                             defaulted to 113, which left unused columns in
+    #                             every run at another modulus.)
     n_ctx: int = 3              # [a, b, =]
     d_model: int = 128
     n_heads: int = 4
@@ -87,14 +89,18 @@ class OneLayerTransformer(nn.Module):
         self.W_in = param(cfg.d_model, cfg.d_mlp)
         self.W_out = param(cfg.d_mlp, cfg.d_model)
 
-        # The output space is the residues 0..p-1 only.  Giving W_U a column
-        # for "=" would create a class that can never be correct: it would
-        # receive gradient, be weight-decayed, and show up in the weight-norm
-        # curve while contributing nothing.
+        # The output space is the residues 0..p-1 only.  Nanda et al.'s code
+        # keeps a live output class for "=", which can never be correct.  The
+        # first run here had the column but sliced it off before the loss, so
+        # it got no gradient, only weight decay; current runs do not create it.
         self.W_U = param(cfg.d_model, cfg.d_vocab_out)
 
         mask = torch.tril(torch.ones(cfg.n_ctx, cfg.n_ctx, dtype=torch.bool))
         self.register_buffer("causal_mask", mask, persistent=False)
+        # Analysis only: a constant added to the MLP's output.  Zero unless an
+        # intervention sets it (mean-ablation puts the removed neurons' average
+        # output here).  Not a parameter and not saved in checkpoints.
+        self.register_buffer("mlp_out_offset", torch.zeros(cfg.d_model), persistent=False)
 
     # ------------------------------------------------------------------ fwd
 
@@ -114,7 +120,7 @@ class OneLayerTransformer(nn.Module):
         causal attention nothing at the last position depends on the MLP or the
         unembedding at earlier positions -- but skips two thirds of the MLP and
         unembedding work, which dominate the cost.  Used for training; the full
-        path is used for analysis.  `tests/test_model.py` asserts the two agree.
+        path is used for analysis.  `tests/test_core.py` asserts the two agree.
         """
         cfg = self.cfg
 
@@ -150,7 +156,7 @@ class OneLayerTransformer(nn.Module):
         # ---- MLP -----------------------------------------------------------
         pre_act = resid_mid @ self.W_in                   # (B, T, d_mlp)
         post_act = ACTS[cfg.act](pre_act)
-        mlp_out = post_act @ self.W_out
+        mlp_out = post_act @ self.W_out + self.mlp_out_offset
         put("mlp_pre", pre_act)
         put("mlp_post", post_act)
         put("mlp_out", mlp_out)

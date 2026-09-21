@@ -42,6 +42,11 @@ def main():
     ap.add_argument("--dense-every", type=int, default=250)
     ap.add_argument("--warmup-steps", type=int, default=10)
     ap.add_argument("--loss-dtype", default="float64", choices=["float64", "float32"])
+    ap.add_argument("--d-vocab-out", type=int, default=None,
+                    help="output width; default p.  The shipped runs at p != 113 used 113 "
+                         "(unused columns, see the README), and main_add_s0 used 114")
+    ap.add_argument("--overwrite", action="store_true",
+                    help="replace existing checkpoints for this tag")
     ap.add_argument("--threads", type=int, default=6)
     ap.add_argument("--out", default=str(ROOT))
     args = ap.parse_args()
@@ -51,7 +56,7 @@ def main():
     data = make_dataset(p=args.p, op=args.op, train_frac=args.train_frac,
                         seed=args.data_seed)
     mcfg = ModelConfig(
-        d_vocab=data.vocab_size, d_vocab_out=data.p,   # never a column for '='
+        d_vocab=data.vocab_size, d_vocab_out=args.d_vocab_out or data.p,
         d_model=args.d_model, n_heads=args.n_heads,
         d_head=args.d_model // args.n_heads, d_mlp=args.d_mlp, seed=args.model_seed,
     )
@@ -70,7 +75,9 @@ def main():
                       "model": mcfg.to_dict(), "train": tcfg.to_dict()}, indent=2),
           flush=True)
 
-    trainer = Trainer(model, data, tcfg, Path(args.out), tag=args.tag)
+    if model.cfg.d_vocab_out < data.p:
+        raise SystemExit(f"--d-vocab-out {model.cfg.d_vocab_out} is smaller than p = {data.p}")
+    trainer = Trainer(model, data, tcfg, Path(args.out), tag=args.tag, overwrite=args.overwrite)
     hist = trainer.run()
 
     final = hist[-1]

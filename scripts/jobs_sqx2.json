@@ -13,7 +13,8 @@
   "dense_to": 50000,
   "dense_every": 1000,
   "threads": 3,
-  "log_every": 50
+  "log_every": 50,
+  "d_vocab_out": 113
  },
  {
   "tag": "Q_sqx_p61",
@@ -29,6 +30,7 @@
   "dense_to": 50000,
   "dense_every": 1000,
   "threads": 3,
-  "log_every": 50
+  "log_every": 50,
+  "d_vocab_out": 113
  }
 ]

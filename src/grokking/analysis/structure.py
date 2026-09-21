@@ -164,8 +164,10 @@ def readout_budget(logits: torch.Tensor, F: torch.Tensor, p: int, freqs: List[in
     `recentre` removes, for every input pair, the mean of the logits over the
     answer c before anything else.  That component adds the same value to
     every class, so softmax -- and therefore the loss and every prediction --
-    is exactly invariant to it; no gradient ever acts on it, and counting it as
-    part of the readout mislabels an irrelevant direction as structure.  An
+    is exactly invariant to it; the exact gradient has no component along it
+    (float32 rounding does give it one, which is why it grows in the float32
+    runs), and counting it as part of the readout mislabels a direction that
+    cannot change a prediction as structure.  An
     earlier version of this function did count it, reported it as a
     "per-answer bias", and built a mechanism on it; the mechanism was wrong.
     With recentring on, `dc` is zero by construction and is kept only so the
@@ -197,7 +199,10 @@ def readout_budget(logits: torch.Tensor, F: torch.Tensor, p: int, freqs: List[in
             f = frequency_of_index(i)
             if f in keys and f != k:
                 cross += float(e[i])
+    # `total` is the absolute energy in this direction's amplitudes.  The other
+    # fields are fractions of it, and a fraction of almost nothing is noise:
+    # compare totals before reading the fractions of a weak direction.
     if tot <= 0:
-        return {"own": 0.0, "dc": 0.0, "cross": 0.0, "unexplained": 1.0}
+        return {"own": 0.0, "dc": 0.0, "cross": 0.0, "unexplained": 1.0, "total": 0.0}
     return {"own": own / tot, "dc": dc / tot, "cross": cross / tot,
-            "unexplained": max(0.0, 1.0 - (own + dc + cross) / tot)}
+            "unexplained": max(0.0, 1.0 - (own + dc + cross) / tot), "total": tot}
