@@ -25,7 +25,8 @@ from grokking.analysis.ablation import (                      # noqa: E402
 )
 from grokking.analysis.core import checkpoint_paths, load_snapshot  # noqa: E402
 from grokking.analysis.spectra import key_freqs_consensus     # noqa: E402
-from grokking.data import make_dataset                        # noqa: E402
+from grokking.data import make_dataset
+from grokking.runinfo import run_config, run_dataset  # noqa: E402                        # noqa: E402
 from grokking.fourier import make_fourier_basis               # noqa: E402
 
 
@@ -44,8 +45,10 @@ def main():
 
     torch.set_num_threads(args.threads)
     root = Path(args.root)
-    data = make_dataset(p=args.p, op=args.op, train_frac=args.train_frac,
-                        seed=args.data_seed)
+    # The run's own split, read from its record -- never a command-line default.
+    cfg_ = run_config(root, args.tag)
+    args.p, args.op, args.train_frac = cfg_["p"], cfg_["op"], cfg_["train_frac"]
+    data = run_dataset(root, args.tag)
     F, _ = make_fourier_basis(args.p, dtype=torch.float64)
     snap = load_snapshot(checkpoint_paths(root / "checkpoints" / args.tag)[-1][1], data)
     cons = key_freqs_consensus(snap.model.W_E.detach(), snap.neuron_acts, F, args.p)

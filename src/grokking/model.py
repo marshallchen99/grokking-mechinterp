@@ -31,7 +31,9 @@ import torch.nn as nn
 @dataclass
 class ModelConfig:
     d_vocab: int = 114          # p + 1, the extra token is "="
-    d_vocab_out: int = 113      # p -- the answer is always a residue, never "="
+    d_vocab_out: int = 113      # p -- the answer is always a residue, never "=".
+    #                             The default is only right for p = 113: callers
+    #                             must set it, which run_train.py now does.
     n_ctx: int = 3              # [a, b, =]
     d_model: int = 128
     n_heads: int = 4

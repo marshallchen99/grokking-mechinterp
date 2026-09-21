@@ -34,6 +34,11 @@ VARMA_2023 = "Varma, Shah, Kenton, Kramar, Kumar, 'Explaining grokking through c
 CHUGHTAI_2023 = "Chughtai, Chan, Nanda, 'A Toy Model of Universality', arXiv:2302.03025"
 DOSHI_2024 = "Doshi, He, Das, Gromov, 'Grokking Modular Polynomials', arXiv:2406.03495"
 FURUTA_2024 = "Furuta et al., 'Interpreting Grokked Transformers in Complex Modular Arithmetic', TMLR 2024"
+NOTSAWO_2023 = "Notsawo, Zhou, Ahmadi, Beaini, Dumas, Mitliagkas, 'Predicting Grokking Long Before it Happens', ICLR 2024, arXiv:2306.13253"
+LYU_2023 = "Lyu, Jin, Li, Du, Lee, Hu, 'Dichotomy of Early and Late Phase Implicit Biases Can Provably Induce Grokking', ICLR 2024, arXiv:2311.18817"
+NGUYEN_2026 = "Nguyen, 'The Discrete-Log Clock: How a Transformer Learns Modular Multiplication', Mechanistic Interpretability Workshop at ICML 2026, arXiv:2606.17399"
+CHEN_2026 = "Chen, Hasan, Srinivasan, Bandi, Alper, 'Multiplication Beyond Groups: Stratified Fourier Mechanisms in Transformer Circuits', arXiv:2607.07066"
+KHANH_2026 = "Khanh, Hoa, Trung, Duc, 'First-Passage Prediction of Grokking Delay: A Calibrated Law under AdamW with Causal Validation', arXiv:2605.18845"
 
 PUBLISHED: Dict[str, Fact] = {
     "uniform_loss_p113": Fact(
@@ -114,6 +119,32 @@ RELATED_WORK = {
     "init_scale": (
         LIU_2022,
         "Initialisation scale controls the grokking delay; large init lengthens it."),
+    "causal_irrep_ablation": (
+        CHUGHTAI_2023,
+        "Runs restricted loss, excluded loss and ablations of irreducible-representation "
+        "subspaces for group composition, including cyclic groups. (Z/pZ)* under "
+        "multiplication is the cyclic group of order p-1, whose irreps are the discrete-log "
+        "Fourier modes -- so the causal test in that basis is published in principle; this "
+        "repository applies it to a model trained on the full multiplication table."),
+    "dlog_transformer": (
+        NGUYEN_2026,
+        "Finds the discrete-log-basis sparsity in a transformer trained on modular "
+        "multiplication. Its abstract reports no ablations."),
+    "zero_divisors": (
+        CHEN_2026,
+        "Treats non-invertible elements as a separate algebraic region, on composite "
+        "moduli, and describes its evidence as correlational. Doshi et al. also single out "
+        "0 as warranting separate treatment."),
+    "forecasting": (
+        NOTSAWO_2023,
+        "Forecasts grokking from early training-loss curves. Forecasting from early "
+        "signals is therefore prior art; this repository's contribution is a comparison of "
+        "which signals do it, within one configuration."),
+    "weight_decay_scaling": (
+        LYU_2023,
+        "Proves grokking time scales like 1/lambda in weight decay; Khanh et al. 2026 "
+        "(arXiv:2605.18845) give a calibrated delay law with the same dependence. The phase "
+        "diagram here reproduces it rather than settling an open question."),
 }
 
 

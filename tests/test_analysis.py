@@ -211,3 +211,51 @@ def test_dlog_turns_multiplication_into_addition():
     e = torch.arange(n)
     prod = (exp_table[e][:, None] * exp_table[e][None, :]) % p
     assert torch.equal(dlog[prod], (e[:, None] + e[None, :]) % n)
+
+
+# ------------------------------------------- no hand-typed results in prose
+
+def test_report_prose_contains_no_hand_typed_results():
+    """Every number in a README sentence must come from a results file.
+
+    An earlier version of report_blocks.py printed string literals such as
+    "seven orders of magnitude" and "0.998 and 0.999" whatever the data said,
+    and one of them was wrong by four orders of magnitude.  This scans every
+    literal text fragment in the module for things that look like measured
+    values -- decimals, thousands-separated counts, "N orders", "Nx" -- and
+    fails if any appear outside a computed expression.
+    """
+    import ast
+    import re
+
+    src_path = Path(__file__).resolve().parents[1] / "src" / "grokking" / "report_blocks.py"
+    tree = ast.parse(src_path.read_text())
+    looks_measured = re.compile(
+        r"(?<![\w.])(\d+\.\d+|\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?\s*orders?\b|\d+x\b)")
+    # Fragments that are formatting, citations or method definitions, not results.
+    allowed = re.compile(r"arXiv|\(\d{4}\)|^\s*$|:\.\d|:,")
+    # Docstrings never reach the README; they are allowed to quote old mistakes.
+    docstrings = set()
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Module, ast.FunctionDef, ast.ClassDef)) and node.body:
+            first = node.body[0]
+            if isinstance(first, ast.Expr) and isinstance(first.value, ast.Constant):
+                docstrings.add(id(first.value))
+    offenders = []
+    for node in ast.walk(tree):
+        if id(node) in docstrings:
+            continue
+        if isinstance(node, ast.JoinedStr):
+            parts = [v.value for v in node.values if isinstance(v, ast.Constant)
+                     and isinstance(v.value, str)]
+        elif isinstance(node, ast.Constant) and isinstance(node.value, str):
+            parts = [node.value]
+        else:
+            continue
+        for text in parts:
+            if allowed.search(text):
+                continue
+            for m in looks_measured.finditer(text):
+                offenders.append((getattr(node, "lineno", "?"), m.group(0), text.strip()[:70]))
+    assert not offenders, "hand-typed numbers in report prose:\n" + "\n".join(
+        f"  line {ln}: {num!r} in {txt!r}" for ln, num, txt in offenders)

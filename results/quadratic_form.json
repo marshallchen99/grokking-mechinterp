@@ -18,7 +18,12 @@
   "sign_flip_enrichment": 10.708787649869919,
   "acc_where_forms_coincide": 0.515625,
   "n_coincide": 64,
-  "either_form": 0.6766226291656494
+  "either_form": 0.6766226291656494,
+  "frac_test_with_transpose_in_train": 0.4842044711112976,
+  "acc_transpose_in_train": 1.0,
+  "acc_transpose_held_out": 0.0211581289768219,
+  "predictions_symmetric": 0.985636293888092,
+  "explained_by_memorisation_plus_symmetry": 0.49511773943719284
  },
  {
   "tag": "Q_sqx_p61",
@@ -39,6 +44,11 @@
   "sign_flip_enrichment": 11.21010185778141,
   "acc_where_forms_coincide": 0.6610169410705566,
   "n_coincide": 59,
-  "either_form": 0.6808167695999146
+  "either_form": 0.6808167695999146,
+  "frac_test_with_transpose_in_train": 0.4793122112751007,
+  "acc_transpose_in_train": 1.0,
+  "acc_transpose_held_out": 0.03405572846531868,
+  "predictions_symmetric": 0.9914001822471619,
+  "explained_by_memorisation_plus_symmetry": 0.4970446132231231
  }
 ]

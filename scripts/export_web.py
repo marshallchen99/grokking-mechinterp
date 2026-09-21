@@ -189,6 +189,17 @@ def main():
     if sweep:
         out["sweep"] = sweep["cells"]
 
+    # The page renders the README's own blocks rather than keeping a second,
+    # hand-written narrative: two independent write-ups drift apart, and an
+    # external review found the page asserting things the README had already
+    # corrected.  One generator, two renderings.
+    from grokking.report_blocks import build
+    op_tags = [t for t in args.op_tags if t != args.tag] or args.op_tags
+    out["blocks"] = build(root, args.tag, op_tags=op_tags)
+    readme = (root / "README.md").read_text()
+    if "## What is borrowed, and what went wrong" in readme:
+        out["borrowed"] = readme.split("## What is borrowed, and what went wrong", 1)[1].strip()
+
     path = root / "results" / args.out
     path.write_text(json.dumps(out, separators=(",", ":")))
     kb = path.stat().st_size / 1024

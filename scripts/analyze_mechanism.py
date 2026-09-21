@@ -33,7 +33,8 @@ from grokking.analysis.spectra import key_freqs_consensus      # noqa: E402
 from grokking.analysis.structure import (                      # noqa: E402
     additive_structure, readout_budget, trig_identity_report,
 )
-from grokking.data import make_dataset                         # noqa: E402
+from grokking.data import make_dataset
+from grokking.runinfo import run_config, run_dataset  # noqa: E402                         # noqa: E402
 from grokking.fourier import make_fourier_basis                # noqa: E402
 
 
@@ -53,7 +54,11 @@ def main():
     torch.set_num_threads(args.threads)
     root = Path(args.root)
     p = args.p
-    data = make_dataset(p=p, op=args.op, train_frac=args.train_frac, seed=args.data_seed)
+    # The run's own split, read from its record -- never a command-line default.
+    cfg_ = run_config(root, args.tag)
+    p = args.p = cfg_["p"]
+    args.op, args.train_frac = cfg_["op"], cfg_["train_frac"]
+    data = run_dataset(root, args.tag)
     F, _ = make_fourier_basis(p, dtype=torch.float64)
 
     paths = checkpoint_paths(root / "checkpoints" / args.tag)
@@ -171,6 +176,42 @@ def main():
             star["trig"] = {"mean_sum_frac": tr["mean_sum_frac"],
                             "mean_readout_frac": tr["mean_readout_frac"]}
         star["zero_element"] = zero_element_report(snap)
+
+        # The rows above edit the re-indexed output logits: a projection, not an
+        # intervention.  These edit the embedding weights in the multiplicative
+        # basis and re-run the whole network.
+        from grokking.analysis.dlog import ablate_dlog_frequencies, zero_element_interventions
+        n_ = sv.p
+        others = [k for k in range(1, n_ // 2) if k not in set(Ks)]
+        step_ = max(1, len(others) // max(len(Ks), 1))
+        ctrl_ = others[::step_][: len(Ks)]
+        nz = torch.ones(p, p, dtype=torch.bool); nz[0, :] = False; nz[:, 0] = False
+
+        def eval_split(m):
+            from grokking.model import final_logits
+            with torch.no_grad():
+                pred = final_logits(m(data.inputs, last_only=True), p).argmax(-1).view(p, p)
+            lab = data.label_grid()
+            test = ~data.train_mask()
+            return {"test_acc_all": float((pred == lab)[test].float().mean()),
+                    "test_acc_nonzero": float((pred == lab)[test & nz].float().mean())}
+
+        star["weight_surgery"] = {
+            "key_freqs": Ks, "control_freqs": ctrl_,
+            "baseline": eval_split(snap.model),
+            "keep_key": eval_split(ablate_dlog_frequencies(snap.model, p, Ks, keep=True)),
+            "drop_key": eval_split(ablate_dlog_frequencies(snap.model, p, Ks, keep=False)),
+            "drop_control": eval_split(ablate_dlog_frequencies(snap.model, p, ctrl_, keep=False)),
+            "keep_control": eval_split(ablate_dlog_frequencies(snap.model, p, ctrl_, keep=True)),
+        }
+        star["zero_interventions"] = zero_element_interventions(snap.model, data)
+        print("  dlog weight surgery:",
+              {k: round(v["test_acc_nonzero"], 4) for k, v in star["weight_surgery"].items()
+               if isinstance(v, dict)}, flush=True)
+        print("  zero-element interventions:",
+              {k: (round(v, 3) if isinstance(v, float) else v)
+               for k, v in star["zero_interventions"].items()
+               if not isinstance(v, (dict, list))}, flush=True)
         out["dlog"] = star
 
     path = root / "results" / f"{args.tag}_mechanism.json"
