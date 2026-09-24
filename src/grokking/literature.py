@@ -57,6 +57,10 @@ _TRUONG = "Xuan Khanh Truong, Quynh Hoa Truong, Duc Trung Luu, Thanh Duc Phan"
 TRUONG_2026A = _TRUONG + ", 'The Norm-Separation Delay Law of Grokking: A First-Principles Theory of Delayed Generalization', arXiv:2603.13331"
 TRUONG_2026B = _TRUONG + ", 'Spectral Entropy Collapse as a Phase Transition in Delayed Generalisation: An Interventional and Predictive Framework for Grokking', arXiv:2604.13123"
 TRUONG_2026C = _TRUONG + ", 'First-Passage Prediction of Grokking Delay: A Calibrated Law under AdamW with Causal Validation', arXiv:2605.18845"
+THILAK_2022 = "Vimal Thilak, Etai Littwin, Shuangfei Zhai, Omid Saremi, Roni Paiss, Joshua Susskind, 'The Slingshot Mechanism: An Empirical Study of Adaptive Optimizers and the Grokking Phenomenon', arXiv:2206.04817"
+PRIETO_2025 = "Lucas Prieto, Melih Barsbey, Pedro A. M. Mediano, Tolga Birdal, 'Grokking at the Edge of Numerical Stability', arXiv:2501.04697"
+# arXiv lists the first author family name first ("Liu Hanqing"); written given-first here
+LIU_2026 = "Hanqing Liu, Jianjun Cao, Yuanze Li, Zijian Zhou, 'Grokking or Glitching? How Low-Precision Drives Slingshot Loss Spikes', ICML 2026 Workshop on High-dimensional Learning Dynamics, arXiv:2605.06152"
 HOWE_2026 = "Gunner Levi Howe, 'Capability Emergence Can Be Forecast: Per-Seed, In Advance, With Calibrated Intervals, Certified False Alarms, and a Blind Pre-Registered Gate', arXiv:2609.19000"
 
 CITE_SUFFIX = {TRUONG_2026A: "a", TRUONG_2026B: "b", TRUONG_2026C: "c"}

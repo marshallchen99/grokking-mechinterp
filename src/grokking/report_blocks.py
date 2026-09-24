@@ -24,7 +24,8 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from .literature import (
-    CHEN_2026, CHUGHTAI_2023, DOSHI_2024, FURUTA_2024, HOWE_2026, LIU_2022, LYU_2023,
+    CHEN_2026, CHUGHTAI_2023, DOSHI_2024, FURUTA_2024, HOWE_2026, LIU_2022, LIU_2026, LYU_2023,
+    PRIETO_2025, THILAK_2022,
     TRUONG_2026A, TRUONG_2026B, TRUONG_2026C,
     NANDA_2023, NGUYEN_2026, NOTSAWO_2023, POWER_2022, PUBLISHED,
 )
@@ -372,9 +373,14 @@ def readout(root: Path, _tag: str) -> Optional[str]:
                             f"{v['final_frac_of_W_U']:.0%} of W_U's norm" for t, v in i32.items())
                 + f") while it shrinks in the float64 ones (to between "
                 f"{min(v['final'] for v in i64.values()):.3f} and "
-                f"{max(v['final'] for v in i64.values()):.3f}), consistent with float32 "
-                f"rounding giving the gradient a part along it that the exact gradient does "
-                f"not have; that gradient was not measured. Either way it is exactly the "
+                f"{max(v['final'] for v in i64.values()):.3f}). This is consistent with a "
+                f"published mechanism: {cite(LIU_2026)} ({arxiv(LIU_2026)}) show that float32 "
+                f"can round the correct class's gradient to exactly zero while the other "
+                f"classes' gradients survive, so that W_U's mean over classes -- this "
+                f"component -- drifts and grows, and they link it to the slingshot loss spikes "
+                f"of {cite(THILAK_2022)}. {cite(PRIETO_2025)} ({arxiv(PRIETO_2025)}) describe "
+                f"a related float32 failure, softmax collapse. The gradient itself was not "
+                f"measured here. Either way it is exactly the "
                 f"component removed before measuring, so it cannot change a prediction and "
                 f"does not explain the difference in this table.")
     return "\n\n".join(parts)

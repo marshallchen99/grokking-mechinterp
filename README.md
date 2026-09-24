@@ -156,7 +156,7 @@ In the float64 addition runs the readout is essentially exact (0.998 to 0.999 at
 
 The 2 float32 runs are measurably less clean (0.876 to 0.894), with the remainder split between other key frequencies and energy none of them explain. **The cause is not established.** It is 2 runs against 3, and the pairs are not matched on everything: the float32 control `C_add_f32` was read at step 25,000 and its float64 twin `B_add_s0` at step 40,000, so budget differs as well as precision (though `C_add_nowarm`, float64 and read at step 25,000, is as clean as the others).
 
-An earlier version attributed the difference to a per-answer bias that float32 prevented from being cleaned up; a later one said that no gradient acts on that component at any precision. Neither holds up. The component is real, and float32 does keep it: the part of W_U along the direction softmax ignores grows during the float32 runs (`C_add_f32` from 0.77 to 2.16, 45% of W_U's norm; `main_add_s0` from 0.78 to 2.27, 43% of W_U's norm) while it shrinks in the float64 ones (to between 0.013 and 0.023), consistent with float32 rounding giving the gradient a part along it that the exact gradient does not have; that gradient was not measured. Either way it is exactly the component removed before measuring, so it cannot change a prediction and does not explain the difference in this table.
+An earlier version attributed the difference to a per-answer bias that float32 prevented from being cleaned up; a later one said that no gradient acts on that component at any precision. Neither holds up. The component is real, and float32 does keep it: the part of W_U along the direction softmax ignores grows during the float32 runs (`C_add_f32` from 0.77 to 2.16, 45% of W_U's norm; `main_add_s0` from 0.78 to 2.27, 43% of W_U's norm) while it shrinks in the float64 ones (to between 0.013 and 0.023). This is consistent with a published mechanism: Liu et al. (2026) (arXiv:2605.06152) show that float32 can round the correct class's gradient to exactly zero while the other classes' gradients survive, so that W_U's mean over classes -- this component -- drifts and grows, and they link it to the slingshot loss spikes of Thilak et al. (2022). Prieto et al. (2025) (arXiv:2501.04697) describe a related float32 failure, softmax collapse. The gradient itself was not measured here. Either way it is exactly the component removed before measuring, so it cannot change a prediction and does not explain the difference in this table.
 <!-- END:readout -->
 
 ---
@@ -637,7 +637,12 @@ grokking time on weight decay: [Liu et al. 2022](https://arxiv.org/abs/2210.0111
 who also test it on Nanda et al.'s transformer and this task,
 [Lyu et al. 2023](https://arxiv.org/abs/2311.18817), and
 [Truong et al. 2026a](https://arxiv.org/abs/2603.13331) and
-[2026c](https://arxiv.org/abs/2605.18845). Predicting grokking from early
+[2026c](https://arxiv.org/abs/2605.18845). Loss spikes in grokking:
+[Thilak et al. 2022](https://arxiv.org/abs/2206.04817); float32 rounding as a
+cause of a drifting classifier class-mean and of those spikes:
+[Liu et al. 2026](https://arxiv.org/abs/2605.06152); a related float32 failure,
+softmax collapse: [Prieto et al. 2025](https://arxiv.org/abs/2501.04697).
+Predicting grokking from early
 signals: [Notsawo et al. 2023](https://arxiv.org/abs/2306.13253); per seed at a
 fixed configuration, [Truong et al. 2026a](https://arxiv.org/abs/2603.13331),
 [2026b](https://arxiv.org/abs/2604.13123) and
@@ -679,7 +684,8 @@ no shipped script could rebuild; a phase-timing comparison whose choice of end
 point was unstated; phase boundaries in a figure placed at hand-picked
 fractions of the grokking step; statements on the interactive page that the
 data did not support; a comparison with Nanda et al.'s Gini that used a
-different definition; the claim that the architecture follows theirs exactly
+different definition; a float32 effect reported as unexplained although a
+published mechanism accounts for it; the claim that the architecture follows theirs exactly
 (their MLP has biases); the unused '=' column listed as a possible cause of a
 timing gap; control conclusions drawn against too small an estimate of seed
 noise; a weight-decay slope reported without uncertainty, and then called
