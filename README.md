@@ -695,19 +695,21 @@ and three inaccurate versions of the note below on how this was made. Each
 section states the corrected version; the git history has the rest. Runs that
 fail to grok are reported with their step budget.
 
-**How this was made.** This repository was designed, implemented and written
-by an AI system (Claude, by Anthropic) working as an agent for the repository's
-owner. The owner asked for a substantial project, picked this topic from a list
-of options the model proposed (the model had recommended it), and told it to
-start; the scope, the experiment design, the code, the analysis and this
-write-up are the model's. Every measured number was produced by running that
-code on the owner's machine. Some corrections came out of the owner's
+**How this was made.** The owner supplied automation scripts, including the
+automated commit workflow. Running those scripts or generating commits does not
+establish who originated the research ideas or performed each research task,
+and does not justify attributing the entire project to Claude. Claude
+(Anthropic) was used for experiment design, implementation, analysis, drafting
+and review; this is substantive AI assistance, not just text editing. Every
+measured number was produced by running the code on the owner's machine.
+Some corrections came out of the owner's
 questions about whether the work was finished, some from the model's own
 control experiments, and the rest from review by AI agents launched by the
 model: three rounds of review of the write-up, each agent told to refute it; a
 targeted fourth check; then, at the owner's request, an audit of the whole
 process by eight agents that re-ran the analyses, re-ran the start of training,
 re-evaluated the checkpoints, and read the code, the statistics, the cited
-papers and the git history; and a final round that checked the fixes. No human
-reviewed the analysis. The model made the corrections and reported them to the
-owner.
+papers and the git history; and a final round that checked the fixes. Those
+recorded checks were AI-assisted, not human peer review. This clarification
+does not assert that the owner independently verified the analysis. Historical
+audit records are retained; commit metadata is not a contribution statement.
