@@ -208,8 +208,13 @@ def main():
     op_tags = args.op_tags or OP_TAGS
     out["blocks"] = build(root, args.tag, op_tags=op_tags)
     readme = (root / "README.md").read_text()
-    if "## What is borrowed, and what went wrong" in readme:
-        out["borrowed"] = readme.split("## What is borrowed, and what went wrong", 1)[1].strip()
+    follow_heading = "## Follow-up: symmetry lookup and separability"
+    borrowed_heading = "## What is borrowed, and what went wrong"
+    if follow_heading in readme and borrowed_heading in readme:
+        follow = readme.split(follow_heading, 1)[1].split(borrowed_heading, 1)[0]
+        out["followup"] = follow.strip()
+    if borrowed_heading in readme:
+        out["borrowed"] = readme.split(borrowed_heading, 1)[1].strip()
 
     web = Path(args.web) if args.web else root / "web"
     web.mkdir(parents=True, exist_ok=True)

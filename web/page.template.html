@@ -252,7 +252,8 @@ footer p{ font-size:.86rem; }
         and asked to fill in the rest. It memorises what it was shown almost at once,
         improves only slowly on the rest for thousands of steps, and then generalises. This page
         reproduces that and takes the finished network apart, using methods from the
-        published work it names as it goes.
+        published work it names as it goes. A separate follow-up asks when a high
+        score on a quadratic form is only symmetry lookup.
       </p>
       <div class="byline" id="byline"></div>
     </div>
@@ -411,7 +412,15 @@ footer p{ font-size:.86rem; }
 
 <section>
   <div class="wrap"><div class="col">
-    <p class="eyebrow">10 &middot; provenance</p>
+    <p class="eyebrow">10 &middot; a separate study</p>
+    <h2>When a random split leaks the answer</h2>
+    <div class="md" data-block="followup"></div>
+  </div></div>
+</section>
+
+<section>
+  <div class="wrap"><div class="col">
+    <p class="eyebrow">11 &middot; provenance</p>
     <h2>What is borrowed, and what went wrong</h2>
     <div class="md" data-block="borrowed"></div>
   </div></div>
@@ -423,8 +432,8 @@ footer p{ font-size:.86rem; }
     <div class="kv" id="config-kv"></div>
     <p style="margin-top:1.6rem; color:var(--ink-3); font-size:.82rem">
       The findings and measured numbers in sections 02 and 04&ndash;09 are rendered from the
-      same generator as the repository README, and section 10 is the README's own
-      hand-written closing section. Every number in the charts, readouts and labels is
+      same generator as the repository README. Section 10 is the README's separate
+      follow-up, and section 11 is its hand-written closing section. Every number in the charts, readouts and labels is
       computed from the same data. The title, the paragraph under it, the section headings
       and the short introductions to sections 01, 03 and 04 are hand-written.
     </p>
@@ -643,6 +652,7 @@ footer p{ font-size:.86rem; }
   /* ---------------- rendered README blocks ---------------- */
   (function(){
     var B = D.blocks || {};
+    if (D.followup) B.followup = D.followup;
     if (D.borrowed) B.borrowed = D.borrowed;
     var nodes = document.querySelectorAll(".md[data-block]");
     Array.prototype.forEach.call(nodes, function(el){
