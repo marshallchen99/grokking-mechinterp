@@ -623,7 +623,9 @@ scripts/
   regenerate.sh, run_pipeline.sh            the whole chain, with the exact flags
 results/           every measured number, with the provenance of each file
 figures/           the figures in this README
-web/               an interactive page built from the same results and text
+web/               an interactive page built from the same results and text.
+                   GitHub Pages serves a copy of `web/index.html` from the
+                   `gh-pages` branch; update that branch when this page changes
 tests/             correctness and calibration tests
 ```
 
