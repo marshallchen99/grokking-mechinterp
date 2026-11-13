@@ -1,0 +1,47 @@
+QUEUE qf_1_1_1_p59_mlp_quad100k_w512_wd0.1  M=6
+QUEUE qf_1_1_1_p59_mlp_quad100k_w512_wd0.3  M=6
+QUEUE qf_1_1_1_p59_mlp_quad100k_w512_wd1.0  M=6
+QUEUE qf_1_1_1_p59_mlp_quad100k_w512_wd3.0  M=6
+QUEUE qf_1_1_1_p59_mlp_quad100k_w2048_wd0.1  M=6
+QUEUE qf_1_1_1_p59_mlp_quad100k_w2048_wd0.3  M=6
+QUEUE qf_1_1_1_p59_mlp_quad100k_w2048_wd1.0  M=6
+QUEUE qf_1_1_1_p59_mlp_quad100k_w2048_wd3.0  M=6
+QUEUE qf_1_1_1_p59_mlp_quad100k_w8192_wd0.1  M=6
+QUEUE qf_1_1_1_p59_mlp_quad100k_w8192_wd0.3  M=6
+QUEUE qf_1_1_1_p59_mlp_quad100k_w8192_wd1.0  M=6
+QUEUE qf_1_1_1_p59_mlp_quad100k_w8192_wd3.0  M=6
+QUEUE qf_1_1_1_p59_mlp_relu100k_w2048_wd1.0  M=6
+QUEUE qf_1_1_1_p59_ours100k_wd0.3  M=6
+QUEUE qf_1_1_1_p59_ours100k_wd3.0  M=6
+[      0s] START qf_1_1_1_p59_mlp_quad100k_w512_wd0.1
+[      0s] START qf_1_1_1_p59_mlp_quad100k_w512_wd0.3
+[      0s] START qf_1_1_1_p59_mlp_quad100k_w512_wd1.0
+[      0s] START qf_1_1_1_p59_mlp_quad100k_w512_wd3.0
+[      0s] START qf_1_1_1_p59_mlp_quad100k_w2048_wd0.1
+[      0s] START qf_1_1_1_p59_mlp_quad100k_w2048_wd0.3
+[   4315s] OK        qf_1_1_1_p59_mlp_quad100k_w512_wd3.0  (4315s)
+[   4320s] START qf_1_1_1_p59_mlp_quad100k_w2048_wd1.0
+[   4320s] OK        qf_1_1_1_p59_mlp_quad100k_w512_wd1.0  (4320s)
+[   4325s] START qf_1_1_1_p59_mlp_quad100k_w2048_wd3.0
+[   4335s] OK        qf_1_1_1_p59_mlp_quad100k_w512_wd0.3  (4335s)
+[   4340s] START qf_1_1_1_p59_mlp_quad100k_w8192_wd0.1
+[   4530s] OK        qf_1_1_1_p59_mlp_quad100k_w512_wd0.1  (4530s)
+[   4535s] START qf_1_1_1_p59_mlp_quad100k_w8192_wd0.3
+[   5555s] OK        qf_1_1_1_p59_mlp_quad100k_w2048_wd0.3  (5555s)
+[   5560s] START qf_1_1_1_p59_mlp_quad100k_w8192_wd1.0
+[   5760s] OK        qf_1_1_1_p59_mlp_quad100k_w2048_wd0.1  (5760s)
+[   5765s] START qf_1_1_1_p59_mlp_quad100k_w8192_wd3.0
+[  11355s] OK        qf_1_1_1_p59_mlp_quad100k_w2048_wd1.0  (7035s)
+[  11355s] OK        qf_1_1_1_p59_mlp_quad100k_w2048_wd3.0  (7030s)
+[  11360s] START qf_1_1_1_p59_mlp_relu100k_w2048_wd1.0
+[  11360s] START qf_1_1_1_p59_ours100k_wd0.3
+[  16875s] OK        qf_1_1_1_p59_mlp_relu100k_w2048_wd1.0  (5515s)
+[  16880s] START qf_1_1_1_p59_ours100k_wd3.0
+[  19564s] OK        qf_1_1_1_p59_mlp_quad100k_w8192_wd0.1  (15224s)
+[  19579s] OK        qf_1_1_1_p59_mlp_quad100k_w8192_wd0.3  (15044s)
+[  19979s] OK        qf_1_1_1_p59_mlp_quad100k_w8192_wd1.0  (14419s)
+[  20039s] OK        qf_1_1_1_p59_mlp_quad100k_w8192_wd3.0  (14274s)
+[  21049s] OK        qf_1_1_1_p59_ours100k_wd0.3  (9689s)
+[  21529s] OK        qf_1_1_1_p59_ours100k_wd3.0  (4649s)
+
+15 ran, 0 skipped, 0 failed

@@ -1,0 +1,23 @@
+
+==== 2026-10-09 19:25:21 python3 research/scripts/train_batched.py jobs/P1_1_depth_transformer.json --only 4 --out research --device cuda --threads 6
+step       0 | 3/3 active | test acc 0.008 0.013 0.016 | 0s
+step    5000 | 3/3 active | test acc 0.002 0.004 0.005 | 542s
+step   10000 | 3/3 active | test acc 0.008 0.003 0.008 | 1084s
+step   15000 | 3/3 active | test acc 0.006 0.008 0.006 | 1626s
+step   20000 | 3/3 active | test acc 0.004 0.011 0.006 | 2166s
+step   25000 | 3/3 active | test acc 0.006 0.009 0.008 | 2706s
+step   30000 | 3/3 active | test acc 0.008 0.008 0.006 | 3246s
+step   35000 | 3/3 active | test acc 0.010 0.011 0.007 | 3786s
+step   40000 | 3/3 active | test acc 0.004 0.010 0.008 | 4326s
+step   45000 | 3/3 active | test acc 0.003 0.006 0.009 | 4866s
+step   50000 | 3/3 active | test acc 0.004 0.010 0.004 | 5408s
+step   55000 | 3/3 active | test acc 0.005 0.009 0.006 | 5949s
+step   60000 | 3/3 active | test acc 0.005 0.005 0.008 | 6490s
+step   65000 | 3/3 active | test acc 0.003 0.012 0.004 | 7031s
+step   70000 | 3/3 active | test acc 0.004 0.005 0.007 | 7573s
+step   75000 | 3/3 active | test acc 0.004 0.010 0.006 | 8115s
+DONE qf_1_m1_1_p89_f0.8_mono_s0_ours280k at step 80000
+DONE qf_1_m1_1_p89_f0.8_mono_s1_ours280k at step 80000
+DONE qf_1_m1_1_p89_f0.8_mono_s2_ours280k at step 80000
+step   80000 | 0/3 active | test acc 0.004 0.006 0.006 | 8521s
+GROUP DONE [{"tag": "qf_1_m1_1_p89_f0.8_mono_s0_ours280k", "grok_step": null, "final_step": 80000}, {"tag": "qf_1_m1_1_p89_f0.8_mono_s1_ours280k", "grok_step": null, "final_step": 80000}, {"tag": "qf_1_m1_1_p89_f0.8_mono_s2_ours280k", "grok_step": null, "final_step": 80000}]

@@ -1,0 +1,23 @@
+
+==== 2026-10-10 19:53:06 python3 research/scripts/train_batched.py jobs/R3_warm3.json --only 0 --out runs_cpu --device cpu --threads 3
+GROKKED qf_1_0_1_p59_f0.8_mono_s0_mlp_quad6k_w256_warm6k at step 0 (test acc 1.0000)
+GROKKED qf_1_1_1_p59_f0.8_mono_s0_mlp_quad6k_w256_warm6k at step 0 (test acc 1.0000)
+GROKKED tab_perm111_s0_p59_f0.8_mono_s0_mlp_quad6k_w256_warm6k at step 0 (test acc 1.0000)
+GROKKED qf_1_0_1_p59_f0.8_mono_s1_mlp_quad6k_w256_warm6k at step 0 (test acc 1.0000)
+GROKKED qf_1_1_1_p59_f0.8_mono_s1_mlp_quad6k_w256_warm6k at step 0 (test acc 1.0000)
+GROKKED tab_perm111_s0_p59_f0.8_mono_s1_mlp_quad6k_w256_warm6k at step 0 (test acc 1.0000)
+GROKKED qf_1_0_1_p59_f0.8_mono_s2_mlp_quad6k_w256_warm6k at step 0 (test acc 1.0000)
+GROKKED qf_1_1_1_p59_f0.8_mono_s2_mlp_quad6k_w256_warm6k at step 0 (test acc 1.0000)
+GROKKED tab_perm111_s0_p59_f0.8_mono_s2_mlp_quad6k_w256_warm6k at step 0 (test acc 1.0000)
+step       0 | 9/9 active | test acc 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 0s
+step    5000 | 9/9 active | test acc 1.000 0.013 0.043 0.999 0.011 0.040 1.000 0.013 0.030 | 1023s
+DONE qf_1_0_1_p59_f0.8_mono_s0_mlp_quad6k_w256_warm6k at step 6000
+DONE qf_1_1_1_p59_f0.8_mono_s0_mlp_quad6k_w256_warm6k at step 6000
+DONE tab_perm111_s0_p59_f0.8_mono_s0_mlp_quad6k_w256_warm6k at step 6000
+DONE qf_1_0_1_p59_f0.8_mono_s1_mlp_quad6k_w256_warm6k at step 6000
+DONE qf_1_1_1_p59_f0.8_mono_s1_mlp_quad6k_w256_warm6k at step 6000
+DONE tab_perm111_s0_p59_f0.8_mono_s1_mlp_quad6k_w256_warm6k at step 6000
+DONE qf_1_0_1_p59_f0.8_mono_s2_mlp_quad6k_w256_warm6k at step 6000
+DONE qf_1_1_1_p59_f0.8_mono_s2_mlp_quad6k_w256_warm6k at step 6000
+DONE tab_perm111_s0_p59_f0.8_mono_s2_mlp_quad6k_w256_warm6k at step 6000
+GROUP DONE [{"tag": "qf_1_0_1_p59_f0.8_mono_s0_mlp_quad6k_w256_warm6k", "grok_step": 0, "final_step": 6000}, {"tag": "qf_1_1_1_p59_f0.8_mono_s0_mlp_quad6k_w256_warm6k", "grok_step": 0, "final_step": 6000}, {"tag": "tab_perm111_s0_p59_f0.8_mono_s0_mlp_quad6k_w256_warm6k", "grok_step": 0, "final_step": 6000}, {"tag": "qf_1_0_1_p59_f0.8_mono_s1_mlp_quad6k_w256_warm6k", "grok_step": 0, "final_step": 6000}, {"tag": "qf_1_1_1_p59_f0.8_mono_s1_mlp_quad6k_w256_warm6k", "grok_step": 0, "final_step": 6000}, {"tag": "tab_perm111_s0_p59_f0.8_mono_s1_mlp_quad6k_w256_warm6k", "grok_step": 0, "final_step": 6000}, {"tag": "qf_1_0_1_p59_f0.8_mono_s2_mlp_quad6k_w256_warm6k", "grok_step": 0, "final_step": 6000}, {"tag": "qf_1_1_1_p59_f0.8_mono_s2_mlp_quad6k_w256_warm6k", "grok_step": 0, "final_step": 6000}, {"tag": "tab_perm111_s0_p59_f0.8_mono_s2_mlp_quad6k_w256_warm6k", "grok_step": 0, "final_step": 6000}]

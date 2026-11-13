@@ -1,0 +1,41 @@
+QUEUE qf_1_1_1_p59_mlp_quad12k_w256_fit  M=3
+QUEUE qf_1_1_1_p59_mlp_quad12k_w512_fit  M=3
+QUEUE qf_1_1_1_p59_mlp_quad12k_w1024_fit  M=3
+QUEUE qf_1_1_1_p59_mlp_quad12k_w2048_fit  M=3
+QUEUE qf_1_1_1_p59_mlp_quad8k_i0.1_lr0.0003  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i0.1_lr0.001  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i0.1_lr0.003  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i1_lr0.0003  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i1_lr0.001  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i1_lr0.003  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i10_lr0.0003  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i10_lr0.001  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i10_lr0.003  M=4
+[      0s] START qf_1_1_1_p59_mlp_quad12k_w256_fit
+[      0s] START qf_1_1_1_p59_mlp_quad12k_w512_fit
+[     70s] OK        qf_1_1_1_p59_mlp_quad12k_w256_fit  (70s)
+[     75s] START qf_1_1_1_p59_mlp_quad12k_w1024_fit
+[    115s] OK        qf_1_1_1_p59_mlp_quad12k_w512_fit  (115s)
+[    120s] START qf_1_1_1_p59_mlp_quad12k_w2048_fit
+[    310s] OK        qf_1_1_1_p59_mlp_quad12k_w1024_fit  (235s)
+[    315s] START qf_1_1_1_p59_mlp_quad8k_i0.1_lr0.0003
+[    445s] OK        qf_1_1_1_p59_mlp_quad12k_w2048_fit  (325s)
+[    450s] START qf_1_1_1_p59_mlp_quad8k_i0.1_lr0.001
+[   1431s] OK        qf_1_1_1_p59_mlp_quad8k_i0.1_lr0.0003  (1115s)
+[   1436s] START qf_1_1_1_p59_mlp_quad8k_i0.1_lr0.003
+[   1546s] OK        qf_1_1_1_p59_mlp_quad8k_i0.1_lr0.001  (1095s)
+[   1551s] START qf_1_1_1_p59_mlp_quad8k_i1_lr0.0003
+[   2511s] OK        qf_1_1_1_p59_mlp_quad8k_i0.1_lr0.003  (1075s)
+[   2516s] START qf_1_1_1_p59_mlp_quad8k_i1_lr0.001
+[   2601s] OK        qf_1_1_1_p59_mlp_quad8k_i1_lr0.0003  (1050s)
+[   2606s] START qf_1_1_1_p59_mlp_quad8k_i1_lr0.003
+[   3676s] OK        qf_1_1_1_p59_mlp_quad8k_i1_lr0.001  (1160s)
+[   3681s] START qf_1_1_1_p59_mlp_quad8k_i10_lr0.0003
+[   3731s] OK        qf_1_1_1_p59_mlp_quad8k_i1_lr0.003  (1125s)
+[   3736s] START qf_1_1_1_p59_mlp_quad8k_i10_lr0.001
+[   5426s] OK        qf_1_1_1_p59_mlp_quad8k_i10_lr0.001  (1690s)
+[   5431s] START qf_1_1_1_p59_mlp_quad8k_i10_lr0.003
+[   6791s] OK        qf_1_1_1_p59_mlp_quad8k_i10_lr0.003  (1360s)
+[   7386s] OK        qf_1_1_1_p59_mlp_quad8k_i10_lr0.0003  (3705s)
+
+13 ran, 0 skipped, 0 failed

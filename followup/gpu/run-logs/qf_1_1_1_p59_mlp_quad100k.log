@@ -1,0 +1,76 @@
+
+==== 2026-09-26 07:34:47 python3 research/scripts/train_batched.py jobs/E1_all.json --only 9 --out research --device cuda
+step       0 | 24/24 active | test acc 0.023 0.026 0.020 0.006 0.014 0.019 0.010 0.013 0.017 0.013 0.017 0.023 0.012 0.013 0.009 0.020 0.025 0.020 0.012 0.017 0.010 0.010 0.020 0.017 | 2s
+GROKKED qf_1_2_1_p59_f0.8_mono_s0_mlp_quad100k at step 900 (test acc 0.9914)
+GROKKED qf_1_2_1_p59_f0.8_mono_s2_mlp_quad100k at step 900 (test acc 0.9943)
+GROKKED qf_1_2_1_p59_f0.8_mono_s1_mlp_quad100k at step 1000 (test acc 1.0000)
+GROKKED qf_2_0_5_p59_f0.8_mono_s0_mlp_quad100k at step 1900 (test acc 0.9914)
+GROKKED qf_2_0_5_p59_f0.8_mono_s1_mlp_quad100k at step 2100 (test acc 0.9914)
+GROKKED qf_1_0_3_p59_f0.8_mono_s0_mlp_quad100k at step 2200 (test acc 0.9957)
+GROKKED qf_1_0_1_p59_f0.8_mono_s1_mlp_quad100k at step 2200 (test acc 0.9928)
+GROKKED qf_2_0_5_p59_f0.8_mono_s2_mlp_quad100k at step 2200 (test acc 0.9914)
+GROKKED qf_1_0_3_p59_f0.8_mono_s1_mlp_quad100k at step 2300 (test acc 0.9913)
+GROKKED qf_1_0_1_p59_f0.8_mono_s0_mlp_quad100k at step 2300 (test acc 0.9957)
+GROKKED qf_1_0_1_p59_f0.8_mono_s2_mlp_quad100k at step 2500 (test acc 0.9943)
+GROKKED qf_1_0_3_p59_f0.8_mono_s2_mlp_quad100k at step 2600 (test acc 0.9957)
+step    5000 | 24/24 active | test acc 0.000 0.000 0.000 0.000 0.004 0.001 0.027 0.006 0.023 0.000 0.001 0.003 1.000 0.999 1.000 1.000 0.999 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 285s
+DONE qf_1_2_1_p59_f0.8_mono_s0_mlp_quad100k at step 5900
+DONE qf_1_2_1_p59_f0.8_mono_s2_mlp_quad100k at step 5900
+DONE qf_1_2_1_p59_f0.8_mono_s1_mlp_quad100k at step 6000
+DONE qf_2_0_5_p59_f0.8_mono_s0_mlp_quad100k at step 6900
+DONE qf_2_0_5_p59_f0.8_mono_s1_mlp_quad100k at step 7100
+DONE qf_1_0_3_p59_f0.8_mono_s0_mlp_quad100k at step 7200
+DONE qf_1_0_1_p59_f0.8_mono_s1_mlp_quad100k at step 7200
+DONE qf_2_0_5_p59_f0.8_mono_s2_mlp_quad100k at step 7200
+DONE qf_1_0_3_p59_f0.8_mono_s1_mlp_quad100k at step 7300
+DONE qf_1_0_1_p59_f0.8_mono_s0_mlp_quad100k at step 7300
+DONE qf_1_0_1_p59_f0.8_mono_s2_mlp_quad100k at step 7500
+DONE qf_1_0_3_p59_f0.8_mono_s2_mlp_quad100k at step 7600
+step   10000 | 12/24 active | test acc 0.000 0.000 0.000 0.000 0.000 0.000 0.027 0.006 0.023 0.001 0.000 0.004 1.000 0.999 1.000 1.000 0.999 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 548s
+step   15000 | 12/24 active | test acc 0.000 0.000 0.000 0.000 0.000 0.000 0.027 0.006 0.023 0.000 0.000 0.001 1.000 0.999 1.000 1.000 0.999 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 798s
+step   20000 | 12/24 active | test acc 0.000 0.000 0.000 0.000 0.000 0.000 0.027 0.006 0.023 0.000 0.000 0.000 1.000 0.999 1.000 1.000 0.999 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 1048s
+step   25000 | 12/24 active | test acc 0.000 0.000 0.000 0.000 0.000 0.000 0.027 0.006 0.023 0.000 0.000 0.000 1.000 0.999 1.000 1.000 0.999 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 1298s
+step   30000 | 12/24 active | test acc 0.000 0.000 0.000 0.000 0.000 0.000 0.027 0.006 0.023 0.000 0.000 0.000 1.000 0.999 1.000 1.000 0.999 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 1547s
+step   35000 | 12/24 active | test acc 0.000 0.000 0.000 0.000 0.000 0.000 0.027 0.006 0.023 0.000 0.000 0.000 1.000 0.999 1.000 1.000 0.999 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 1797s
+step   40000 | 12/24 active | test acc 0.000 0.000 0.000 0.000 0.000 0.000 0.027 0.006 0.023 0.000 0.000 0.000 1.000 0.999 1.000 1.000 0.999 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 2047s
+step   45000 | 12/24 active | test acc 0.000 0.000 0.000 0.000 0.000 0.000 0.027 0.006 0.023 0.000 0.000 0.000 1.000 0.999 1.000 1.000 0.999 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 2296s
+step   50000 | 12/24 active | test acc 0.000 0.000 0.000 0.000 0.000 0.000 0.027 0.006 0.023 0.000 0.000 0.000 1.000 0.999 1.000 1.000 0.999 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 2546s
+step   55000 | 12/24 active | test acc 0.000 0.000 0.000 0.000 0.000 0.000 0.027 0.006 0.023 0.000 0.000 0.000 1.000 0.999 1.000 1.000 0.999 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 2795s
+step   60000 | 12/24 active | test acc 0.000 0.000 0.000 0.000 0.000 0.000 0.027 0.006 0.023 0.000 0.000 0.000 1.000 0.999 1.000 1.000 0.999 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 3045s
+step   65000 | 12/24 active | test acc 0.000 0.000 0.000 0.000 0.000 0.000 0.027 0.006 0.023 0.000 0.000 0.000 1.000 0.999 1.000 1.000 0.999 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 3295s
+
+==== 2026-10-08 12:02:50 python3 research/scripts/train_batched.py jobs/E11_width_wd_sweep.json --only 0 --out research --device cuda
+
+==== 2026-10-08 12:02:50 python3 research/scripts/train_batched.py jobs/E11_width_wd_sweep.json --only 1 --out research --device cuda
+
+==== 2026-10-08 12:02:50 python3 research/scripts/train_batched.py jobs/E11_width_wd_sweep.json --only 2 --out research --device cuda
+
+==== 2026-10-08 12:02:50 python3 research/scripts/train_batched.py jobs/E11_width_wd_sweep.json --only 3 --out research --device cuda
+
+==== 2026-10-08 12:02:50 python3 research/scripts/train_batched.py jobs/E11_width_wd_sweep.json --only 4 --out research --device cuda
+
+==== 2026-10-08 12:02:50 python3 research/scripts/train_batched.py jobs/E11_width_wd_sweep.json --only 5 --out research --device cuda
+
+==== 2026-10-08 12:02:50 python3 research/scripts/train_batched.py jobs/E11_width_wd_sweep.json --only 6 --out research --device cuda
+
+==== 2026-10-08 12:02:50 python3 research/scripts/train_batched.py jobs/E11_width_wd_sweep.json --only 7 --out research --device cuda
+
+==== 2026-10-08 12:02:50 python3 research/scripts/train_batched.py jobs/E11_width_wd_sweep.json --only 8 --out research --device cuda
+
+==== 2026-10-08 12:02:50 python3 research/scripts/train_batched.py jobs/E11_width_wd_sweep.json --only 9 --out research --device cuda
+
+==== 2026-10-08 12:02:50 python3 research/scripts/train_batched.py jobs/E11_width_wd_sweep.json --only 10 --out research --device cuda
+
+==== 2026-10-08 12:02:50 python3 research/scripts/train_batched.py jobs/E11_width_wd_sweep.json --only 11 --out research --device cuda
+step       0 | 6/6 active | test acc 0.023 0.026 0.020 0.020 0.025 0.020 | 1s
+step       0 | 6/6 active | test acc 0.023 0.026 0.020 0.020 0.025 0.020 | 1s
+step       0 | 6/6 active | test acc 0.023 0.019 0.014 0.010 0.020 0.014 | 1s
+step       0 | 6/6 active | test acc 0.023 0.019 0.014 0.010 0.020 0.014 | 1s
+step       0 | 6/6 active | test acc 0.023 0.026 0.020 0.020 0.025 0.020 | 1s
+step       0 | 6/6 active | test acc 0.023 0.026 0.020 0.020 0.025 0.020 | 1s
+step       0 | 6/6 active | test acc 0.023 0.019 0.014 0.010 0.020 0.014 | 1s
+step       0 | 6/6 active | test acc 0.020 0.013 0.016 0.013 0.025 0.022 | 1s
+step       0 | 6/6 active | test acc 0.023 0.019 0.014 0.010 0.020 0.014 | 1s
+step       0 | 6/6 active | test acc 0.020 0.013 0.016 0.013 0.025 0.022 | 1s
+step       0 | 6/6 active | test acc 0.020 0.013 0.016 0.013 0.025 0.022 | 1s
+step       0 | 6/6 active | test acc 0.020 0.013 0.016 0.013 0.025 0.022 | 1s

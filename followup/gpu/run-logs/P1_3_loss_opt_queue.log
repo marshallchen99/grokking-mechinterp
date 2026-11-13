@@ -1,0 +1,14 @@
+QUEUE qf_1_1_1_p59_mlp_quad20k_mseadaml2  M=3
+QUEUE qf_1_0_1_p59_mlp_quad20k_mseadaml2  M=3
+QUEUE qf_1_1_1_p59_mlp_quad20k_mseonly  M=3
+QUEUE qf_1_0_1_p59_mlp_quad20k_mseonly  M=3
+[      0s] START qf_1_1_1_p59_mlp_quad20k_mseadaml2
+[      0s] START qf_1_0_1_p59_mlp_quad20k_mseadaml2
+[      0s] START qf_1_1_1_p59_mlp_quad20k_mseonly
+[      0s] START qf_1_0_1_p59_mlp_quad20k_mseonly
+[     35s] OK        qf_1_0_1_p59_mlp_quad20k_mseonly  (35s)
+[     80s] OK        qf_1_1_1_p59_mlp_quad20k_mseadaml2  (80s)
+[     80s] OK        qf_1_0_1_p59_mlp_quad20k_mseadaml2  (80s)
+[     90s] OK        qf_1_1_1_p59_mlp_quad20k_mseonly  (90s)
+
+4 ran, 0 skipped, 0 failed

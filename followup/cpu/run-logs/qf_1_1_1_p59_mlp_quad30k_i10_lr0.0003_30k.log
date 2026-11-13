@@ -1,0 +1,16 @@
+
+==== 2026-10-10 17:05:36 python3 research/scripts/train_batched.py jobs/R3_cpu_stage1.json --only 5 --out runs_cpu --device cpu --threads 3
+step       0 | 4/4 active | test acc 0.023 0.026 0.020 0.025 | 0s
+step    5000 | 4/4 active | test acc 0.013 0.016 0.000 0.001 | 4124s
+step   10000 | 4/4 active | test acc 0.010 0.014 0.000 0.000 | 5342s
+step   15000 | 4/4 active | test acc 0.004 0.009 0.484 0.556 | 6465s
+GROKKED qf_1_0_1_p59_f0.8_mono_s1_mlp_quad30k_i10_lr0.0003_30k at step 17700 (test acc 0.9928)
+GROKKED qf_1_0_1_p59_f0.8_mono_s0_mlp_quad30k_i10_lr0.0003_30k at step 18200 (test acc 0.9914)
+DONE qf_1_0_1_p59_f0.8_mono_s1_mlp_quad30k_i10_lr0.0003_30k at step 19700
+step   20000 | 3/4 active | test acc 0.003 0.000 1.000 0.999 | 7554s
+DONE qf_1_0_1_p59_f0.8_mono_s0_mlp_quad30k_i10_lr0.0003_30k at step 20200
+step   25000 | 2/4 active | test acc 0.001 0.000 1.000 0.999 | 8705s
+DONE qf_1_1_1_p59_f0.8_mono_s0_mlp_quad30k_i10_lr0.0003_30k at step 30000
+DONE qf_1_1_1_p59_f0.8_mono_s1_mlp_quad30k_i10_lr0.0003_30k at step 30000
+step   30000 | 0/4 active | test acc 0.001 0.000 1.000 0.999 | 9892s
+GROUP DONE [{"tag": "qf_1_1_1_p59_f0.8_mono_s0_mlp_quad30k_i10_lr0.0003_30k", "grok_step": null, "final_step": 30000}, {"tag": "qf_1_1_1_p59_f0.8_mono_s1_mlp_quad30k_i10_lr0.0003_30k", "grok_step": null, "final_step": 30000}, {"tag": "qf_1_0_1_p59_f0.8_mono_s0_mlp_quad30k_i10_lr0.0003_30k", "grok_step": 18200, "final_step": 20200}, {"tag": "qf_1_0_1_p59_f0.8_mono_s1_mlp_quad30k_i10_lr0.0003_30k", "grok_step": 17700, "final_step": 19700}]

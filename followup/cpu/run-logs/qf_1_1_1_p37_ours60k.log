@@ -1,0 +1,24 @@
+
+==== 2026-09-25 19:01:21 python3 research/scripts/train_batched.py jobs/E9_transformer_cpu.json --only 1 --out runs_cpu --device cpu
+step       0 | 8/8 active | test acc 0.060 0.000 0.034 0.030 0.000 0.000 0.022 0.037 | 1s
+step    5000 | 8/8 active | test acc 0.030 0.000 0.000 0.000 0.029 0.000 0.000 0.000 | 672s
+step   10000 | 8/8 active | test acc 0.075 0.000 0.000 0.030 0.059 0.029 0.000 0.007 | 1370s
+step   15000 | 8/8 active | test acc 0.164 0.000 0.000 0.060 0.059 0.059 0.000 0.007 | 2065s
+step   20000 | 8/8 active | test acc 0.209 0.000 0.000 0.045 0.059 0.059 0.000 0.015 | 2758s
+step   25000 | 8/8 active | test acc 0.313 0.000 0.000 0.030 0.059 0.059 0.000 0.007 | 3449s
+step   30000 | 8/8 active | test acc 0.403 0.000 0.000 0.030 0.059 0.059 0.000 0.007 | 4143s
+step   35000 | 8/8 active | test acc 0.403 0.015 0.015 0.045 0.029 0.059 0.000 0.015 | 4826s
+step   40000 | 8/8 active | test acc 0.403 0.015 0.015 0.052 0.029 0.147 0.007 0.015 | 5491s
+step   45000 | 8/8 active | test acc 0.403 0.015 0.030 0.075 0.029 0.147 0.007 0.015 | 6166s
+step   50000 | 8/8 active | test acc 0.403 0.015 0.030 0.090 0.029 0.147 0.007 0.015 | 6840s
+step   55000 | 8/8 active | test acc 0.388 0.015 0.030 0.082 0.029 0.147 0.007 0.007 | 7510s
+DONE qf_1_0_3_p37_f0.8_mono_s0_ours60k at step 60000
+DONE qf_1_0_3_p37_f0.8_mono_s1_ours60k at step 60000
+DONE qf_2_0_5_p37_f0.8_mono_s0_ours60k at step 60000
+DONE qf_2_0_5_p37_f0.8_mono_s1_ours60k at step 60000
+DONE qf_1_0_1_p37_f0.8_mono_s0_ours60k at step 60000
+DONE qf_1_0_1_p37_f0.8_mono_s1_ours60k at step 60000
+DONE qf_1_1_1_p37_f0.8_mono_s0_ours60k at step 60000
+DONE qf_1_1_1_p37_f0.8_mono_s1_ours60k at step 60000
+step   60000 | 0/8 active | test acc 0.388 0.090 0.030 0.112 0.029 0.147 0.007 0.007 | 8215s
+GROUP DONE [{"tag": "qf_1_0_3_p37_f0.8_mono_s0_ours60k", "grok_step": null, "final_step": 60000}, {"tag": "qf_1_0_3_p37_f0.8_mono_s1_ours60k", "grok_step": null, "final_step": 60000}, {"tag": "qf_2_0_5_p37_f0.8_mono_s0_ours60k", "grok_step": null, "final_step": 60000}, {"tag": "qf_2_0_5_p37_f0.8_mono_s1_ours60k", "grok_step": null, "final_step": 60000}, {"tag": "qf_1_0_1_p37_f0.8_mono_s0_ours60k", "grok_step": null, "final_step": 60000}, {"tag": "qf_1_0_1_p37_f0.8_mono_s1_ours60k", "grok_step": null, "final_step": 60000}, {"tag": "qf_1_1_1_p37_f0.8_mono_s0_ours60k", "grok_step": null, "final_step": 60000}, {"tag": "qf_1_1_1_p37_f0.8_mono_s1_ours60k", "grok_step": null, "final_step": 60000}]

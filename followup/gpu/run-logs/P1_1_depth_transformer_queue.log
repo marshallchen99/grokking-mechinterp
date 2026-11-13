@@ -1,0 +1,20 @@
+QUEUE qf_1_1_1_p79_ours280k  M=3
+QUEUE qf_1_m1_1_p79_ours280k  M=3
+QUEUE qf_1_0_1_p79_ours280k  M=3
+QUEUE qf_1_1_1_p89_ours280k  M=3
+QUEUE qf_1_m1_1_p89_ours280k  M=3
+QUEUE qf_1_0_1_p89_ours280k  M=3
+[      0s] START qf_1_1_1_p79_ours280k
+[      0s] START qf_1_m1_1_p79_ours280k
+[      0s] START qf_1_0_1_p79_ours280k
+[      0s] START qf_1_1_1_p89_ours280k
+[      0s] START qf_1_m1_1_p89_ours280k
+[      0s] START qf_1_0_1_p89_ours280k
+[   8270s] OK        qf_1_1_1_p79_ours280k  (8270s)
+[   8270s] OK        qf_1_m1_1_p79_ours280k  (8270s)
+[   8270s] OK        qf_1_0_1_p79_ours280k  (8270s)
+[   8535s] OK        qf_1_0_1_p89_ours280k  (8535s)
+[   8540s] OK        qf_1_1_1_p89_ours280k  (8540s)
+[   8540s] OK        qf_1_m1_1_p89_ours280k  (8540s)
+
+6 ran, 0 skipped, 0 failed

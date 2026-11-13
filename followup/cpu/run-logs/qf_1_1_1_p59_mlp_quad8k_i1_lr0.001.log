@@ -1,0 +1,11 @@
+
+==== 2026-10-10 10:33:47 python3 research/scripts/train_batched.py jobs/P1_recovery.json --only 8 --out runs_cpu --device cpu --threads 3
+step       0 | 4/4 active | test acc 0.023 0.026 0.020 0.025 | 0s
+GROKKED qf_1_0_1_p59_f0.8_mono_s1_mlp_quad8k_i1_lr0.001 at step 2200 (test acc 0.9928)
+GROKKED qf_1_0_1_p59_f0.8_mono_s0_mlp_quad8k_i1_lr0.001 at step 2300 (test acc 0.9957)
+DONE qf_1_0_1_p59_f0.8_mono_s1_mlp_quad8k_i1_lr0.001 at step 4200
+DONE qf_1_0_1_p59_f0.8_mono_s0_mlp_quad8k_i1_lr0.001 at step 4300
+step    5000 | 2/4 active | test acc 0.000 0.000 1.000 0.999 | 704s
+DONE qf_1_1_1_p59_f0.8_mono_s0_mlp_quad8k_i1_lr0.001 at step 8000
+DONE qf_1_1_1_p59_f0.8_mono_s1_mlp_quad8k_i1_lr0.001 at step 8000
+GROUP DONE [{"tag": "qf_1_1_1_p59_f0.8_mono_s0_mlp_quad8k_i1_lr0.001", "grok_step": null, "final_step": 8000}, {"tag": "qf_1_1_1_p59_f0.8_mono_s1_mlp_quad8k_i1_lr0.001", "grok_step": null, "final_step": 8000}, {"tag": "qf_1_0_1_p59_f0.8_mono_s0_mlp_quad8k_i1_lr0.001", "grok_step": 2300, "final_step": 4300}, {"tag": "qf_1_0_1_p59_f0.8_mono_s1_mlp_quad8k_i1_lr0.001", "grok_step": 2200, "final_step": 4200}]

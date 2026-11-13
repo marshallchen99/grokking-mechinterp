@@ -1,0 +1,20 @@
+QUEUE qf_1_1_1_p59_mlp_quad12k_w16_fit  M=3
+QUEUE qf_1_1_1_p59_mlp_quad12k_w32_fit  M=3
+QUEUE qf_1_1_1_p59_mlp_quad12k_w64_fit  M=3
+QUEUE qf_1_1_1_p59_mlp_quad12k_w128_fit  M=3
+QUEUE qf_1_1_1_p59_mlp_quad12k_w256_fit  M=6
+QUEUE qf_1_1_1_p59_mlp_quad30k_i10_lr0.0003_30k  M=4
+[      0s] START qf_1_1_1_p59_mlp_quad12k_w16_fit
+[    365s] OK        qf_1_1_1_p59_mlp_quad12k_w16_fit  (365s)
+[    365s] START qf_1_1_1_p59_mlp_quad12k_w32_fit
+[    915s] OK        qf_1_1_1_p59_mlp_quad12k_w32_fit  (550s)
+[    915s] START qf_1_1_1_p59_mlp_quad12k_w64_fit
+[   1010s] OK        qf_1_1_1_p59_mlp_quad12k_w64_fit  (95s)
+[   1010s] START qf_1_1_1_p59_mlp_quad12k_w128_fit
+[   1070s] OK        qf_1_1_1_p59_mlp_quad12k_w128_fit  (60s)
+[   1070s] START qf_1_1_1_p59_mlp_quad12k_w256_fit
+[   1210s] OK        qf_1_1_1_p59_mlp_quad12k_w256_fit  (140s)
+[   1210s] START qf_1_1_1_p59_mlp_quad30k_i10_lr0.0003_30k
+[  11116s] OK        qf_1_1_1_p59_mlp_quad30k_i10_lr0.0003_30k  (9906s)
+
+6 ran, 0 skipped, 0 failed

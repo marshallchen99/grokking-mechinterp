@@ -1,0 +1,3614 @@
+{
+ "qf_0_1_0_p59_f0.8_value_s0_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    17,
+    23,
+    28
+   ],
+   "top_k_shares": [
+    0.0438,
+    0.0435,
+    0.0429
+   ],
+   "union_share": 0.1302
+  },
+  "square": {
+   "top_k": [
+    23,
+    20,
+    7
+   ],
+   "top_k_shares": [
+    0.0631,
+    0.0611,
+    0.0591
+   ],
+   "union_share": 0.1887
+  },
+  "dlog": {
+   "top_k": [
+    18,
+    17,
+    28
+   ],
+   "top_k_shares": [
+    0.2762,
+    0.241,
+    0.1753
+   ],
+   "union_share": 0.6926
+  },
+  "chance_union": 0.1034,
+  "step": 11200
+ },
+ "qf_0_1_0_p59_f0.8_value_s0_ours200k": {
+  "additive": {
+   "top_k": [
+    17,
+    22,
+    25
+   ],
+   "top_k_shares": [
+    0.0365,
+    0.0362,
+    0.036
+   ],
+   "union_share": 0.1087
+  },
+  "square": {
+   "top_k": [
+    15,
+    4,
+    1
+   ],
+   "top_k_shares": [
+    0.0546,
+    0.0546,
+    0.0545
+   ],
+   "union_share": 0.1469
+  },
+  "dlog": {
+   "top_k": [
+    2,
+    16,
+    25
+   ],
+   "top_k_shares": [
+    0.3405,
+    0.2784,
+    0.2362
+   ],
+   "union_share": 0.8551
+  },
+  "chance_union": 0.1034,
+  "step": 57900
+ },
+ "qf_0_1_0_p59_f0.8_value_s1_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    22,
+    17,
+    7
+   ],
+   "top_k_shares": [
+    0.0374,
+    0.0366,
+    0.0362
+   ],
+   "union_share": 0.1103
+  },
+  "square": {
+   "top_k": [
+    7,
+    27,
+    21
+   ],
+   "top_k_shares": [
+    0.0526,
+    0.0521,
+    0.052
+   ],
+   "union_share": 0.149
+  },
+  "dlog": {
+   "top_k": [
+    7,
+    12,
+    8
+   ],
+   "top_k_shares": [
+    0.2753,
+    0.2434,
+    0.2368
+   ],
+   "union_share": 0.7555
+  },
+  "chance_union": 0.1034,
+  "step": 10800
+ },
+ "qf_0_1_0_p59_f0.8_value_s1_ours200k": {
+  "additive": {
+   "top_k": [
+    25,
+    17,
+    1
+   ],
+   "top_k_shares": [
+    0.0683,
+    0.0548,
+    0.0477
+   ],
+   "union_share": 0.1708
+  },
+  "square": {
+   "top_k": [
+    12,
+    2,
+    23
+   ],
+   "top_k_shares": [
+    0.0778,
+    0.0752,
+    0.0737
+   ],
+   "union_share": 0.2173
+  },
+  "dlog": {
+   "top_k": [
+    12,
+    16,
+    5
+   ],
+   "top_k_shares": [
+    0.36,
+    0.2726,
+    0.1211
+   ],
+   "union_share": 0.7537
+  },
+  "chance_union": 0.1034,
+  "step": 19300
+ },
+ "qf_0_1_0_p59_f0.8_value_s2_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    6,
+    22,
+    21
+   ],
+   "top_k_shares": [
+    0.0438,
+    0.04,
+    0.039
+   ],
+   "union_share": 0.1228
+  },
+  "square": {
+   "top_k": [
+    13,
+    2,
+    8
+   ],
+   "top_k_shares": [
+    0.0679,
+    0.0597,
+    0.0583
+   ],
+   "union_share": 0.1781
+  },
+  "dlog": {
+   "top_k": [
+    16,
+    19,
+    14
+   ],
+   "top_k_shares": [
+    0.3002,
+    0.2426,
+    0.172
+   ],
+   "union_share": 0.7149
+  },
+  "chance_union": 0.1034,
+  "step": 11400
+ },
+ "qf_0_1_0_p59_f0.8_value_s2_ours200k": {
+  "additive": {
+   "top_k": [
+    15,
+    9,
+    10
+   ],
+   "top_k_shares": [
+    0.0804,
+    0.06,
+    0.0515
+   ],
+   "union_share": 0.1919
+  },
+  "square": {
+   "top_k": [
+    15,
+    13,
+    14
+   ],
+   "top_k_shares": [
+    0.0811,
+    0.0763,
+    0.071
+   ],
+   "union_share": 0.2162
+  },
+  "dlog": {
+   "top_k": [
+    4,
+    3,
+    26
+   ],
+   "top_k_shares": [
+    0.3732,
+    0.1791,
+    0.1321
+   ],
+   "union_share": 0.6844
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_0_1_0_p61_f0.8_value_s0_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    10,
+    29,
+    17
+   ],
+   "top_k_shares": [
+    0.0401,
+    0.0397,
+    0.039
+   ],
+   "union_share": 0.1188
+  },
+  "square": {
+   "top_k": [
+    9,
+    3,
+    4
+   ],
+   "top_k_shares": [
+    0.0868,
+    0.0844,
+    0.0841
+   ],
+   "union_share": 0.2275
+  },
+  "dlog": {
+   "top_k": [
+    12,
+    10,
+    27
+   ],
+   "top_k_shares": [
+    0.2987,
+    0.295,
+    0.2604
+   ],
+   "union_share": 0.8541
+  },
+  "chance_union": 0.1,
+  "step": 10800
+ },
+ "qf_0_1_0_p61_f0.8_value_s0_ours200k": {
+  "additive": {
+   "top_k": [
+    23,
+    9,
+    25
+   ],
+   "top_k_shares": [
+    0.0556,
+    0.0492,
+    0.0485
+   ],
+   "union_share": 0.1532
+  },
+  "square": {
+   "top_k": [
+    20,
+    3,
+    9
+   ],
+   "top_k_shares": [
+    0.104,
+    0.0876,
+    0.0777
+   ],
+   "union_share": 0.2254
+  },
+  "dlog": {
+   "top_k": [
+    19,
+    10,
+    4
+   ],
+   "top_k_shares": [
+    0.3108,
+    0.2093,
+    0.1038
+   ],
+   "union_share": 0.6239
+  },
+  "chance_union": 0.1,
+  "step": 35300
+ },
+ "qf_0_1_0_p61_f0.8_value_s1_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    24,
+    18,
+    23
+   ],
+   "top_k_shares": [
+    0.0375,
+    0.0364,
+    0.0363
+   ],
+   "union_share": 0.1102
+  },
+  "square": {
+   "top_k": [
+    20,
+    16,
+    25
+   ],
+   "top_k_shares": [
+    0.0777,
+    0.077,
+    0.0763
+   ],
+   "union_share": 0.1842
+  },
+  "dlog": {
+   "top_k": [
+    23,
+    12,
+    10
+   ],
+   "top_k_shares": [
+    0.3452,
+    0.2663,
+    0.209
+   ],
+   "union_share": 0.8205
+  },
+  "chance_union": 0.1,
+  "step": 11100
+ },
+ "qf_0_1_0_p61_f0.8_value_s1_ours200k": {
+  "additive": {
+   "top_k": [
+    18,
+    5,
+    26
+   ],
+   "top_k_shares": [
+    0.0826,
+    0.0609,
+    0.0599
+   ],
+   "union_share": 0.2033
+  },
+  "square": {
+   "top_k": [
+    7,
+    10,
+    23
+   ],
+   "top_k_shares": [
+    0.1695,
+    0.1091,
+    0.0828
+   ],
+   "union_share": 0.3261
+  },
+  "dlog": {
+   "top_k": [
+    16,
+    11,
+    14
+   ],
+   "top_k_shares": [
+    0.2702,
+    0.2176,
+    0.1337
+   ],
+   "union_share": 0.6214
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_0_1_0_p61_f0.8_value_s2_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    18,
+    23,
+    1
+   ],
+   "top_k_shares": [
+    0.0393,
+    0.0374,
+    0.0371
+   ],
+   "union_share": 0.1138
+  },
+  "square": {
+   "top_k": [
+    7,
+    23,
+    17
+   ],
+   "top_k_shares": [
+    0.06,
+    0.0581,
+    0.0568
+   ],
+   "union_share": 0.1869
+  },
+  "dlog": {
+   "top_k": [
+    2,
+    25,
+    22
+   ],
+   "top_k_shares": [
+    0.2849,
+    0.2565,
+    0.2345
+   ],
+   "union_share": 0.7759
+  },
+  "chance_union": 0.1,
+  "step": 11500
+ },
+ "qf_0_1_0_p61_f0.8_value_s2_ours200k": {
+  "additive": {
+   "top_k": [
+    3,
+    5,
+    12
+   ],
+   "top_k_shares": [
+    0.0657,
+    0.0637,
+    0.0577
+   ],
+   "union_share": 0.1871
+  },
+  "square": {
+   "top_k": [
+    10,
+    2,
+    7
+   ],
+   "top_k_shares": [
+    0.0972,
+    0.0795,
+    0.0788
+   ],
+   "union_share": 0.2356
+  },
+  "dlog": {
+   "top_k": [
+    1,
+    26,
+    14
+   ],
+   "top_k_shares": [
+    0.3635,
+    0.1935,
+    0.1493
+   ],
+   "union_share": 0.7063
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_0_1_p59_f0.8_value_s0_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    19,
+    5,
+    21
+   ],
+   "top_k_shares": [
+    0.0489,
+    0.0431,
+    0.0429
+   ],
+   "union_share": 0.135
+  },
+  "square": {
+   "top_k": [
+    14,
+    18,
+    19
+   ],
+   "top_k_shares": [
+    0.2588,
+    0.2425,
+    0.2027
+   ],
+   "union_share": 0.6874
+  },
+  "dlog": {
+   "top_k": [
+    6,
+    28,
+    22
+   ],
+   "top_k_shares": [
+    0.0897,
+    0.0859,
+    0.0822
+   ],
+   "union_share": 0.2578
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_0_1_p59_f0.8_value_s0_ours200k": {
+  "additive": {
+   "top_k": [
+    14,
+    19,
+    2
+   ],
+   "top_k_shares": [
+    0.0545,
+    0.0528,
+    0.0521
+   ],
+   "union_share": 0.1595
+  },
+  "square": {
+   "top_k": [
+    27,
+    14,
+    6
+   ],
+   "top_k_shares": [
+    0.3064,
+    0.2617,
+    0.2239
+   ],
+   "union_share": 0.747
+  },
+  "dlog": {
+   "top_k": [
+    6,
+    22,
+    14
+   ],
+   "top_k_shares": [
+    0.1385,
+    0.1034,
+    0.1004
+   ],
+   "union_share": 0.3422
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_0_1_p59_f0.8_value_s1_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    23,
+    15,
+    22
+   ],
+   "top_k_shares": [
+    0.0429,
+    0.0428,
+    0.0413
+   ],
+   "union_share": 0.127
+  },
+  "square": {
+   "top_k": [
+    18,
+    28,
+    22
+   ],
+   "top_k_shares": [
+    0.2725,
+    0.2674,
+    0.2495
+   ],
+   "union_share": 0.7578
+  },
+  "dlog": {
+   "top_k": [
+    28,
+    14,
+    2
+   ],
+   "top_k_shares": [
+    0.0905,
+    0.0897,
+    0.0861
+   ],
+   "union_share": 0.2663
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_0_1_p59_f0.8_value_s1_ours200k": {
+  "additive": {
+   "top_k": [
+    24,
+    3,
+    16
+   ],
+   "top_k_shares": [
+    0.0615,
+    0.0527,
+    0.0514
+   ],
+   "union_share": 0.1656
+  },
+  "square": {
+   "top_k": [
+    20,
+    18,
+    11
+   ],
+   "top_k_shares": [
+    0.3291,
+    0.2315,
+    0.1935
+   ],
+   "union_share": 0.7144
+  },
+  "dlog": {
+   "top_k": [
+    20,
+    14,
+    18
+   ],
+   "top_k_shares": [
+    0.1086,
+    0.1075,
+    0.1009
+   ],
+   "union_share": 0.317
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_0_1_p59_f0.8_value_s2_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    27,
+    26,
+    18
+   ],
+   "top_k_shares": [
+    0.0481,
+    0.0473,
+    0.0448
+   ],
+   "union_share": 0.1402
+  },
+  "square": {
+   "top_k": [
+    9,
+    8,
+    22
+   ],
+   "top_k_shares": [
+    0.3343,
+    0.2814,
+    0.2686
+   ],
+   "union_share": 0.8552
+  },
+  "dlog": {
+   "top_k": [
+    2,
+    28,
+    22
+   ],
+   "top_k_shares": [
+    0.0934,
+    0.081,
+    0.0787
+   ],
+   "union_share": 0.253
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_0_1_p59_f0.8_value_s2_ours200k": {
+  "additive": {
+   "top_k": [
+    29,
+    2,
+    6
+   ],
+   "top_k_shares": [
+    0.0943,
+    0.0881,
+    0.0632
+   ],
+   "union_share": 0.2457
+  },
+  "square": {
+   "top_k": [
+    5,
+    8,
+    6
+   ],
+   "top_k_shares": [
+    0.2223,
+    0.213,
+    0.2101
+   ],
+   "union_share": 0.6318
+  },
+  "dlog": {
+   "top_k": [
+    22,
+    20,
+    26
+   ],
+   "top_k_shares": [
+    0.1174,
+    0.1127,
+    0.1112
+   ],
+   "union_share": 0.3414
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_0_1_p61_f0.8_value_s0_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    5,
+    23,
+    29
+   ],
+   "top_k_shares": [
+    0.042,
+    0.0417,
+    0.0398
+   ],
+   "union_share": 0.1235
+  },
+  "square": {
+   "top_k": [
+    8,
+    30,
+    5
+   ],
+   "top_k_shares": [
+    0.3651,
+    0.3443,
+    0.2655
+   ],
+   "union_share": 0.9335
+  },
+  "dlog": {
+   "top_k": [
+    18,
+    2,
+    14
+   ],
+   "top_k_shares": [
+    0.1191,
+    0.1048,
+    0.093
+   ],
+   "union_share": 0.3169
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_0_1_p61_f0.8_value_s0_ours200k": {
+  "additive": {
+   "top_k": [
+    27,
+    18,
+    11
+   ],
+   "top_k_shares": [
+    0.0509,
+    0.0449,
+    0.0395
+   ],
+   "union_share": 0.1353
+  },
+  "square": {
+   "top_k": [
+    12,
+    7,
+    16
+   ],
+   "top_k_shares": [
+    0.3276,
+    0.3037,
+    0.257
+   ],
+   "union_share": 0.8579
+  },
+  "dlog": {
+   "top_k": [
+    14,
+    12,
+    4
+   ],
+   "top_k_shares": [
+    0.0878,
+    0.0874,
+    0.0824
+   ],
+   "union_share": 0.2575
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_0_1_p61_f0.8_value_s1_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    2,
+    22,
+    5
+   ],
+   "top_k_shares": [
+    0.049,
+    0.0408,
+    0.0392
+   ],
+   "union_share": 0.129
+  },
+  "square": {
+   "top_k": [
+    16,
+    18,
+    22
+   ],
+   "top_k_shares": [
+    0.2793,
+    0.271,
+    0.2041
+   ],
+   "union_share": 0.7221
+  },
+  "dlog": {
+   "top_k": [
+    10,
+    2,
+    26
+   ],
+   "top_k_shares": [
+    0.0999,
+    0.0854,
+    0.0844
+   ],
+   "union_share": 0.2697
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_0_1_p61_f0.8_value_s1_ours200k": {
+  "additive": {
+   "top_k": [
+    18,
+    26,
+    19
+   ],
+   "top_k_shares": [
+    0.0615,
+    0.0614,
+    0.0553
+   ],
+   "union_share": 0.1782
+  },
+  "square": {
+   "top_k": [
+    18,
+    1,
+    29
+   ],
+   "top_k_shares": [
+    0.3639,
+    0.2511,
+    0.187
+   ],
+   "union_share": 0.7638
+  },
+  "dlog": {
+   "top_k": [
+    28,
+    14,
+    18
+   ],
+   "top_k_shares": [
+    0.1197,
+    0.1011,
+    0.0891
+   ],
+   "union_share": 0.3099
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_0_1_p61_f0.8_value_s2_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    15,
+    2,
+    18
+   ],
+   "top_k_shares": [
+    0.0437,
+    0.0395,
+    0.0386
+   ],
+   "union_share": 0.1217
+  },
+  "square": {
+   "top_k": [
+    23,
+    16,
+    5
+   ],
+   "top_k_shares": [
+    0.2826,
+    0.2766,
+    0.26
+   ],
+   "union_share": 0.798
+  },
+  "dlog": {
+   "top_k": [
+    26,
+    10,
+    4
+   ],
+   "top_k_shares": [
+    0.0991,
+    0.0925,
+    0.0875
+   ],
+   "union_share": 0.2791
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_0_1_p61_f0.8_value_s2_ours200k": {
+  "additive": {
+   "top_k": [
+    14,
+    26,
+    18
+   ],
+   "top_k_shares": [
+    0.0705,
+    0.0666,
+    0.0624
+   ],
+   "union_share": 0.1995
+  },
+  "square": {
+   "top_k": [
+    7,
+    1,
+    19
+   ],
+   "top_k_shares": [
+    0.3738,
+    0.2604,
+    0.243
+   ],
+   "union_share": 0.827
+  },
+  "dlog": {
+   "top_k": [
+    10,
+    14,
+    6
+   ],
+   "top_k_shares": [
+    0.1071,
+    0.106,
+    0.1052
+   ],
+   "union_share": 0.3183
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_0_3_p59_f0.8_value_s0_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    2,
+    26,
+    24
+   ],
+   "top_k_shares": [
+    0.0575,
+    0.053,
+    0.0481
+   ],
+   "union_share": 0.1586
+  },
+  "square": {
+   "top_k": [
+    19,
+    24,
+    29
+   ],
+   "top_k_shares": [
+    0.178,
+    0.1367,
+    0.1256
+   ],
+   "union_share": 0.4222
+  },
+  "dlog": {
+   "top_k": [
+    16,
+    18,
+    12
+   ],
+   "top_k_shares": [
+    0.1228,
+    0.1136,
+    0.1081
+   ],
+   "union_share": 0.3445
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_0_3_p59_f0.8_value_s0_ours200k": {
+  "additive": {
+   "top_k": [
+    4,
+    5,
+    16
+   ],
+   "top_k_shares": [
+    0.0707,
+    0.051,
+    0.0464
+   ],
+   "union_share": 0.1681
+  },
+  "square": {
+   "top_k": [
+    29,
+    28,
+    19
+   ],
+   "top_k_shares": [
+    0.248,
+    0.1825,
+    0.1319
+   ],
+   "union_share": 0.5386
+  },
+  "dlog": {
+   "top_k": [
+    12,
+    16,
+    14
+   ],
+   "top_k_shares": [
+    0.1274,
+    0.0995,
+    0.0943
+   ],
+   "union_share": 0.3212
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_0_3_p59_f0.8_value_s1_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    2,
+    25,
+    16
+   ],
+   "top_k_shares": [
+    0.0521,
+    0.0515,
+    0.0469
+   ],
+   "union_share": 0.1506
+  },
+  "square": {
+   "top_k": [
+    23,
+    1,
+    2
+   ],
+   "top_k_shares": [
+    0.2537,
+    0.1944,
+    0.1371
+   ],
+   "union_share": 0.5578
+  },
+  "dlog": {
+   "top_k": [
+    12,
+    28,
+    2
+   ],
+   "top_k_shares": [
+    0.1286,
+    0.1188,
+    0.0956
+   ],
+   "union_share": 0.343
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_0_3_p59_f0.8_value_s1_ours200k": {
+  "additive": {
+   "top_k": [
+    22,
+    20,
+    13
+   ],
+   "top_k_shares": [
+    0.0722,
+    0.0606,
+    0.0489
+   ],
+   "union_share": 0.1818
+  },
+  "square": {
+   "top_k": [
+    5,
+    16,
+    15
+   ],
+   "top_k_shares": [
+    0.1758,
+    0.1427,
+    0.1414
+   ],
+   "union_share": 0.4459
+  },
+  "dlog": {
+   "top_k": [
+    14,
+    12,
+    20
+   ],
+   "top_k_shares": [
+    0.1277,
+    0.1166,
+    0.1075
+   ],
+   "union_share": 0.3517
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_0_3_p59_f0.8_value_s2_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    24,
+    16,
+    3
+   ],
+   "top_k_shares": [
+    0.0544,
+    0.049,
+    0.046
+   ],
+   "union_share": 0.1494
+  },
+  "square": {
+   "top_k": [
+    8,
+    17,
+    22
+   ],
+   "top_k_shares": [
+    0.2174,
+    0.2138,
+    0.1646
+   ],
+   "union_share": 0.5593
+  },
+  "dlog": {
+   "top_k": [
+    28,
+    14,
+    12
+   ],
+   "top_k_shares": [
+    0.1109,
+    0.1019,
+    0.0948
+   ],
+   "union_share": 0.3075
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_0_3_p59_f0.8_value_s2_ours200k": {
+  "additive": {
+   "top_k": [
+    10,
+    8,
+    15
+   ],
+   "top_k_shares": [
+    0.0688,
+    0.0637,
+    0.0521
+   ],
+   "union_share": 0.1847
+  },
+  "square": {
+   "top_k": [
+    7,
+    17,
+    8
+   ],
+   "top_k_shares": [
+    0.1768,
+    0.1426,
+    0.1421
+   ],
+   "union_share": 0.4322
+  },
+  "dlog": {
+   "top_k": [
+    16,
+    12,
+    26
+   ],
+   "top_k_shares": [
+    0.1468,
+    0.1314,
+    0.1249
+   ],
+   "union_share": 0.4032
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_0_3_p61_f0.8_value_s0_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    13,
+    7,
+    18
+   ],
+   "top_k_shares": [
+    0.0505,
+    0.0495,
+    0.044
+   ],
+   "union_share": 0.1441
+  },
+  "square": {
+   "top_k": [
+    6,
+    23,
+    24
+   ],
+   "top_k_shares": [
+    0.223,
+    0.1992,
+    0.1968
+   ],
+   "union_share": 0.6128
+  },
+  "dlog": {
+   "top_k": [
+    18,
+    20,
+    2
+   ],
+   "top_k_shares": [
+    0.1698,
+    0.1311,
+    0.1156
+   ],
+   "union_share": 0.4165
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_0_3_p61_f0.8_value_s0_ours200k": {
+  "additive": {
+   "top_k": [
+    24,
+    26,
+    19
+   ],
+   "top_k_shares": [
+    0.0452,
+    0.0431,
+    0.0409
+   ],
+   "union_share": 0.1292
+  },
+  "square": {
+   "top_k": [
+    10,
+    30,
+    6
+   ],
+   "top_k_shares": [
+    0.1969,
+    0.1901,
+    0.1734
+   ],
+   "union_share": 0.5401
+  },
+  "dlog": {
+   "top_k": [
+    18,
+    20,
+    14
+   ],
+   "top_k_shares": [
+    0.1334,
+    0.1259,
+    0.1199
+   ],
+   "union_share": 0.3792
+  },
+  "chance_union": 0.1,
+  "step": 52500
+ },
+ "qf_1_0_3_p61_f0.8_value_s1_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    16,
+    14,
+    21
+   ],
+   "top_k_shares": [
+    0.0525,
+    0.0504,
+    0.0468
+   ],
+   "union_share": 0.1498
+  },
+  "square": {
+   "top_k": [
+    10,
+    2,
+    17
+   ],
+   "top_k_shares": [
+    0.2106,
+    0.1943,
+    0.1846
+   ],
+   "union_share": 0.5744
+  },
+  "dlog": {
+   "top_k": [
+    20,
+    18,
+    14
+   ],
+   "top_k_shares": [
+    0.1595,
+    0.15,
+    0.1275
+   ],
+   "union_share": 0.437
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_0_3_p61_f0.8_value_s1_ours200k": {
+  "additive": {
+   "top_k": [
+    11,
+    17,
+    4
+   ],
+   "top_k_shares": [
+    0.0508,
+    0.0488,
+    0.0442
+   ],
+   "union_share": 0.1438
+  },
+  "square": {
+   "top_k": [
+    24,
+    8,
+    10
+   ],
+   "top_k_shares": [
+    0.2368,
+    0.173,
+    0.1695
+   ],
+   "union_share": 0.569
+  },
+  "dlog": {
+   "top_k": [
+    14,
+    20,
+    18
+   ],
+   "top_k_shares": [
+    0.1412,
+    0.1299,
+    0.1215
+   ],
+   "union_share": 0.3926
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_0_3_p61_f0.8_value_s2_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    2,
+    1,
+    22
+   ],
+   "top_k_shares": [
+    0.0447,
+    0.043,
+    0.0428
+   ],
+   "union_share": 0.1304
+  },
+  "square": {
+   "top_k": [
+    8,
+    2,
+    17
+   ],
+   "top_k_shares": [
+    0.2274,
+    0.2038,
+    0.1882
+   ],
+   "union_share": 0.6029
+  },
+  "dlog": {
+   "top_k": [
+    18,
+    20,
+    2
+   ],
+   "top_k_shares": [
+    0.193,
+    0.1456,
+    0.1202
+   ],
+   "union_share": 0.4589
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_0_3_p61_f0.8_value_s2_ours200k": {
+  "additive": {
+   "top_k": [
+    7,
+    11,
+    8
+   ],
+   "top_k_shares": [
+    0.0471,
+    0.0458,
+    0.0445
+   ],
+   "union_share": 0.1374
+  },
+  "square": {
+   "top_k": [
+    18,
+    6,
+    28
+   ],
+   "top_k_shares": [
+    0.1516,
+    0.1483,
+    0.1352
+   ],
+   "union_share": 0.4189
+  },
+  "dlog": {
+   "top_k": [
+    18,
+    2,
+    14
+   ],
+   "top_k_shares": [
+    0.1582,
+    0.1412,
+    0.131
+   ],
+   "union_share": 0.4303
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_0_p59_f0.8_value_s0_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    21,
+    8,
+    27
+   ],
+   "top_k_shares": [
+    0.0532,
+    0.0505,
+    0.0495
+   ],
+   "union_share": 0.1532
+  },
+  "square": {
+   "top_k": [
+    8,
+    1,
+    22
+   ],
+   "top_k_shares": [
+    0.0727,
+    0.0715,
+    0.0667
+   ],
+   "union_share": 0.2101
+  },
+  "dlog": {
+   "top_k": [
+    10,
+    20,
+    18
+   ],
+   "top_k_shares": [
+    0.0753,
+    0.0673,
+    0.0637
+   ],
+   "union_share": 0.2064
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_0_p59_f0.8_value_s0_ours200k": {
+  "additive": {
+   "top_k": [
+    9,
+    20,
+    8
+   ],
+   "top_k_shares": [
+    0.0525,
+    0.0476,
+    0.0473
+   ],
+   "union_share": 0.1474
+  },
+  "square": {
+   "top_k": [
+    1,
+    6,
+    7
+   ],
+   "top_k_shares": [
+    0.0846,
+    0.077,
+    0.074
+   ],
+   "union_share": 0.2251
+  },
+  "dlog": {
+   "top_k": [
+    26,
+    4,
+    10
+   ],
+   "top_k_shares": [
+    0.0845,
+    0.0829,
+    0.0766
+   ],
+   "union_share": 0.244
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_0_p59_f0.8_value_s1_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    21,
+    8,
+    2
+   ],
+   "top_k_shares": [
+    0.0544,
+    0.0462,
+    0.0427
+   ],
+   "union_share": 0.1432
+  },
+  "square": {
+   "top_k": [
+    13,
+    17,
+    24
+   ],
+   "top_k_shares": [
+    0.0665,
+    0.0646,
+    0.064
+   ],
+   "union_share": 0.1881
+  },
+  "dlog": {
+   "top_k": [
+    26,
+    14,
+    4
+   ],
+   "top_k_shares": [
+    0.0692,
+    0.0669,
+    0.0618
+   ],
+   "union_share": 0.198
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_0_p59_f0.8_value_s1_ours200k": {
+  "additive": {
+   "top_k": [
+    17,
+    12,
+    22
+   ],
+   "top_k_shares": [
+    0.0624,
+    0.0506,
+    0.0496
+   ],
+   "union_share": 0.1626
+  },
+  "square": {
+   "top_k": [
+    2,
+    11,
+    20
+   ],
+   "top_k_shares": [
+    0.0956,
+    0.0812,
+    0.0807
+   ],
+   "union_share": 0.248
+  },
+  "dlog": {
+   "top_k": [
+    8,
+    14,
+    18
+   ],
+   "top_k_shares": [
+    0.0818,
+    0.0801,
+    0.0729
+   ],
+   "union_share": 0.2348
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_0_p59_f0.8_value_s2_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    20,
+    7,
+    5
+   ],
+   "top_k_shares": [
+    0.0553,
+    0.0541,
+    0.0502
+   ],
+   "union_share": 0.1596
+  },
+  "square": {
+   "top_k": [
+    9,
+    5,
+    24
+   ],
+   "top_k_shares": [
+    0.0837,
+    0.0783,
+    0.0756
+   ],
+   "union_share": 0.2274
+  },
+  "dlog": {
+   "top_k": [
+    26,
+    18,
+    28
+   ],
+   "top_k_shares": [
+    0.0853,
+    0.0802,
+    0.0672
+   ],
+   "union_share": 0.2327
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_0_p59_f0.8_value_s2_ours200k": {
+  "additive": {
+   "top_k": [
+    2,
+    9,
+    29
+   ],
+   "top_k_shares": [
+    0.0574,
+    0.0559,
+    0.0541
+   ],
+   "union_share": 0.1674
+  },
+  "square": {
+   "top_k": [
+    20,
+    8,
+    27
+   ],
+   "top_k_shares": [
+    0.0808,
+    0.0804,
+    0.0799
+   ],
+   "union_share": 0.2233
+  },
+  "dlog": {
+   "top_k": [
+    4,
+    18,
+    26
+   ],
+   "top_k_shares": [
+    0.0771,
+    0.0768,
+    0.0728
+   ],
+   "union_share": 0.2268
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_0_p61_f0.8_value_s0_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    29,
+    3,
+    10
+   ],
+   "top_k_shares": [
+    0.0627,
+    0.0513,
+    0.0449
+   ],
+   "union_share": 0.1589
+  },
+  "square": {
+   "top_k": [
+    11,
+    9,
+    3
+   ],
+   "top_k_shares": [
+    0.0775,
+    0.0741,
+    0.0702
+   ],
+   "union_share": 0.2175
+  },
+  "dlog": {
+   "top_k": [
+    24,
+    4,
+    22
+   ],
+   "top_k_shares": [
+    0.0684,
+    0.0667,
+    0.0645
+   ],
+   "union_share": 0.1996
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_0_p61_f0.8_value_s0_ours200k": {
+  "additive": {
+   "top_k": [
+    25,
+    14,
+    4
+   ],
+   "top_k_shares": [
+    0.0435,
+    0.0434,
+    0.0434
+   ],
+   "union_share": 0.1304
+  },
+  "square": {
+   "top_k": [
+    11,
+    8,
+    1
+   ],
+   "top_k_shares": [
+    0.0798,
+    0.0717,
+    0.0717
+   ],
+   "union_share": 0.2166
+  },
+  "dlog": {
+   "top_k": [
+    24,
+    6,
+    22
+   ],
+   "top_k_shares": [
+    0.0894,
+    0.0883,
+    0.0791
+   ],
+   "union_share": 0.2568
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_0_p61_f0.8_value_s1_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    15,
+    16,
+    19
+   ],
+   "top_k_shares": [
+    0.062,
+    0.0509,
+    0.0493
+   ],
+   "union_share": 0.1622
+  },
+  "square": {
+   "top_k": [
+    24,
+    9,
+    7
+   ],
+   "top_k_shares": [
+    0.0662,
+    0.0653,
+    0.0652
+   ],
+   "union_share": 0.1912
+  },
+  "dlog": {
+   "top_k": [
+    14,
+    22,
+    20
+   ],
+   "top_k_shares": [
+    0.0678,
+    0.062,
+    0.0604
+   ],
+   "union_share": 0.1902
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_0_p61_f0.8_value_s1_ours200k": {
+  "additive": {
+   "top_k": [
+    4,
+    11,
+    24
+   ],
+   "top_k_shares": [
+    0.0555,
+    0.0545,
+    0.0535
+   ],
+   "union_share": 0.1635
+  },
+  "square": {
+   "top_k": [
+    9,
+    25,
+    3
+   ],
+   "top_k_shares": [
+    0.0819,
+    0.078,
+    0.0736
+   ],
+   "union_share": 0.2328
+  },
+  "dlog": {
+   "top_k": [
+    6,
+    26,
+    14
+   ],
+   "top_k_shares": [
+    0.0903,
+    0.0722,
+    0.071
+   ],
+   "union_share": 0.2334
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_0_p61_f0.8_value_s2_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    7,
+    30,
+    29
+   ],
+   "top_k_shares": [
+    0.0503,
+    0.0501,
+    0.0478
+   ],
+   "union_share": 0.1482
+  },
+  "square": {
+   "top_k": [
+    7,
+    11,
+    16
+   ],
+   "top_k_shares": [
+    0.0661,
+    0.065,
+    0.0604
+   ],
+   "union_share": 0.1887
+  },
+  "dlog": {
+   "top_k": [
+    14,
+    8,
+    18
+   ],
+   "top_k_shares": [
+    0.0713,
+    0.0656,
+    0.0593
+   ],
+   "union_share": 0.1963
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_0_p61_f0.8_value_s2_ours200k": {
+  "additive": {
+   "top_k": [
+    1,
+    15,
+    11
+   ],
+   "top_k_shares": [
+    0.057,
+    0.053,
+    0.0474
+   ],
+   "union_share": 0.1575
+  },
+  "square": {
+   "top_k": [
+    10,
+    22,
+    26
+   ],
+   "top_k_shares": [
+    0.0935,
+    0.0824,
+    0.0798
+   ],
+   "union_share": 0.2423
+  },
+  "dlog": {
+   "top_k": [
+    14,
+    8,
+    18
+   ],
+   "top_k_shares": [
+    0.0912,
+    0.0832,
+    0.0768
+   ],
+   "union_share": 0.2512
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_1_p59_f0.8_value_s0_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    13,
+    1,
+    25
+   ],
+   "top_k_shares": [
+    0.0689,
+    0.0546,
+    0.0514
+   ],
+   "union_share": 0.1749
+  },
+  "square": {
+   "top_k": [
+    27,
+    1,
+    20
+   ],
+   "top_k_shares": [
+    0.0801,
+    0.0797,
+    0.0747
+   ],
+   "union_share": 0.2261
+  },
+  "dlog": {
+   "top_k": [
+    20,
+    4,
+    28
+   ],
+   "top_k_shares": [
+    0.078,
+    0.0757,
+    0.0714
+   ],
+   "union_share": 0.2252
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_1_p59_f0.8_value_s0_ours200k": {
+  "additive": {
+   "top_k": [
+    15,
+    25,
+    1
+   ],
+   "top_k_shares": [
+    0.0632,
+    0.053,
+    0.049
+   ],
+   "union_share": 0.1652
+  },
+  "square": {
+   "top_k": [
+    28,
+    7,
+    12
+   ],
+   "top_k_shares": [
+    0.0785,
+    0.0757,
+    0.074
+   ],
+   "union_share": 0.2297
+  },
+  "dlog": {
+   "top_k": [
+    20,
+    16,
+    26
+   ],
+   "top_k_shares": [
+    0.075,
+    0.0733,
+    0.0726
+   ],
+   "union_share": 0.2209
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_1_p59_f0.8_value_s1_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    23,
+    19,
+    25
+   ],
+   "top_k_shares": [
+    0.0612,
+    0.0602,
+    0.0564
+   ],
+   "union_share": 0.1778
+  },
+  "square": {
+   "top_k": [
+    18,
+    7,
+    2
+   ],
+   "top_k_shares": [
+    0.093,
+    0.0755,
+    0.0721
+   ],
+   "union_share": 0.2322
+  },
+  "dlog": {
+   "top_k": [
+    22,
+    18,
+    12
+   ],
+   "top_k_shares": [
+    0.0765,
+    0.0737,
+    0.0704
+   ],
+   "union_share": 0.2206
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_1_p59_f0.8_value_s1_ours200k": {
+  "additive": {
+   "top_k": [
+    6,
+    1,
+    19
+   ],
+   "top_k_shares": [
+    0.049,
+    0.0465,
+    0.0442
+   ],
+   "union_share": 0.1397
+  },
+  "square": {
+   "top_k": [
+    9,
+    27,
+    20
+   ],
+   "top_k_shares": [
+    0.0759,
+    0.0693,
+    0.0682
+   ],
+   "union_share": 0.2166
+  },
+  "dlog": {
+   "top_k": [
+    26,
+    4,
+    2
+   ],
+   "top_k_shares": [
+    0.0754,
+    0.0718,
+    0.0655
+   ],
+   "union_share": 0.2127
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_1_p59_f0.8_value_s2_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    18,
+    25,
+    15
+   ],
+   "top_k_shares": [
+    0.0631,
+    0.0476,
+    0.0457
+   ],
+   "union_share": 0.1564
+  },
+  "square": {
+   "top_k": [
+    18,
+    24,
+    13
+   ],
+   "top_k_shares": [
+    0.0885,
+    0.0875,
+    0.0843
+   ],
+   "union_share": 0.2511
+  },
+  "dlog": {
+   "top_k": [
+    10,
+    20,
+    26
+   ],
+   "top_k_shares": [
+    0.0789,
+    0.0759,
+    0.0741
+   ],
+   "union_share": 0.2289
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_1_p59_f0.8_value_s2_ours200k": {
+  "additive": {
+   "top_k": [
+    20,
+    8,
+    29
+   ],
+   "top_k_shares": [
+    0.0576,
+    0.0532,
+    0.0498
+   ],
+   "union_share": 0.1606
+  },
+  "square": {
+   "top_k": [
+    24,
+    23,
+    19
+   ],
+   "top_k_shares": [
+    0.0891,
+    0.0739,
+    0.072
+   ],
+   "union_share": 0.2236
+  },
+  "dlog": {
+   "top_k": [
+    2,
+    4,
+    28
+   ],
+   "top_k_shares": [
+    0.0885,
+    0.0706,
+    0.0654
+   ],
+   "union_share": 0.2244
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_1_p59_f0.9_value_s0_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    2,
+    1,
+    13
+   ],
+   "top_k_shares": [
+    0.0946,
+    0.0545,
+    0.0514
+   ],
+   "union_share": 0.2005
+  },
+  "square": {
+   "top_k": [
+    18,
+    27,
+    28
+   ],
+   "top_k_shares": [
+    0.0847,
+    0.0836,
+    0.0729
+   ],
+   "union_share": 0.2407
+  },
+  "dlog": {
+   "top_k": [
+    26,
+    2,
+    4
+   ],
+   "top_k_shares": [
+    0.0812,
+    0.076,
+    0.0758
+   ],
+   "union_share": 0.233
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_1_p59_f0.9_value_s0_ours200k": {
+  "additive": {
+   "top_k": [
+    2,
+    10,
+    15
+   ],
+   "top_k_shares": [
+    0.0507,
+    0.0489,
+    0.0476
+   ],
+   "union_share": 0.1471
+  },
+  "square": {
+   "top_k": [
+    21,
+    22,
+    12
+   ],
+   "top_k_shares": [
+    0.0759,
+    0.0703,
+    0.0678
+   ],
+   "union_share": 0.2097
+  },
+  "dlog": {
+   "top_k": [
+    4,
+    28,
+    16
+   ],
+   "top_k_shares": [
+    0.0722,
+    0.0664,
+    0.0662
+   ],
+   "union_share": 0.2048
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_1_p59_f0.9_value_s1_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    7,
+    4,
+    24
+   ],
+   "top_k_shares": [
+    0.0587,
+    0.0552,
+    0.0514
+   ],
+   "union_share": 0.1653
+  },
+  "square": {
+   "top_k": [
+    18,
+    17,
+    20
+   ],
+   "top_k_shares": [
+    0.0897,
+    0.076,
+    0.0715
+   ],
+   "union_share": 0.216
+  },
+  "dlog": {
+   "top_k": [
+    24,
+    22,
+    8
+   ],
+   "top_k_shares": [
+    0.0735,
+    0.0723,
+    0.0698
+   ],
+   "union_share": 0.2156
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_1_p59_f0.9_value_s1_ours200k": {
+  "additive": {
+   "top_k": [
+    26,
+    19,
+    4
+   ],
+   "top_k_shares": [
+    0.045,
+    0.044,
+    0.0429
+   ],
+   "union_share": 0.132
+  },
+  "square": {
+   "top_k": [
+    17,
+    2,
+    26
+   ],
+   "top_k_shares": [
+    0.0751,
+    0.073,
+    0.0662
+   ],
+   "union_share": 0.2223
+  },
+  "dlog": {
+   "top_k": [
+    26,
+    12,
+    8
+   ],
+   "top_k_shares": [
+    0.0754,
+    0.0684,
+    0.068
+   ],
+   "union_share": 0.2117
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_1_p59_f0.9_value_s2_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    16,
+    26,
+    8
+   ],
+   "top_k_shares": [
+    0.0603,
+    0.0599,
+    0.0512
+   ],
+   "union_share": 0.1714
+  },
+  "square": {
+   "top_k": [
+    7,
+    8,
+    9
+   ],
+   "top_k_shares": [
+    0.0811,
+    0.0734,
+    0.0717
+   ],
+   "union_share": 0.2208
+  },
+  "dlog": {
+   "top_k": [
+    18,
+    12,
+    10
+   ],
+   "top_k_shares": [
+    0.0701,
+    0.0668,
+    0.0655
+   ],
+   "union_share": 0.2025
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_1_p59_f0.9_value_s2_ours200k": {
+  "additive": {
+   "top_k": [
+    2,
+    20,
+    15
+   ],
+   "top_k_shares": [
+    0.0528,
+    0.0511,
+    0.0471
+   ],
+   "union_share": 0.151
+  },
+  "square": {
+   "top_k": [
+    24,
+    16,
+    23
+   ],
+   "top_k_shares": [
+    0.0762,
+    0.0715,
+    0.0672
+   ],
+   "union_share": 0.2081
+  },
+  "dlog": {
+   "top_k": [
+    2,
+    20,
+    6
+   ],
+   "top_k_shares": [
+    0.0757,
+    0.0736,
+    0.0709
+   ],
+   "union_share": 0.2201
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_1_1_p61_f0.8_value_s0_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    11,
+    27,
+    1
+   ],
+   "top_k_shares": [
+    0.0571,
+    0.0504,
+    0.0478
+   ],
+   "union_share": 0.1553
+  },
+  "square": {
+   "top_k": [
+    9,
+    3,
+    12
+   ],
+   "top_k_shares": [
+    0.0995,
+    0.0903,
+    0.0865
+   ],
+   "union_share": 0.2647
+  },
+  "dlog": {
+   "top_k": [
+    12,
+    8,
+    4
+   ],
+   "top_k_shares": [
+    0.0899,
+    0.0759,
+    0.0729
+   ],
+   "union_share": 0.2387
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_1_p61_f0.8_value_s0_ours200k": {
+  "additive": {
+   "top_k": [
+    5,
+    8,
+    28
+   ],
+   "top_k_shares": [
+    0.0674,
+    0.0566,
+    0.0466
+   ],
+   "union_share": 0.1706
+  },
+  "square": {
+   "top_k": [
+    25,
+    15,
+    9
+   ],
+   "top_k_shares": [
+    0.0792,
+    0.0771,
+    0.0763
+   ],
+   "union_share": 0.2185
+  },
+  "dlog": {
+   "top_k": [
+    4,
+    14,
+    8
+   ],
+   "top_k_shares": [
+    0.0799,
+    0.0755,
+    0.0748
+   ],
+   "union_share": 0.2301
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_1_p61_f0.8_value_s1_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    20,
+    22,
+    25
+   ],
+   "top_k_shares": [
+    0.0467,
+    0.0447,
+    0.0428
+   ],
+   "union_share": 0.1342
+  },
+  "square": {
+   "top_k": [
+    5,
+    28,
+    27
+   ],
+   "top_k_shares": [
+    0.0674,
+    0.061,
+    0.0602
+   ],
+   "union_share": 0.1927
+  },
+  "dlog": {
+   "top_k": [
+    12,
+    18,
+    14
+   ],
+   "top_k_shares": [
+    0.0769,
+    0.0591,
+    0.0569
+   ],
+   "union_share": 0.1929
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_1_p61_f0.8_value_s1_ours200k": {
+  "additive": {
+   "top_k": [
+    12,
+    23,
+    28
+   ],
+   "top_k_shares": [
+    0.0464,
+    0.0456,
+    0.0448
+   ],
+   "union_share": 0.1368
+  },
+  "square": {
+   "top_k": [
+    16,
+    27,
+    5
+   ],
+   "top_k_shares": [
+    0.0765,
+    0.0726,
+    0.0701
+   ],
+   "union_share": 0.2169
+  },
+  "dlog": {
+   "top_k": [
+    12,
+    2,
+    6
+   ],
+   "top_k_shares": [
+    0.0758,
+    0.0709,
+    0.0651
+   ],
+   "union_share": 0.2118
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_1_p61_f0.8_value_s2_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    17,
+    18,
+    22
+   ],
+   "top_k_shares": [
+    0.0712,
+    0.0705,
+    0.0601
+   ],
+   "union_share": 0.2018
+  },
+  "square": {
+   "top_k": [
+    22,
+    14,
+    16
+   ],
+   "top_k_shares": [
+    0.0731,
+    0.0723,
+    0.0631
+   ],
+   "union_share": 0.1982
+  },
+  "dlog": {
+   "top_k": [
+    10,
+    6,
+    20
+   ],
+   "top_k_shares": [
+    0.071,
+    0.067,
+    0.0656
+   ],
+   "union_share": 0.2036
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_1_p61_f0.8_value_s2_ours200k": {
+  "additive": {
+   "top_k": [
+    16,
+    21,
+    3
+   ],
+   "top_k_shares": [
+    0.0611,
+    0.0588,
+    0.0452
+   ],
+   "union_share": 0.1651
+  },
+  "square": {
+   "top_k": [
+    14,
+    25,
+    23
+   ],
+   "top_k_shares": [
+    0.0785,
+    0.0732,
+    0.0723
+   ],
+   "union_share": 0.2203
+  },
+  "dlog": {
+   "top_k": [
+    22,
+    12,
+    20
+   ],
+   "top_k_shares": [
+    0.0778,
+    0.0775,
+    0.0636
+   ],
+   "union_share": 0.2189
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_1_p61_f0.9_value_s0_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    7,
+    24,
+    1
+   ],
+   "top_k_shares": [
+    0.0839,
+    0.0568,
+    0.0522
+   ],
+   "union_share": 0.1928
+  },
+  "square": {
+   "top_k": [
+    9,
+    19,
+    25
+   ],
+   "top_k_shares": [
+    0.1088,
+    0.0763,
+    0.0703
+   ],
+   "union_share": 0.2369
+  },
+  "dlog": {
+   "top_k": [
+    12,
+    4,
+    22
+   ],
+   "top_k_shares": [
+    0.095,
+    0.0864,
+    0.0734
+   ],
+   "union_share": 0.2547
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_1_p61_f0.9_value_s0_ours200k": {
+  "additive": {
+   "top_k": [
+    26,
+    18,
+    23
+   ],
+   "top_k_shares": [
+    0.0602,
+    0.0567,
+    0.0504
+   ],
+   "union_share": 0.1673
+  },
+  "square": {
+   "top_k": [
+    12,
+    14,
+    13
+   ],
+   "top_k_shares": [
+    0.0892,
+    0.0765,
+    0.0752
+   ],
+   "union_share": 0.2337
+  },
+  "dlog": {
+   "top_k": [
+    4,
+    12,
+    26
+   ],
+   "top_k_shares": [
+    0.0957,
+    0.083,
+    0.0764
+   ],
+   "union_share": 0.2551
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_1_p61_f0.9_value_s1_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    20,
+    4,
+    25
+   ],
+   "top_k_shares": [
+    0.0814,
+    0.0582,
+    0.0556
+   ],
+   "union_share": 0.1952
+  },
+  "square": {
+   "top_k": [
+    19,
+    12,
+    20
+   ],
+   "top_k_shares": [
+    0.0706,
+    0.07,
+    0.0691
+   ],
+   "union_share": 0.2059
+  },
+  "dlog": {
+   "top_k": [
+    26,
+    12,
+    22
+   ],
+   "top_k_shares": [
+    0.0747,
+    0.0703,
+    0.0646
+   ],
+   "union_share": 0.2097
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_1_p61_f0.9_value_s1_ours200k": {
+  "additive": {
+   "top_k": [
+    16,
+    1,
+    17
+   ],
+   "top_k_shares": [
+    0.0459,
+    0.0454,
+    0.0451
+   ],
+   "union_share": 0.1363
+  },
+  "square": {
+   "top_k": [
+    6,
+    16,
+    30
+   ],
+   "top_k_shares": [
+    0.0844,
+    0.0842,
+    0.0842
+   ],
+   "union_share": 0.2565
+  },
+  "dlog": {
+   "top_k": [
+    12,
+    18,
+    22
+   ],
+   "top_k_shares": [
+    0.1047,
+    0.0959,
+    0.087
+   ],
+   "union_share": 0.2876
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_1_p61_f0.9_value_s2_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    29,
+    11,
+    22
+   ],
+   "top_k_shares": [
+    0.0823,
+    0.0672,
+    0.0489
+   ],
+   "union_share": 0.1984
+  },
+  "square": {
+   "top_k": [
+    7,
+    1,
+    24
+   ],
+   "top_k_shares": [
+    0.0733,
+    0.0688,
+    0.0645
+   ],
+   "union_share": 0.2038
+  },
+  "dlog": {
+   "top_k": [
+    22,
+    20,
+    26
+   ],
+   "top_k_shares": [
+    0.0724,
+    0.0678,
+    0.0658
+   ],
+   "union_share": 0.206
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_1_1_p61_f0.9_value_s2_ours200k": {
+  "additive": {
+   "top_k": [
+    20,
+    24,
+    18
+   ],
+   "top_k_shares": [
+    0.0559,
+    0.0539,
+    0.0461
+   ],
+   "union_share": 0.1559
+  },
+  "square": {
+   "top_k": [
+    10,
+    14,
+    27
+   ],
+   "top_k_shares": [
+    0.0788,
+    0.0786,
+    0.0766
+   ],
+   "union_share": 0.2138
+  },
+  "dlog": {
+   "top_k": [
+    22,
+    2,
+    10
+   ],
+   "top_k_shares": [
+    0.0841,
+    0.0838,
+    0.0742
+   ],
+   "union_share": 0.2422
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_2_1_p59_f0.8_value_s0_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    5,
+    27,
+    2
+   ],
+   "top_k_shares": [
+    0.334,
+    0.081,
+    0.0736
+   ],
+   "union_share": 0.4885
+  },
+  "square": {
+   "top_k": [
+    9,
+    25,
+    11
+   ],
+   "top_k_shares": [
+    0.047,
+    0.0466,
+    0.0461
+   ],
+   "union_share": 0.1271
+  },
+  "dlog": {
+   "top_k": [
+    26,
+    24,
+    10
+   ],
+   "top_k_shares": [
+    0.0496,
+    0.0471,
+    0.0451
+   ],
+   "union_share": 0.1418
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_2_1_p59_f0.8_value_s0_ours200k": {
+  "additive": {
+   "top_k": [
+    18,
+    10,
+    13
+   ],
+   "top_k_shares": [
+    0.2935,
+    0.1467,
+    0.1422
+   ],
+   "union_share": 0.5824
+  },
+  "square": {
+   "top_k": [
+    26,
+    25,
+    9
+   ],
+   "top_k_shares": [
+    0.0775,
+    0.0726,
+    0.0682
+   ],
+   "union_share": 0.2154
+  },
+  "dlog": {
+   "top_k": [
+    18,
+    26,
+    24
+   ],
+   "top_k_shares": [
+    0.0776,
+    0.0696,
+    0.0677
+   ],
+   "union_share": 0.215
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_2_1_p59_f0.8_value_s1_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    19,
+    13,
+    28
+   ],
+   "top_k_shares": [
+    0.3326,
+    0.3285,
+    0.2431
+   ],
+   "union_share": 0.9043
+  },
+  "square": {
+   "top_k": [
+    24,
+    26,
+    23
+   ],
+   "top_k_shares": [
+    0.0439,
+    0.0436,
+    0.0434
+   ],
+   "union_share": 0.1406
+  },
+  "dlog": {
+   "top_k": [
+    14,
+    6,
+    16
+   ],
+   "top_k_shares": [
+    0.0435,
+    0.0425,
+    0.0413
+   ],
+   "union_share": 0.1273
+  },
+  "chance_union": 0.1034,
+  "step": 19400
+ },
+ "qf_1_2_1_p59_f0.8_value_s1_ours200k": {
+  "additive": {
+   "top_k": [
+    13,
+    8,
+    4
+   ],
+   "top_k_shares": [
+    0.4056,
+    0.382,
+    0.0892
+   ],
+   "union_share": 0.8768
+  },
+  "square": {
+   "top_k": [
+    2,
+    23,
+    28
+   ],
+   "top_k_shares": [
+    0.0451,
+    0.0445,
+    0.0418
+   ],
+   "union_share": 0.1118
+  },
+  "dlog": {
+   "top_k": [
+    28,
+    22,
+    14
+   ],
+   "top_k_shares": [
+    0.0447,
+    0.0437,
+    0.042
+   ],
+   "union_share": 0.1304
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_2_1_p59_f0.8_value_s2_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    11,
+    12,
+    28
+   ],
+   "top_k_shares": [
+    0.4147,
+    0.278,
+    0.2103
+   ],
+   "union_share": 0.903
+  },
+  "square": {
+   "top_k": [
+    24,
+    2,
+    16
+   ],
+   "top_k_shares": [
+    0.0443,
+    0.0431,
+    0.0429
+   ],
+   "union_share": 0.134
+  },
+  "dlog": {
+   "top_k": [
+    22,
+    14,
+    20
+   ],
+   "top_k_shares": [
+    0.0439,
+    0.0423,
+    0.0418
+   ],
+   "union_share": 0.1281
+  },
+  "chance_union": 0.1034,
+  "step": 61700
+ },
+ "qf_1_2_1_p59_f0.8_value_s2_ours200k": {
+  "additive": {
+   "top_k": [
+    14,
+    20,
+    19
+   ],
+   "top_k_shares": [
+    0.3357,
+    0.3074,
+    0.0728
+   ],
+   "union_share": 0.7158
+  },
+  "square": {
+   "top_k": [
+    2,
+    12,
+    28
+   ],
+   "top_k_shares": [
+    0.0449,
+    0.0447,
+    0.0443
+   ],
+   "union_share": 0.1253
+  },
+  "dlog": {
+   "top_k": [
+    28,
+    22,
+    16
+   ],
+   "top_k_shares": [
+    0.0479,
+    0.0477,
+    0.0472
+   ],
+   "union_share": 0.1427
+  },
+  "chance_union": 0.1034,
+  "step": 200000
+ },
+ "qf_1_2_1_p61_f0.8_value_s0_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    10,
+    29,
+    5
+   ],
+   "top_k_shares": [
+    0.4189,
+    0.1159,
+    0.1021
+   ],
+   "union_share": 0.6368
+  },
+  "square": {
+   "top_k": [
+    30,
+    4,
+    21
+   ],
+   "top_k_shares": [
+    0.0719,
+    0.0693,
+    0.0681
+   ],
+   "union_share": 0.2045
+  },
+  "dlog": {
+   "top_k": [
+    14,
+    2,
+    8
+   ],
+   "top_k_shares": [
+    0.0765,
+    0.063,
+    0.0618
+   ],
+   "union_share": 0.2014
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_2_1_p61_f0.8_value_s0_ours200k": {
+  "additive": {
+   "top_k": [
+    29,
+    23,
+    30
+   ],
+   "top_k_shares": [
+    0.2788,
+    0.141,
+    0.113
+   ],
+   "union_share": 0.5328
+  },
+  "square": {
+   "top_k": [
+    21,
+    7,
+    10
+   ],
+   "top_k_shares": [
+    0.0765,
+    0.0758,
+    0.0728
+   ],
+   "union_share": 0.2237
+  },
+  "dlog": {
+   "top_k": [
+    8,
+    26,
+    6
+   ],
+   "top_k_shares": [
+    0.0689,
+    0.0677,
+    0.0675
+   ],
+   "union_share": 0.2041
+  },
+  "chance_union": 0.1,
+  "step": 101700
+ },
+ "qf_1_2_1_p61_f0.8_value_s1_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    11,
+    2,
+    3
+   ],
+   "top_k_shares": [
+    0.3222,
+    0.2807,
+    0.0645
+   ],
+   "union_share": 0.6674
+  },
+  "square": {
+   "top_k": [
+    21,
+    1,
+    10
+   ],
+   "top_k_shares": [
+    0.0519,
+    0.05,
+    0.0494
+   ],
+   "union_share": 0.1474
+  },
+  "dlog": {
+   "top_k": [
+    2,
+    24,
+    14
+   ],
+   "top_k_shares": [
+    0.0481,
+    0.0469,
+    0.0461
+   ],
+   "union_share": 0.1411
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_2_1_p61_f0.8_value_s1_ours200k": {
+  "additive": {
+   "top_k": [
+    15,
+    11,
+    26
+   ],
+   "top_k_shares": [
+    0.4098,
+    0.1339,
+    0.1256
+   ],
+   "union_share": 0.6693
+  },
+  "square": {
+   "top_k": [
+    23,
+    11,
+    13
+   ],
+   "top_k_shares": [
+    0.0714,
+    0.0691,
+    0.0668
+   ],
+   "union_share": 0.1962
+  },
+  "dlog": {
+   "top_k": [
+    10,
+    22,
+    28
+   ],
+   "top_k_shares": [
+    0.0862,
+    0.0784,
+    0.068
+   ],
+   "union_share": 0.2326
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_2_1_p61_f0.8_value_s2_furuta_aob200k": {
+  "additive": {
+   "top_k": [
+    2,
+    29,
+    25
+   ],
+   "top_k_shares": [
+    0.3447,
+    0.1949,
+    0.0676
+   ],
+   "union_share": 0.6071
+  },
+  "square": {
+   "top_k": [
+    18,
+    12,
+    23
+   ],
+   "top_k_shares": [
+    0.0567,
+    0.0563,
+    0.0551
+   ],
+   "union_share": 0.1696
+  },
+  "dlog": {
+   "top_k": [
+    6,
+    2,
+    26
+   ],
+   "top_k_shares": [
+    0.0563,
+    0.0541,
+    0.054
+   ],
+   "union_share": 0.1644
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ },
+ "qf_1_2_1_p61_f0.8_value_s2_ours200k": {
+  "additive": {
+   "top_k": [
+    17,
+    30,
+    22
+   ],
+   "top_k_shares": [
+    0.3249,
+    0.1909,
+    0.1113
+   ],
+   "union_share": 0.6271
+  },
+  "square": {
+   "top_k": [
+    14,
+    21,
+    18
+   ],
+   "top_k_shares": [
+    0.0406,
+    0.0399,
+    0.039
+   ],
+   "union_share": 0.1104
+  },
+  "dlog": {
+   "top_k": [
+    10,
+    20,
+    22
+   ],
+   "top_k_shares": [
+    0.0398,
+    0.0394,
+    0.0391
+   ],
+   "union_share": 0.1183
+  },
+  "chance_union": 0.1,
+  "step": 200000
+ }
+}

@@ -1,0 +1,1423 @@
+{
+ "script": "scripts/theory/relabel_rank.py",
+ "results": [
+  {
+   "form": "a²+ab+b²",
+   "p": 5,
+   "n_sigma_enumerated": 6,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "5": 6
+   },
+   "min_rank": 5,
+   "n_sigma_at_min_listed": 6,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     0,
+     1,
+     2,
+     4,
+     3
+    ],
+    [
+     0,
+     1,
+     3,
+     2,
+     4
+    ],
+    [
+     0,
+     1,
+     3,
+     4,
+     2
+    ],
+    [
+     0,
+     1,
+     4,
+     2,
+     3
+    ]
+   ],
+   "svd_count": 6,
+   "gap_max_zero_sv_rel": 0.0,
+   "gap_min_nonzero_sv_rel": 0.06221938035940689,
+   "ells": [
+    11,
+    31,
+    41,
+    61
+   ],
+   "rank_identity_sigma": 5,
+   "modular_rank_hist_all_sigma": {
+    "5": 6
+   },
+   "rigorous_lower_bound_on_min": 5,
+   "seconds": 0.0
+  },
+  {
+   "form": "a²+ab",
+   "p": 5,
+   "n_sigma_enumerated": 6,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "4": 1,
+    "5": 5
+   },
+   "min_rank": 4,
+   "n_sigma_at_min_listed": 1,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     3,
+     2,
+     4
+    ]
+   ],
+   "svd_count": 6,
+   "gap_max_zero_sv_rel": 5.0335891453006404e-17,
+   "gap_min_nonzero_sv_rel": 0.15551339710801973,
+   "ells": [
+    11,
+    31,
+    41,
+    61
+   ],
+   "rank_identity_sigma": 5,
+   "modular_rank_hist_all_sigma": {
+    "4": 1,
+    "5": 5
+   },
+   "rigorous_lower_bound_on_min": 4,
+   "seconds": 0.0
+  },
+  {
+   "form": "a²+b²",
+   "p": 5,
+   "n_sigma_enumerated": 6,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "1": 1,
+    "3": 5
+   },
+   "min_rank": 1,
+   "n_sigma_at_min_listed": 1,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "svd_count": 6,
+   "gap_max_zero_sv_rel": 1.0401737817859529e-16,
+   "gap_min_nonzero_sv_rel": 0.11823051145758315,
+   "ells": [
+    11,
+    31,
+    41,
+    61
+   ],
+   "rank_identity_sigma": 1,
+   "modular_rank_hist_all_sigma": {
+    "1": 1,
+    "3": 5
+   },
+   "rigorous_lower_bound_on_min": 1,
+   "seconds": 0.0
+  },
+  {
+   "form": "ab",
+   "p": 5,
+   "n_sigma_enumerated": 6,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "5": 6
+   },
+   "min_rank": 5,
+   "n_sigma_at_min_listed": 6,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     0,
+     1,
+     2,
+     4,
+     3
+    ],
+    [
+     0,
+     1,
+     3,
+     2,
+     4
+    ],
+    [
+     0,
+     1,
+     3,
+     4,
+     2
+    ],
+    [
+     0,
+     1,
+     4,
+     2,
+     3
+    ]
+   ],
+   "svd_count": 6,
+   "gap_max_zero_sv_rel": 0.0,
+   "gap_min_nonzero_sv_rel": 0.1583844403245363,
+   "ells": [
+    11,
+    31,
+    41,
+    61
+   ],
+   "rank_identity_sigma": 5,
+   "modular_rank_hist_all_sigma": {
+    "5": 6
+   },
+   "rigorous_lower_bound_on_min": 5,
+   "seconds": 0.0
+  },
+  {
+   "form": "a²−ab+b²",
+   "p": 5,
+   "n_sigma_enumerated": 6,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "5": 6
+   },
+   "min_rank": 5,
+   "n_sigma_at_min_listed": 6,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     0,
+     1,
+     2,
+     4,
+     3
+    ],
+    [
+     0,
+     1,
+     3,
+     2,
+     4
+    ],
+    [
+     0,
+     1,
+     3,
+     4,
+     2
+    ],
+    [
+     0,
+     1,
+     4,
+     2,
+     3
+    ]
+   ],
+   "svd_count": 6,
+   "gap_max_zero_sv_rel": 0.0,
+   "gap_min_nonzero_sv_rel": 0.062219380359406724,
+   "ells": [
+    11,
+    31,
+    41,
+    61
+   ],
+   "rank_identity_sigma": 5,
+   "modular_rank_hist_all_sigma": {
+    "5": 6
+   },
+   "rigorous_lower_bound_on_min": 5,
+   "seconds": 0.0
+  },
+  {
+   "form": "a²+ab+b²",
+   "p": 7,
+   "n_sigma_enumerated": 120,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "7": 120
+   },
+   "min_rank": 7,
+   "n_sigma_at_min_listed": 50,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     6,
+     5
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     5,
+     4,
+     6
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     5,
+     6,
+     4
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     6,
+     4,
+     5
+    ]
+   ],
+   "svd_count": 120,
+   "gap_max_zero_sv_rel": 0.0,
+   "gap_min_nonzero_sv_rel": 0.002970688523900794,
+   "ells": [
+    29,
+    43,
+    71,
+    113
+   ],
+   "rank_identity_sigma": 7,
+   "modular_rank_hist_all_sigma": {
+    "7": 120
+   },
+   "rigorous_lower_bound_on_min": 7,
+   "seconds": 0.0
+  },
+  {
+   "form": "a²+ab",
+   "p": 7,
+   "n_sigma_enumerated": 120,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "6": 3,
+    "7": 117
+   },
+   "min_rank": 6,
+   "n_sigma_at_min_listed": 3,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     4,
+     2,
+     3,
+     6,
+     5
+    ],
+    [
+     0,
+     1,
+     5,
+     2,
+     6,
+     4,
+     3
+    ],
+    [
+     0,
+     1,
+     6,
+     3,
+     2,
+     4,
+     5
+    ]
+   ],
+   "svd_count": 120,
+   "gap_max_zero_sv_rel": 4.50475000071781e-17,
+   "gap_min_nonzero_sv_rel": 0.006282146316487355,
+   "ells": [
+    29,
+    43,
+    71,
+    113
+   ],
+   "rank_identity_sigma": 7,
+   "modular_rank_hist_all_sigma": {
+    "6": 3,
+    "7": 117
+   },
+   "rigorous_lower_bound_on_min": 6,
+   "seconds": 0.0
+  },
+  {
+   "form": "a²+b²",
+   "p": 7,
+   "n_sigma_enumerated": 120,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "1": 1,
+    "3": 10,
+    "4": 109
+   },
+   "min_rank": 1,
+   "n_sigma_at_min_listed": 1,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ]
+   ],
+   "svd_count": 120,
+   "gap_max_zero_sv_rel": 1.5824485824840718e-16,
+   "gap_min_nonzero_sv_rel": 0.018272632407958202,
+   "ells": [
+    29,
+    43,
+    71,
+    113
+   ],
+   "rank_identity_sigma": 1,
+   "modular_rank_hist_all_sigma": {
+    "1": 1,
+    "3": 10,
+    "4": 109
+   },
+   "rigorous_lower_bound_on_min": 1,
+   "seconds": 0.0
+  },
+  {
+   "form": "ab",
+   "p": 7,
+   "n_sigma_enumerated": 120,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "7": 120
+   },
+   "min_rank": 7,
+   "n_sigma_at_min_listed": 50,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     6,
+     5
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     5,
+     4,
+     6
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     5,
+     6,
+     4
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     6,
+     4,
+     5
+    ]
+   ],
+   "svd_count": 120,
+   "gap_max_zero_sv_rel": 0.0,
+   "gap_min_nonzero_sv_rel": 0.014481335539030233,
+   "ells": [
+    29,
+    43,
+    71,
+    113
+   ],
+   "rank_identity_sigma": 7,
+   "modular_rank_hist_all_sigma": {
+    "7": 120
+   },
+   "rigorous_lower_bound_on_min": 7,
+   "seconds": 0.0
+  },
+  {
+   "form": "a²−ab+b²",
+   "p": 7,
+   "n_sigma_enumerated": 120,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "7": 120
+   },
+   "min_rank": 7,
+   "n_sigma_at_min_listed": 50,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     6,
+     5
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     5,
+     4,
+     6
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     5,
+     6,
+     4
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     6,
+     4,
+     5
+    ]
+   ],
+   "svd_count": 120,
+   "gap_max_zero_sv_rel": 0.0,
+   "gap_min_nonzero_sv_rel": 0.00297068852390071,
+   "ells": [
+    29,
+    43,
+    71,
+    113
+   ],
+   "rank_identity_sigma": 7,
+   "modular_rank_hist_all_sigma": {
+    "7": 120
+   },
+   "rigorous_lower_bound_on_min": 7,
+   "seconds": 0.0
+  },
+  {
+   "form": "a²+ab+b²",
+   "p": 11,
+   "n_sigma_enumerated": 362880,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "11": 362880
+   },
+   "min_rank": 11,
+   "n_sigma_at_min_listed": 50,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     10,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     9,
+     8,
+     10
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     9,
+     10,
+     8
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     10,
+     8,
+     9
+    ]
+   ],
+   "svd_count": 362880,
+   "gap_max_zero_sv_rel": 0.0,
+   "gap_min_nonzero_sv_rel": 0.00015163391719554448,
+   "ells": [
+    23,
+    67,
+    89,
+    199
+   ],
+   "rank_identity_sigma": 11,
+   "modular_rank_hist_all_sigma": {
+    "11": 362880
+   },
+   "rigorous_lower_bound_on_min": 11,
+   "seconds": 50.9
+  },
+  {
+   "form": "a²+ab",
+   "p": 11,
+   "n_sigma_enumerated": 362880,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "10": 38,
+    "11": 362841,
+    "9": 1
+   },
+   "min_rank": 9,
+   "n_sigma_at_min_listed": 1,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     6,
+     3,
+     4,
+     5,
+     7,
+     10,
+     2,
+     9,
+     8
+    ]
+   ],
+   "svd_count": 362880,
+   "gap_max_zero_sv_rel": 1.1584842661926223e-16,
+   "gap_min_nonzero_sv_rel": 9.21902735408924e-05,
+   "ells": [
+    23,
+    67,
+    89,
+    199
+   ],
+   "rank_identity_sigma": 11,
+   "modular_rank_hist_all_sigma": {
+    "10": 38,
+    "11": 362841,
+    "9": 1
+   },
+   "rigorous_lower_bound_on_min": 9,
+   "seconds": 52.7
+  },
+  {
+   "form": "a²+b²",
+   "p": 11,
+   "n_sigma_enumerated": 362880,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "1": 1,
+    "5": 460,
+    "6": 362419
+   },
+   "min_rank": 1,
+   "n_sigma_at_min_listed": 1,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ]
+   ],
+   "svd_count": 362880,
+   "gap_max_zero_sv_rel": 2.639745743008461e-16,
+   "gap_min_nonzero_sv_rel": 0.0002553225433750773,
+   "ells": [
+    23,
+    67,
+    89,
+    199
+   ],
+   "rank_identity_sigma": 1,
+   "modular_rank_hist_all_sigma": {
+    "1": 1,
+    "5": 460,
+    "6": 362419
+   },
+   "rigorous_lower_bound_on_min": 1,
+   "seconds": 30.8
+  },
+  {
+   "form": "ab",
+   "p": 11,
+   "n_sigma_enumerated": 362880,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "11": 362880
+   },
+   "min_rank": 11,
+   "n_sigma_at_min_listed": 50,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     10,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     9,
+     8,
+     10
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     9,
+     10,
+     8
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     10,
+     8,
+     9
+    ]
+   ],
+   "svd_count": 362880,
+   "gap_max_zero_sv_rel": 0.0,
+   "gap_min_nonzero_sv_rel": 0.00023749550810716317,
+   "ells": [
+    23,
+    67,
+    89,
+    199
+   ],
+   "rank_identity_sigma": 11,
+   "modular_rank_hist_all_sigma": {
+    "11": 362880
+   },
+   "rigorous_lower_bound_on_min": 11,
+   "seconds": 54.9
+  },
+  {
+   "form": "a²−ab+b²",
+   "p": 11,
+   "n_sigma_enumerated": 362880,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "11": 362880
+   },
+   "min_rank": 11,
+   "n_sigma_at_min_listed": 50,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     10,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     9,
+     8,
+     10
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     9,
+     10,
+     8
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     10,
+     8,
+     9
+    ]
+   ],
+   "svd_count": 362880,
+   "gap_max_zero_sv_rel": 0.0,
+   "gap_min_nonzero_sv_rel": 0.0001516339171955177,
+   "ells": [
+    23,
+    67,
+    89,
+    199
+   ],
+   "rank_identity_sigma": 11,
+   "modular_rank_hist_all_sigma": {
+    "11": 362880
+   },
+   "rigorous_lower_bound_on_min": 11,
+   "seconds": 53.1
+  },
+  {
+   "form": "a²+ab+b²",
+   "p": 13,
+   "n_sigma_enumerated": 39916800,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "13": 39916800
+   },
+   "min_rank": 13,
+   "n_sigma_at_min_listed": 50,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     12,
+     11
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     11,
+     10,
+     12
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     11,
+     12,
+     10
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     12,
+     10,
+     11
+    ]
+   ],
+   "svd_count": 0,
+   "gap_max_zero_sv_rel": 0.0,
+   "gap_min_nonzero_sv_rel": Infinity,
+   "ells": [
+    53,
+    79,
+    131,
+    157
+   ],
+   "rank_identity_sigma": 13,
+   "modular_rank_of_minimisers": [
+    13
+   ],
+   "modular_rank_hist_random_20000": {
+    "13": 20000
+   },
+   "seconds": 311.2
+  },
+  {
+   "form": "a²+ab",
+   "p": 13,
+   "n_sigma_enumerated": 39916800,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "13": 39916732,
+    "12": 68
+   },
+   "min_rank": 12,
+   "n_sigma_at_min_listed": 50,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     5,
+     3,
+     6,
+     11,
+     10,
+     7,
+     8,
+     4,
+     12,
+     9
+    ],
+    [
+     0,
+     1,
+     2,
+     5,
+     7,
+     8,
+     3,
+     4,
+     9,
+     11,
+     6,
+     12,
+     10
+    ],
+    [
+     0,
+     1,
+     2,
+     10,
+     7,
+     8,
+     11,
+     12,
+     4,
+     3,
+     6,
+     9,
+     5
+    ],
+    [
+     0,
+     1,
+     2,
+     10,
+     7,
+     12,
+     6,
+     9,
+     3,
+     4,
+     5,
+     11,
+     8
+    ],
+    [
+     0,
+     1,
+     2,
+     10,
+     12,
+     9,
+     4,
+     3,
+     6,
+     7,
+     11,
+     5,
+     8
+    ]
+   ],
+   "svd_count": 68,
+   "gap_max_zero_sv_rel": 1.4355444047921096e-16,
+   "gap_min_nonzero_sv_rel": 0.014491545990246477,
+   "ells": [
+    53,
+    79,
+    131,
+    157
+   ],
+   "rank_identity_sigma": 13,
+   "modular_rank_of_minimisers": [
+    12
+   ],
+   "modular_rank_hist_random_20000": {
+    "13": 20000
+   },
+   "seconds": 393.4
+  },
+  {
+   "form": "ab",
+   "p": 13,
+   "n_sigma_enumerated": 39916800,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "13": 39916800
+   },
+   "min_rank": 13,
+   "n_sigma_at_min_listed": 50,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     12,
+     11
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     11,
+     10,
+     12
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     11,
+     12,
+     10
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     12,
+     10,
+     11
+    ]
+   ],
+   "svd_count": 4,
+   "gap_max_zero_sv_rel": 0.0,
+   "gap_min_nonzero_sv_rel": 1.5841842963025977e-05,
+   "ells": [
+    53,
+    79,
+    131,
+    157
+   ],
+   "rank_identity_sigma": 13,
+   "modular_rank_of_minimisers": [
+    13
+   ],
+   "modular_rank_hist_random_20000": {
+    "13": 20000
+   },
+   "seconds": 431.0
+  },
+  {
+   "form": "a²−ab+b²",
+   "p": 13,
+   "n_sigma_enumerated": 39916800,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "13": 39916800
+   },
+   "min_rank": 13,
+   "n_sigma_at_min_listed": 50,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     12,
+     11
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     11,
+     10,
+     12
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     11,
+     12,
+     10
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     12,
+     10,
+     11
+    ]
+   ],
+   "svd_count": 0,
+   "gap_max_zero_sv_rel": 0.0,
+   "gap_min_nonzero_sv_rel": Infinity,
+   "ells": [
+    53,
+    79,
+    131,
+    157
+   ],
+   "rank_identity_sigma": 13,
+   "modular_rank_of_minimisers": [
+    13
+   ],
+   "modular_rank_hist_random_20000": {
+    "13": 20000
+   },
+   "seconds": 410.6
+  },
+  {
+   "form": "a²+b²",
+   "p": 13,
+   "n_sigma_enumerated": 39916800,
+   "sigma_normalisation": "sigma(0)=0, sigma(1)=1 (all of S_p up to affine post-composition)",
+   "numerical_rank_hist": {
+    "1": 1,
+    "5": 55,
+    "6": 2759,
+    "7": 39913985
+   },
+   "min_rank": 1,
+   "n_sigma_at_min_listed": 1,
+   "example_minimisers": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12
+    ]
+   ],
+   "svd_count": 39916800,
+   "gap_max_zero_sv_rel": 2.441261134199673e-16,
+   "gap_min_nonzero_sv_rel": 3.07742217530377e-06,
+   "ells": [
+    53,
+    79,
+    131,
+    157
+   ],
+   "rank_identity_sigma": 1,
+   "modular_rank_of_minimisers": [
+    1
+   ],
+   "modular_rank_hist_random_20000": {
+    "7": 20000
+   },
+   "seconds": 1513.2
+  }
+ ]
+}

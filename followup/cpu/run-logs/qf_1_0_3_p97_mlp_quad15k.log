@@ -1,0 +1,10 @@
+
+==== 2026-10-09 16:15:35 python3 research/scripts/train_batched.py jobs/P1_all.json --only 4 --out runs_cpu --device cpu --threads 3
+step       0 | 3/3 active | test acc 0.007 0.007 0.013 | 0s
+GROKKED qf_1_0_3_p97_f0.8_tphi_s0_mlp_quad15k at step 1200 (test acc 0.9931)
+GROKKED qf_1_0_3_p97_f0.8_tphi_s1_mlp_quad15k at step 1200 (test acc 0.9952)
+GROKKED qf_1_0_3_p97_f0.8_tphi_s2_mlp_quad15k at step 1200 (test acc 0.9942)
+DONE qf_1_0_3_p97_f0.8_tphi_s0_mlp_quad15k at step 4200
+DONE qf_1_0_3_p97_f0.8_tphi_s1_mlp_quad15k at step 4200
+DONE qf_1_0_3_p97_f0.8_tphi_s2_mlp_quad15k at step 4200
+GROUP DONE [{"tag": "qf_1_0_3_p97_f0.8_tphi_s0_mlp_quad15k", "grok_step": 1200, "final_step": 4200}, {"tag": "qf_1_0_3_p97_f0.8_tphi_s1_mlp_quad15k", "grok_step": 1200, "final_step": 4200}, {"tag": "qf_1_0_3_p97_f0.8_tphi_s2_mlp_quad15k", "grok_step": 1200, "final_step": 4200}]

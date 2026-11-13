@@ -1,0 +1,63 @@
+QUEUE qf_1_0_3_p59_mlp_quad15k  M=3
+QUEUE qf_1_1_1_p59_mlp_quad15k  M=3
+QUEUE qf_1_0_3_p61_mlp_quad15k  M=3
+QUEUE qf_1_1_1_p61_mlp_quad15k  M=3
+QUEUE qf_1_0_3_p97_mlp_quad15k  M=3
+QUEUE qf_1_1_1_p97_mlp_quad15k  M=3
+QUEUE qf_1_1_1_p59_mlp2_quad12k  M=9
+QUEUE qf_1_1_1_p59_mlp2_relu12k  M=9
+QUEUE qf_1_1_1_p61_mlp2_quad12k  M=9
+QUEUE qf_1_1_1_p59_mlp_quad20k  M=18
+QUEUE qf_1_1_1_p61_mlp_quad20k  M=18
+QUEUE qf_1_1_1_p59_mlpsum_quad10k  M=9
+QUEUE qf_1_1_1_p59_mlp_quad12k_w256_fit  M=3
+QUEUE qf_1_1_1_p59_mlp_quad12k_w512_fit  M=3
+QUEUE qf_1_1_1_p59_mlp_quad12k_w1024_fit  M=3
+QUEUE qf_1_1_1_p59_mlp_quad12k_w2048_fit  M=3
+QUEUE qf_1_1_1_p59_mlpdoshi_quad8k_doshi  M=3
+QUEUE qf_1_0_1_p59_mlpdoshi_quad8k_doshi  M=3
+QUEUE qf_1_1_1_p59_mlpdoshi_quad8k_doshi_f50  M=3
+QUEUE qf_1_0_1_p59_mlpdoshi_quad8k_doshi_f50  M=3
+QUEUE qf_1_1_1_p59_mlp_quad8k_i0.1_lr0.0003  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i0.1_lr0.001  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i0.1_lr0.003  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i1_lr0.0003  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i1_lr0.001  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i1_lr0.003  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i10_lr0.0003  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i10_lr0.001  M=4
+QUEUE qf_1_1_1_p59_mlp_quad8k_i10_lr0.003  M=4
+[      1s] START qf_1_0_3_p59_mlp_quad15k
+[      1s] START qf_1_1_1_p59_mlp_quad15k
+[    451s] OK        qf_1_0_3_p59_mlp_quad15k  (450s)
+[    456s] START qf_1_0_3_p61_mlp_quad15k
+[    901s] OK        qf_1_0_3_p61_mlp_quad15k  (445s)
+[    906s] START qf_1_1_1_p61_mlp_quad15k
+[   1221s] OK        qf_1_1_1_p59_mlp_quad15k  (1220s)
+[   1226s] START qf_1_0_3_p97_mlp_quad15k
+[   2326s] OK        qf_1_1_1_p61_mlp_quad15k  (1420s)
+[   2331s] START qf_1_1_1_p97_mlp_quad15k
+[   2651s] OK        qf_1_0_3_p97_mlp_quad15k  (1425s)
+[   2656s] START qf_1_1_1_p59_mlp2_quad12k
+[   7211s] OK        qf_1_1_1_p97_mlp_quad15k  (4880s)
+[   7216s] START qf_1_1_1_p59_mlp2_relu12k
+[  12647s] OK        qf_1_1_1_p59_mlp2_quad12k  (9991s)
+[  12652s] START qf_1_1_1_p61_mlp2_quad12k
+[  16262s] OK        qf_1_1_1_p59_mlp2_relu12k  (9046s)
+[  16267s] START qf_1_1_1_p59_mlp_quad20k
+[  23247s] OK        qf_1_1_1_p61_mlp2_quad12k  (10596s)
+[  23252s] START qf_1_1_1_p61_mlp_quad20k
+[  29123s] OK        qf_1_1_1_p59_mlp_quad20k  (12856s)
+[  29128s] START qf_1_1_1_p59_mlpsum_quad10k
+[  32713s] OK        qf_1_1_1_p59_mlpsum_quad10k  (3585s)
+[  32718s] START qf_1_1_1_p59_mlp_quad12k_w256_fit
+[  32738s] FAIL(1)   qf_1_1_1_p59_mlp_quad12k_w256_fit  (20s)
+[  32743s] START qf_1_1_1_p59_mlp_quad12k_w512_fit
+[  32763s] FAIL(1)   qf_1_1_1_p59_mlp_quad12k_w512_fit  (20s)
+[  32768s] START qf_1_1_1_p59_mlp_quad12k_w1024_fit
+[  32793s] FAIL(1)   qf_1_1_1_p59_mlp_quad12k_w1024_fit  (25s)
+[  32798s] START qf_1_1_1_p59_mlp_quad12k_w2048_fit
+[  32838s] FAIL(1)   qf_1_1_1_p59_mlp_quad12k_w2048_fit  (40s)
+[  32843s] START qf_1_1_1_p59_mlpdoshi_quad8k_doshi
+[  36088s] OK        qf_1_1_1_p61_mlp_quad20k  (12836s)
+[  36093s] START qf_1_0_1_p59_mlpdoshi_quad8k_doshi

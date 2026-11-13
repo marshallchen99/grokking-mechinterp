@@ -1,0 +1,8 @@
+QUEUE qf_1_1_1_p59_mlp_quad20k  M=3
+QUEUE qf_1_0_1_p59_mlp_quad20k  M=3
+[      0s] START qf_1_1_1_p59_mlp_quad20k
+[      0s] START qf_1_0_1_p59_mlp_quad20k
+[     70s] OK        qf_1_1_1_p59_mlp_quad20k  (70s)
+[     75s] OK        qf_1_0_1_p59_mlp_quad20k  (75s)
+
+2 ran, 0 skipped, 0 failed

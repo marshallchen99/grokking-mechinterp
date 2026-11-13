@@ -1,0 +1,5 @@
+E0-long p97/p101 done at 07:32:00
+QUEUE qf_1_1_1_p97_furuta_aob300k  M=12
+QUEUE qf_1_1_1_p97_ours300k  M=9
+[      0s] START qf_1_1_1_p97_furuta_aob300k
+[      0s] START qf_1_1_1_p97_ours300k

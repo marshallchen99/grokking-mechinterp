@@ -1,0 +1,114 @@
+{
+ "p": 61,
+ "h": 2,
+ "n_neurons": 512,
+ "n_active": 512,
+ "kind": "split",
+ "output": {
+  "char_median_dominant_fraction": 0.08450385351531177,
+  "char_frac_neurons_dominated": 0.0,
+  "additive_median_dominant_fraction": 0.9480644935461033,
+  "additive_frac_neurons_dominated": 0.99609375,
+  "top_classes": [
+   {
+    "label": 2,
+    "share": 0.04421591344446196
+   },
+   {
+    "label": 20,
+    "share": 0.04160772553162759
+   },
+   {
+    "label": 12,
+    "share": 0.040862120811907474
+   },
+   {
+    "label": 16,
+    "share": 0.039284191017155266
+   },
+   {
+    "label": 1,
+    "share": 0.03879182041774336
+   },
+   {
+    "label": 27,
+    "share": 0.03803943196819265
+   },
+   {
+    "label": 14,
+    "share": 0.037624100810772595
+   },
+   {
+    "label": 23,
+    "share": 0.037026826534642586
+   }
+  ],
+  "block_median_dominant_fraction": 0.08450385351531177,
+  "block_frac_neurons_dominated": 0.0
+ },
+ "input": {
+  "unit": {
+   "median_dominant_fraction": 0.0151768363257901,
+   "frac_neurons_dominated": 0.0
+  },
+  "additive": {
+   "median_dominant_fraction": 0.03835138633097543,
+   "frac_neurons_dominated": 0.0
+  },
+  "separate_dlog": {
+   "median_dominant_fraction": 0.09483993624105067,
+   "frac_neurons_dominated": 0.0
+  }
+ },
+ "consistency": {
+  "unit": {
+   "n_both_dominated": 0,
+   "n_consistent": 0,
+   "fraction_consistent": null
+  },
+  "separate_dlog": {
+   "n_both_dominated": 0,
+   "n_consistent": 0,
+   "fraction_consistent": null
+  }
+ },
+ "input_blocks": {
+  "unit": {
+   "median_dominant_fraction": 0.016415736842016658,
+   "frac_neurons_dominated": 0.0,
+   "frac_neurons_above_85": 0.0
+  },
+  "additive": {
+   "median_dominant_fraction": 0.07294073280413457,
+   "frac_neurons_dominated": 0.0,
+   "frac_neurons_above_85": 0.0
+  },
+  "separate_dlog": {
+   "median_dominant_fraction": 0.19198144526209487,
+   "frac_neurons_dominated": 0.0,
+   "frac_neurons_above_85": 0.0
+  }
+ },
+ "consistency_blocks": {
+  "unit": {
+   "n_both_dominated": 0,
+   "n_consistent": 0,
+   "fraction_consistent": null
+  },
+  "separate_dlog": {
+   "n_both_dominated": 0,
+   "n_consistent": 0,
+   "fraction_consistent": null
+  }
+ },
+ "tag": "qf_1_0_1_p61_f0.8_value_s0_furuta_aob200k",
+ "step": 200000,
+ "op": "qf_1_0_1",
+ "accuracy": {
+  "train_acc": 1.0,
+  "test_acc": 0.8758434653282166,
+  "test_acc_units": 0.8700565099716187,
+  "test_acc_nonunits": 1.0,
+  "n_test_nonunits": 33
+ }
+}

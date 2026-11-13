@@ -1,0 +1,8 @@
+
+==== 2026-10-10 09:58:09 python3 research/scripts/train_batched.py jobs/P1_3_doshi_gpu.json --only 3 --out research --device cuda --threads 6
+step       0 | 3/3 active | test acc 0.013 0.024 0.017 | 0s
+step    5000 | 3/3 active | test acc 0.011 0.020 0.012 | 53s
+DONE qf_1_0_1_p59_f0.5_mono_s0_mlpdoshi_quad8k_doshi_f50 at step 8000
+DONE qf_1_0_1_p59_f0.5_mono_s1_mlpdoshi_quad8k_doshi_f50 at step 8000
+DONE qf_1_0_1_p59_f0.5_mono_s2_mlpdoshi_quad8k_doshi_f50 at step 8000
+GROUP DONE [{"tag": "qf_1_0_1_p59_f0.5_mono_s0_mlpdoshi_quad8k_doshi_f50", "grok_step": null, "final_step": 8000}, {"tag": "qf_1_0_1_p59_f0.5_mono_s1_mlpdoshi_quad8k_doshi_f50", "grok_step": null, "final_step": 8000}, {"tag": "qf_1_0_1_p59_f0.5_mono_s2_mlpdoshi_quad8k_doshi_f50", "grok_step": null, "final_step": 8000}]

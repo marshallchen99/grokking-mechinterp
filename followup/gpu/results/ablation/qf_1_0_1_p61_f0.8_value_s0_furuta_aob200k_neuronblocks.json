@@ -1,0 +1,37 @@
+{
+ "tag": "qf_1_0_1_p61_f0.8_value_s0_furuta_aob200k",
+ "trained": {
+  "additive": {
+   "median": 0.0729,
+   "frac_ge_0.5": 0.0,
+   "n": 512
+  },
+  "square": {
+   "median": 0.9335,
+   "frac_ge_0.5": 0.9844,
+   "n": 512
+  },
+  "dlog": {
+   "median": 0.1934,
+   "frac_ge_0.5": 0.0,
+   "n": 512
+  }
+ },
+ "init": {
+  "additive": {
+   "median": 0.1133,
+   "frac_ge_0.5": 0.0,
+   "n": 512
+  },
+  "square": {
+   "median": 0.1056,
+   "frac_ge_0.5": 0.0,
+   "n": 512
+  },
+  "dlog": {
+   "median": 0.1139,
+   "frac_ge_0.5": 0.0,
+   "n": 512
+  }
+ }
+}

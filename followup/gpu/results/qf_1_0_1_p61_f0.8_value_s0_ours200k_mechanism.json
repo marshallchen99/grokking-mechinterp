@@ -1,0 +1,114 @@
+{
+ "p": 61,
+ "h": 2,
+ "n_neurons": 512,
+ "n_active": 512,
+ "kind": "split",
+ "output": {
+  "char_median_dominant_fraction": 0.09073274289263962,
+  "char_frac_neurons_dominated": 0.0,
+  "additive_median_dominant_fraction": 0.9053237259120928,
+  "additive_frac_neurons_dominated": 0.99609375,
+  "top_classes": [
+   {
+    "label": 15,
+    "share": 0.043469721352452084
+   },
+   {
+    "label": 26,
+    "share": 0.04220761868165848
+   },
+   {
+    "label": 5,
+    "share": 0.04192643648262019
+   },
+   {
+    "label": 6,
+    "share": 0.03965804973789774
+   },
+   {
+    "label": 21,
+    "share": 0.03911904209791008
+   },
+   {
+    "label": 13,
+    "share": 0.038830924148865256
+   },
+   {
+    "label": 17,
+    "share": 0.038250803389620294
+   },
+   {
+    "label": 29,
+    "share": 0.036758823805554654
+   }
+  ],
+  "block_median_dominant_fraction": 0.09073274289263962,
+  "block_frac_neurons_dominated": 0.0
+ },
+ "input": {
+  "unit": {
+   "median_dominant_fraction": 0.018572256655238487,
+   "frac_neurons_dominated": 0.0
+  },
+  "additive": {
+   "median_dominant_fraction": 0.03922293157839423,
+   "frac_neurons_dominated": 0.0
+  },
+  "separate_dlog": {
+   "median_dominant_fraction": 0.07593846611094315,
+   "frac_neurons_dominated": 0.0
+  }
+ },
+ "consistency": {
+  "unit": {
+   "n_both_dominated": 0,
+   "n_consistent": 0,
+   "fraction_consistent": null
+  },
+  "separate_dlog": {
+   "n_both_dominated": 0,
+   "n_consistent": 0,
+   "fraction_consistent": null
+  }
+ },
+ "input_blocks": {
+  "unit": {
+   "median_dominant_fraction": 0.019658192122368946,
+   "frac_neurons_dominated": 0.0,
+   "frac_neurons_above_85": 0.0
+  },
+  "additive": {
+   "median_dominant_fraction": 0.08004361195884338,
+   "frac_neurons_dominated": 0.0,
+   "frac_neurons_above_85": 0.0
+  },
+  "separate_dlog": {
+   "median_dominant_fraction": 0.1618649714750872,
+   "frac_neurons_dominated": 0.0,
+   "frac_neurons_above_85": 0.0
+  }
+ },
+ "consistency_blocks": {
+  "unit": {
+   "n_both_dominated": 0,
+   "n_consistent": 0,
+   "fraction_consistent": null
+  },
+  "separate_dlog": {
+   "n_both_dominated": 0,
+   "n_consistent": 0,
+   "fraction_consistent": null
+  }
+ },
+ "tag": "qf_1_0_1_p61_f0.8_value_s0_ours200k",
+ "step": 200000,
+ "op": "qf_1_0_1",
+ "accuracy": {
+  "train_acc": 1.0,
+  "test_acc": 0.859649121761322,
+  "test_acc_units": 0.8644067645072937,
+  "test_acc_nonunits": 0.7575757503509521,
+  "n_test_nonunits": 33
+ }
+}

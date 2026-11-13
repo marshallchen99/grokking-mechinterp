@@ -1,0 +1,6 @@
+
+==== 2026-10-08 12:02:50 python3 research/scripts/train_batched.py jobs/E11_width_wd_sweep.json --only 13 --out research --device cuda
+
+==== 2026-10-08 12:02:50 python3 research/scripts/train_batched.py jobs/E11_width_wd_sweep.json --only 14 --out research --device cuda
+step       0 | 6/6 active | test acc 0.017 0.023 0.032 0.011 0.000 0.003 | 1s
+step       0 | 6/6 active | test acc 0.017 0.023 0.032 0.011 0.000 0.003 | 1s

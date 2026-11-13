@@ -1,0 +1,230 @@
+{
+ "qf_1_1_1_p59_f0.8_none_s0_furuta300k": {
+  "p": 59,
+  "group": "none",
+  "achieved_frac": 0.800057454754381,
+  "test": {
+   "n": 696,
+   "acc": 0.7715517282485962
+  },
+  "no_trained_partner": {
+   "n": 6,
+   "acc": 0.0
+  },
+  "swap_trained": {
+   "n": 528,
+   "acc": 1.0
+  },
+  "only_swap_trained": {
+   "n": 27,
+   "acc": 1.0
+  },
+  "neg_trained": {
+   "n": 552,
+   "acc": 0.7699275612831116
+  },
+  "only_neg_trained": {
+   "n": 27,
+   "acc": 0.03703703731298447
+  },
+  "swap_neg_trained": {
+   "n": 545,
+   "acc": 0.7669724822044373
+  },
+  "only_swap_neg_trained": {
+   "n": 27,
+   "acc": 0.03703703731298447
+  },
+  "swap_only_prediction": 0.7586206793785095
+ },
+ "qf_1_1_1_p59_f0.8_none_s0_ours300k": {
+  "p": 59,
+  "group": "none",
+  "achieved_frac": 0.800057454754381,
+  "test": {
+   "n": 696,
+   "acc": 0.7758620977401733
+  },
+  "no_trained_partner": {
+   "n": 6,
+   "acc": 0.0
+  },
+  "swap_trained": {
+   "n": 528,
+   "acc": 1.0
+  },
+  "only_swap_trained": {
+   "n": 27,
+   "acc": 1.0
+  },
+  "neg_trained": {
+   "n": 552,
+   "acc": 0.7753623127937317
+  },
+  "only_neg_trained": {
+   "n": 27,
+   "acc": 0.03703703731298447
+  },
+  "swap_neg_trained": {
+   "n": 545,
+   "acc": 0.7724770903587341
+  },
+  "only_swap_neg_trained": {
+   "n": 27,
+   "acc": 0.03703703731298447
+  },
+  "swap_only_prediction": 0.7586206793785095
+ },
+ "qf_1_1_1_p59_f0.8_none_s1_furuta300k": {
+  "p": 59,
+  "group": "none",
+  "achieved_frac": 0.800057454754381,
+  "test": {
+   "n": 696,
+   "acc": 0.915229856967926
+  },
+  "no_trained_partner": {
+   "n": 10,
+   "acc": 0.0
+  },
+  "swap_trained": {
+   "n": 532,
+   "acc": 1.0
+  },
+  "only_swap_trained": {
+   "n": 25,
+   "acc": 1.0
+  },
+  "neg_trained": {
+   "n": 538,
+   "acc": 0.9237918257713318
+  },
+  "only_neg_trained": {
+   "n": 25,
+   "acc": 0.6800000071525574
+  },
+  "swap_neg_trained": {
+   "n": 543,
+   "acc": 0.9244935512542725
+  },
+  "only_swap_neg_trained": {
+   "n": 25,
+   "acc": 0.6800000071525574
+  },
+  "swap_only_prediction": 0.7643678188323975
+ },
+ "qf_1_1_1_p59_f0.8_none_s1_ours300k": {
+  "p": 59,
+  "group": "none",
+  "achieved_frac": 0.800057454754381,
+  "test": {
+   "n": 696,
+   "acc": 0.7744252681732178
+  },
+  "no_trained_partner": {
+   "n": 10,
+   "acc": 0.0
+  },
+  "swap_trained": {
+   "n": 532,
+   "acc": 1.0
+  },
+  "only_swap_trained": {
+   "n": 25,
+   "acc": 1.0
+  },
+  "neg_trained": {
+   "n": 538,
+   "acc": 0.7695167064666748
+  },
+  "only_neg_trained": {
+   "n": 25,
+   "acc": 0.07999999821186066
+  },
+  "swap_neg_trained": {
+   "n": 543,
+   "acc": 0.7716390490531921
+  },
+  "only_swap_neg_trained": {
+   "n": 25,
+   "acc": 0.07999999821186066
+  },
+  "swap_only_prediction": 0.7643678188323975
+ },
+ "qf_1_1_1_p59_f0.8_none_s2_furuta300k": {
+  "p": 59,
+  "group": "none",
+  "achieved_frac": 0.800057454754381,
+  "test": {
+   "n": 696,
+   "acc": 0.8146551847457886
+  },
+  "no_trained_partner": {
+   "n": 18,
+   "acc": 0.0
+  },
+  "swap_trained": {
+   "n": 539,
+   "acc": 1.0
+  },
+  "only_swap_trained": {
+   "n": 17,
+   "acc": 1.0
+  },
+  "neg_trained": {
+   "n": 546,
+   "acc": 0.8186812996864319
+  },
+  "only_neg_trained": {
+   "n": 17,
+   "acc": 0.29411765933036804
+  },
+  "swap_neg_trained": {
+   "n": 560,
+   "acc": 0.8232142925262451
+  },
+  "only_swap_neg_trained": {
+   "n": 17,
+   "acc": 0.29411765933036804
+  },
+  "swap_only_prediction": 0.7744252681732178
+ },
+ "qf_1_1_1_p59_f0.8_none_s2_ours300k": {
+  "p": 59,
+  "group": "none",
+  "achieved_frac": 0.800057454754381,
+  "test": {
+   "n": 696,
+   "acc": 0.7772988677024841
+  },
+  "no_trained_partner": {
+   "n": 18,
+   "acc": 0.1111111119389534
+  },
+  "swap_trained": {
+   "n": 539,
+   "acc": 1.0
+  },
+  "only_swap_trained": {
+   "n": 17,
+   "acc": 1.0
+  },
+  "neg_trained": {
+   "n": 546,
+   "acc": 0.7765567898750305
+  },
+  "only_neg_trained": {
+   "n": 17,
+   "acc": 0.0
+  },
+  "swap_neg_trained": {
+   "n": 560,
+   "acc": 0.7821428775787354
+  },
+  "only_swap_neg_trained": {
+   "n": 17,
+   "acc": 0.0
+  },
+  "swap_only_prediction": 0.7744252681732178
+ }
+}

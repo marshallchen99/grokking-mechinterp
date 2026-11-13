@@ -1,0 +1,34 @@
+
+==== 2026-09-25 12:12:43 python3 research/scripts/train_batched.py jobs/E6_mlp_cpu.json --only 3 --out runs_cpu --device cpu
+step       0 | 18/18 active | test acc 0.027 0.009 0.027 0.018 0.024 0.027 0.042 0.012 0.015 0.048 0.015 0.006 0.018 0.027 0.024 0.033 0.006 0.018 | 1s
+GROKKED qf_1_2_1_p41_f0.8_value_s0_mlp_quad15k at step 1000 (test acc 1.0000)
+GROKKED qf_1_2_1_p41_f0.8_value_s1_mlp_quad15k at step 1000 (test acc 1.0000)
+GROKKED qf_0_1_0_p41_f0.8_value_s0_mlp_quad15k at step 1300 (test acc 1.0000)
+GROKKED qf_0_1_0_p41_f0.8_value_s1_mlp_quad15k at step 1300 (test acc 0.9970)
+GROKKED qf_1_0_3_p41_f0.8_value_s0_mlp_quad15k at step 2600 (test acc 0.9970)
+GROKKED qf_1_0_3_p41_f0.8_value_s1_mlp_quad15k at step 2800 (test acc 0.9940)
+GROKKED qf_2_0_5_p41_f0.8_value_s1_mlp_quad15k at step 2900 (test acc 0.9940)
+GROKKED qf_2_0_5_p41_f0.8_value_s0_mlp_quad15k at step 3200 (test acc 0.9911)
+DONE qf_1_2_1_p41_f0.8_value_s0_mlp_quad15k at step 4000
+DONE qf_1_2_1_p41_f0.8_value_s1_mlp_quad15k at step 4000
+DONE qf_0_1_0_p41_f0.8_value_s0_mlp_quad15k at step 4300
+DONE qf_0_1_0_p41_f0.8_value_s1_mlp_quad15k at step 4300
+step    5000 | 14/18 active | test acc 0.006 0.000 0.000 0.000 0.015 0.024 0.000 0.000 1.000 1.000 0.982 0.988 1.000 1.000 1.000 1.000 1.000 1.000 | 641s
+GROKKED qf_1_0_1_p41_f0.8_value_s1_mlp_quad15k at step 5300 (test acc 0.9940)
+DONE qf_1_0_3_p41_f0.8_value_s0_mlp_quad15k at step 5600
+DONE qf_1_0_3_p41_f0.8_value_s1_mlp_quad15k at step 5800
+DONE qf_2_0_5_p41_f0.8_value_s1_mlp_quad15k at step 5900
+DONE qf_2_0_5_p41_f0.8_value_s0_mlp_quad15k at step 6200
+DONE qf_1_0_1_p41_f0.8_value_s1_mlp_quad15k at step 8300
+step   10000 | 9/18 active | test acc 0.003 0.000 0.000 0.000 0.015 0.024 0.000 0.000 1.000 1.000 0.988 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 1326s
+DONE qf_1_1_1_p41_f0.8_value_s0_mlp_quad15k at step 15000
+DONE qf_1_1_1_p41_f0.8_value_s1_mlp_quad15k at step 15000
+DONE qf_1_m1_1_p41_f0.8_value_s0_mlp_quad15k at step 15000
+DONE qf_1_m1_1_p41_f0.8_value_s1_mlp_quad15k at step 15000
+DONE qf_1_1_0_p41_f0.8_value_s0_mlp_quad15k at step 15000
+DONE qf_1_1_0_p41_f0.8_value_s1_mlp_quad15k at step 15000
+DONE qf_2_1_3_p41_f0.8_value_s0_mlp_quad15k at step 15000
+DONE qf_2_1_3_p41_f0.8_value_s1_mlp_quad15k at step 15000
+DONE qf_1_0_1_p41_f0.8_value_s0_mlp_quad15k at step 15000
+step   15000 | 0/18 active | test acc 0.000 0.000 0.000 0.000 0.015 0.024 0.000 0.000 1.000 1.000 0.976 1.000 1.000 1.000 1.000 1.000 1.000 1.000 | 1991s
+GROUP DONE [{"tag": "qf_1_1_1_p41_f0.8_value_s0_mlp_quad15k", "grok_step": null, "final_step": 15000}, {"tag": "qf_1_1_1_p41_f0.8_value_s1_mlp_quad15k", "grok_step": null, "final_step": 15000}, {"tag": "qf_1_m1_1_p41_f0.8_value_s0_mlp_quad15k", "grok_step": null, "final_step": 15000}, {"tag": "qf_1_m1_1_p41_f0.8_value_s1_mlp_quad15k", "grok_step": null, "final_step": 15000}, {"tag": "qf_1_1_0_p41_f0.8_value_s0_mlp_quad15k", "grok_step": null, "final_step": 15000}, {"tag": "qf_1_1_0_p41_f0.8_value_s1_mlp_quad15k", "grok_step": null, "final_step": 15000}, {"tag": "qf_2_1_3_p41_f0.8_value_s0_mlp_quad15k", "grok_step": null, "final_step": 15000}, {"tag": "qf_2_1_3_p41_f0.8_value_s1_mlp_quad15k", "grok_step": null, "final_step": 15000}, {"tag": "qf_1_0_3_p41_f0.8_value_s0_mlp_quad15k", "grok_step": 2600, "final_step": 5600}, {"tag": "qf_1_0_3_p41_f0.8_value_s1_mlp_quad15k", "grok_step": 2800, "final_step": 5800}, {"tag": "qf_1_0_1_p41_f0.8_value_s0_mlp_quad15k", "grok_step": null, "final_step": 15000}, {"tag": "qf_1_0_1_p41_f0.8_value_s1_mlp_quad15k", "grok_step": 5300, "final_step": 8300}, {"tag": "qf_2_0_5_p41_f0.8_value_s0_mlp_quad15k", "grok_step": 3200, "final_step": 6200}, {"tag": "qf_2_0_5_p41_f0.8_value_s1_mlp_quad15k", "grok_step": 2900, "final_step": 5900}, {"tag": "qf_0_1_0_p41_f0.8_value_s0_mlp_quad15k", "grok_step": 1300, "final_step": 4300}, {"tag": "qf_0_1_0_p41_f0.8_value_s1_mlp_quad15k", "grok_step": 1300, "final_step": 4300}, {"tag": "qf_1_2_1_p41_f0.8_value_s0_mlp_quad15k", "grok_step": 1000, "final_step": 4000}, {"tag": "qf_1_2_1_p41_f0.8_value_s1_mlp_quad15k", "grok_step": 1000, "final_step": 4000}]

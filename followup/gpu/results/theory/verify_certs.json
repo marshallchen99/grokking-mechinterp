@@ -1,0 +1,1395 @@
+{
+ "script": "paper/p1/verify_theory.py",
+ "V1_certificates": {
+  "cells": 675,
+  "counting_ok": 675,
+  "modq_nullity1_certified": 998,
+  "modq_certified_on_subset": 985,
+  "exact_nullity_checked": 189,
+  "explicit_ok": 120,
+  "status_ok": 675,
+  "failures": [],
+  "injh_arith_ok": 75
+ },
+ "V2_synthetic_controls": [
+  {
+   "p": 29,
+   "trial": 0,
+   "n_values": 28,
+   "n": 28,
+   "q_nullities": {
+    "2": 2,
+    "7": 2
+   },
+   "expect": "nullity >= 2 mod every q | n (bijective h => tau = h^-1 non-constant)"
+  },
+  {
+   "p": 29,
+   "trial": 1,
+   "n_values": 28,
+   "n": 28,
+   "q_nullities": {
+    "2": 2,
+    "7": 2
+   },
+   "expect": "nullity >= 2 mod every q | n (bijective h => tau = h^-1 non-constant)"
+  },
+  {
+   "p": 29,
+   "trial": 2,
+   "n_values": 28,
+   "n": 28,
+   "q_nullities": {
+    "2": 2,
+    "7": 2
+   },
+   "expect": "nullity >= 2 mod every q | n (bijective h => tau = h^-1 non-constant)"
+  },
+  {
+   "p": 59,
+   "trial": 0,
+   "n_values": 58,
+   "n": 58,
+   "q_nullities": {
+    "2": 2,
+    "29": 2
+   },
+   "expect": "nullity >= 2 mod every q | n (bijective h => tau = h^-1 non-constant)"
+  },
+  {
+   "p": 59,
+   "trial": 1,
+   "n_values": 58,
+   "n": 58,
+   "q_nullities": {
+    "2": 2,
+    "29": 2
+   },
+   "expect": "nullity >= 2 mod every q | n (bijective h => tau = h^-1 non-constant)"
+  },
+  {
+   "p": 59,
+   "trial": 2,
+   "n_values": 58,
+   "n": 58,
+   "q_nullities": {
+    "2": 2,
+    "29": 2
+   },
+   "expect": "nullity >= 2 mod every q | n (bijective h => tau = h^-1 non-constant)"
+  },
+  {
+   "p": 61,
+   "trial": 0,
+   "n_values": 60,
+   "n": 60,
+   "q_nullities": {
+    "2": 2,
+    "3": 2,
+    "5": 2
+   },
+   "expect": "nullity >= 2 mod every q | n (bijective h => tau = h^-1 non-constant)"
+  },
+  {
+   "p": 61,
+   "trial": 1,
+   "n_values": 60,
+   "n": 60,
+   "q_nullities": {
+    "2": 2,
+    "3": 2,
+    "5": 2
+   },
+   "expect": "nullity >= 2 mod every q | n (bijective h => tau = h^-1 non-constant)"
+  },
+  {
+   "p": 61,
+   "trial": 2,
+   "n_values": 60,
+   "n": 60,
+   "q_nullities": {
+    "2": 2,
+    "3": 2,
+    "5": 2
+   },
+   "expect": "nullity >= 2 mod every q | n (bijective h => tau = h^-1 non-constant)"
+  },
+  {
+   "p": 97,
+   "trial": 0,
+   "n_values": 96,
+   "n": 96,
+   "q_nullities": {
+    "2": 2,
+    "3": 2
+   },
+   "expect": "nullity >= 2 mod every q | n (bijective h => tau = h^-1 non-constant)"
+  },
+  {
+   "p": 97,
+   "trial": 1,
+   "n_values": 96,
+   "n": 96,
+   "q_nullities": {
+    "2": 2,
+    "3": 2
+   },
+   "expect": "nullity >= 2 mod every q | n (bijective h => tau = h^-1 non-constant)"
+  },
+  {
+   "p": 97,
+   "trial": 2,
+   "n_values": 96,
+   "n": 96,
+   "q_nullities": {
+    "2": 2,
+    "3": 2
+   },
+   "expect": "nullity >= 2 mod every q | n (bijective h => tau = h^-1 non-constant)"
+  },
+  {
+   "p": 29,
+   "domain": "two blocks (rows/cols 1-9 and 10-28)",
+   "components": 2,
+   "nullity_mod_p": 2,
+   "expect": "components = 2, nullity >= 2"
+  }
+ ],
+ "V3_corollary_trained_forms": {
+  "n_checks": 117,
+  "failures": [],
+  "by_branch": {
+   "beta=0": 39,
+   "D=0,beta!=0": 16,
+   "beta!=0,D!=0": 62
+  }
+ },
+ "V3_rows": [
+  {
+   "p": 3,
+   "form": "a²+ab+b²",
+   "beta": 1,
+   "D": 0,
+   "n_values": 2,
+   "branch": "D=0,beta!=0",
+   "t": 2,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  },
+  {
+   "p": 3,
+   "form": "a²−ab+b²",
+   "beta": 2,
+   "D": 0,
+   "n_values": 2,
+   "branch": "D=0,beta!=0",
+   "t": 1,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  },
+  {
+   "p": 3,
+   "form": "a²+ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 3,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 3,
+   "form": "2a²+ab+3b²",
+   "beta": 1,
+   "D": 1,
+   "n_values": 3,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 3,
+   "form": "a²+b²",
+   "beta": 0,
+   "D": 2,
+   "n_values": 3,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 3,
+   "form": "a²+3b²",
+   "beta": 0,
+   "D": 0,
+   "n_values": 2,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 3,
+   "form": "2a²+5b²",
+   "beta": 0,
+   "D": 2,
+   "n_values": 3,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 3,
+   "form": "ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 3,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 3,
+   "form": "(a+b)²",
+   "beta": 2,
+   "D": 0,
+   "n_values": 2,
+   "branch": "D=0,beta!=0",
+   "t": 1,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  },
+  {
+   "p": 5,
+   "form": "a²+ab+b²",
+   "beta": 1,
+   "D": 2,
+   "n_values": 5,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 5,
+   "form": "a²−ab+b²",
+   "beta": 4,
+   "D": 2,
+   "n_values": 5,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 5,
+   "form": "a²+ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 5,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 5,
+   "form": "2a²+ab+3b²",
+   "beta": 1,
+   "D": 2,
+   "n_values": 5,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 5,
+   "form": "a²+b²",
+   "beta": 0,
+   "D": 1,
+   "n_values": 5,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 5,
+   "form": "a²+3b²",
+   "beta": 0,
+   "D": 3,
+   "n_values": 5,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 5,
+   "form": "2a²+5b²",
+   "beta": 0,
+   "D": 0,
+   "n_values": 3,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 5,
+   "form": "ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 5,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 5,
+   "form": "(a+b)²",
+   "beta": 2,
+   "D": 0,
+   "n_values": 3,
+   "branch": "D=0,beta!=0",
+   "t": 1,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  },
+  {
+   "p": 7,
+   "form": "a²+ab+b²",
+   "beta": 1,
+   "D": 4,
+   "n_values": 7,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 7,
+   "form": "a²−ab+b²",
+   "beta": 6,
+   "D": 4,
+   "n_values": 7,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 7,
+   "form": "a²+ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 7,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 7,
+   "form": "2a²+ab+3b²",
+   "beta": 1,
+   "D": 5,
+   "n_values": 7,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 7,
+   "form": "a²+b²",
+   "beta": 0,
+   "D": 3,
+   "n_values": 7,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 7,
+   "form": "a²+3b²",
+   "beta": 0,
+   "D": 2,
+   "n_values": 7,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 7,
+   "form": "2a²+5b²",
+   "beta": 0,
+   "D": 2,
+   "n_values": 7,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 7,
+   "form": "ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 7,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 7,
+   "form": "(a+b)²",
+   "beta": 2,
+   "D": 0,
+   "n_values": 4,
+   "branch": "D=0,beta!=0",
+   "t": 1,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  },
+  {
+   "p": 11,
+   "form": "a²+ab+b²",
+   "beta": 1,
+   "D": 8,
+   "n_values": 11,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 11,
+   "form": "a²−ab+b²",
+   "beta": 10,
+   "D": 8,
+   "n_values": 11,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 11,
+   "form": "a²+ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 11,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 11,
+   "form": "2a²+ab+3b²",
+   "beta": 1,
+   "D": 10,
+   "n_values": 11,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 11,
+   "form": "a²+b²",
+   "beta": 0,
+   "D": 7,
+   "n_values": 11,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 11,
+   "form": "a²+3b²",
+   "beta": 0,
+   "D": 10,
+   "n_values": 11,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 11,
+   "form": "2a²+5b²",
+   "beta": 0,
+   "D": 4,
+   "n_values": 11,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 11,
+   "form": "ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 11,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 11,
+   "form": "(a+b)²",
+   "beta": 2,
+   "D": 0,
+   "n_values": 6,
+   "branch": "D=0,beta!=0",
+   "t": 1,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  },
+  {
+   "p": 13,
+   "form": "a²+ab+b²",
+   "beta": 1,
+   "D": 10,
+   "n_values": 13,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 13,
+   "form": "a²−ab+b²",
+   "beta": 12,
+   "D": 10,
+   "n_values": 13,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 13,
+   "form": "a²+ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 13,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 13,
+   "form": "2a²+ab+3b²",
+   "beta": 1,
+   "D": 3,
+   "n_values": 13,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 13,
+   "form": "a²+b²",
+   "beta": 0,
+   "D": 9,
+   "n_values": 13,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 13,
+   "form": "a²+3b²",
+   "beta": 0,
+   "D": 1,
+   "n_values": 13,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 13,
+   "form": "2a²+5b²",
+   "beta": 0,
+   "D": 12,
+   "n_values": 13,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 13,
+   "form": "ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 13,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 13,
+   "form": "(a+b)²",
+   "beta": 2,
+   "D": 0,
+   "n_values": 7,
+   "branch": "D=0,beta!=0",
+   "t": 1,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  },
+  {
+   "p": 17,
+   "form": "a²+ab+b²",
+   "beta": 1,
+   "D": 14,
+   "n_values": 17,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 17,
+   "form": "a²−ab+b²",
+   "beta": 16,
+   "D": 14,
+   "n_values": 17,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 17,
+   "form": "a²+ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 17,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 17,
+   "form": "2a²+ab+3b²",
+   "beta": 1,
+   "D": 11,
+   "n_values": 17,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 17,
+   "form": "a²+b²",
+   "beta": 0,
+   "D": 13,
+   "n_values": 17,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 17,
+   "form": "a²+3b²",
+   "beta": 0,
+   "D": 5,
+   "n_values": 17,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 17,
+   "form": "2a²+5b²",
+   "beta": 0,
+   "D": 11,
+   "n_values": 17,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 17,
+   "form": "ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 17,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 17,
+   "form": "(a+b)²",
+   "beta": 2,
+   "D": 0,
+   "n_values": 9,
+   "branch": "D=0,beta!=0",
+   "t": 1,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  },
+  {
+   "p": 19,
+   "form": "a²+ab+b²",
+   "beta": 1,
+   "D": 16,
+   "n_values": 19,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 19,
+   "form": "a²−ab+b²",
+   "beta": 18,
+   "D": 16,
+   "n_values": 19,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 19,
+   "form": "a²+ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 19,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 19,
+   "form": "2a²+ab+3b²",
+   "beta": 1,
+   "D": 15,
+   "n_values": 19,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 19,
+   "form": "a²+b²",
+   "beta": 0,
+   "D": 15,
+   "n_values": 19,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 19,
+   "form": "a²+3b²",
+   "beta": 0,
+   "D": 7,
+   "n_values": 19,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 19,
+   "form": "2a²+5b²",
+   "beta": 0,
+   "D": 17,
+   "n_values": 19,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 19,
+   "form": "ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 19,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 19,
+   "form": "(a+b)²",
+   "beta": 2,
+   "D": 0,
+   "n_values": 10,
+   "branch": "D=0,beta!=0",
+   "t": 1,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  },
+  {
+   "p": 23,
+   "form": "a²+ab+b²",
+   "beta": 1,
+   "D": 20,
+   "n_values": 23,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 23,
+   "form": "a²−ab+b²",
+   "beta": 22,
+   "D": 20,
+   "n_values": 23,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 23,
+   "form": "a²+ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 23,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 23,
+   "form": "2a²+ab+3b²",
+   "beta": 1,
+   "D": 0,
+   "n_values": 12,
+   "branch": "D=0,beta!=0",
+   "t": 6,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  },
+  {
+   "p": 23,
+   "form": "a²+b²",
+   "beta": 0,
+   "D": 19,
+   "n_values": 23,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 23,
+   "form": "a²+3b²",
+   "beta": 0,
+   "D": 11,
+   "n_values": 23,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 23,
+   "form": "2a²+5b²",
+   "beta": 0,
+   "D": 6,
+   "n_values": 23,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 23,
+   "form": "ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 23,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 23,
+   "form": "(a+b)²",
+   "beta": 2,
+   "D": 0,
+   "n_values": 12,
+   "branch": "D=0,beta!=0",
+   "t": 1,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  },
+  {
+   "p": 29,
+   "form": "a²+ab+b²",
+   "beta": 1,
+   "D": 26,
+   "n_values": 29,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 29,
+   "form": "a²−ab+b²",
+   "beta": 28,
+   "D": 26,
+   "n_values": 29,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 29,
+   "form": "a²+ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 29,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 29,
+   "form": "2a²+ab+3b²",
+   "beta": 1,
+   "D": 6,
+   "n_values": 29,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 29,
+   "form": "a²+b²",
+   "beta": 0,
+   "D": 25,
+   "n_values": 29,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 29,
+   "form": "a²+3b²",
+   "beta": 0,
+   "D": 17,
+   "n_values": 29,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 29,
+   "form": "2a²+5b²",
+   "beta": 0,
+   "D": 18,
+   "n_values": 29,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 29,
+   "form": "ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 29,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 29,
+   "form": "(a+b)²",
+   "beta": 2,
+   "D": 0,
+   "n_values": 15,
+   "branch": "D=0,beta!=0",
+   "t": 1,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  },
+  {
+   "p": 31,
+   "form": "a²+ab+b²",
+   "beta": 1,
+   "D": 28,
+   "n_values": 31,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 31,
+   "form": "a²−ab+b²",
+   "beta": 30,
+   "D": 28,
+   "n_values": 31,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 31,
+   "form": "a²+ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 31,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 31,
+   "form": "2a²+ab+3b²",
+   "beta": 1,
+   "D": 8,
+   "n_values": 31,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 31,
+   "form": "a²+b²",
+   "beta": 0,
+   "D": 27,
+   "n_values": 31,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 31,
+   "form": "a²+3b²",
+   "beta": 0,
+   "D": 19,
+   "n_values": 31,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 31,
+   "form": "2a²+5b²",
+   "beta": 0,
+   "D": 22,
+   "n_values": 31,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 31,
+   "form": "ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 31,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 31,
+   "form": "(a+b)²",
+   "beta": 2,
+   "D": 0,
+   "n_values": 16,
+   "branch": "D=0,beta!=0",
+   "t": 1,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  },
+  {
+   "p": 37,
+   "form": "a²+ab+b²",
+   "beta": 1,
+   "D": 34,
+   "n_values": 37,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 37,
+   "form": "a²−ab+b²",
+   "beta": 36,
+   "D": 34,
+   "n_values": 37,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 37,
+   "form": "a²+ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 37,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 37,
+   "form": "2a²+ab+3b²",
+   "beta": 1,
+   "D": 14,
+   "n_values": 37,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 37,
+   "form": "a²+b²",
+   "beta": 0,
+   "D": 33,
+   "n_values": 37,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 37,
+   "form": "a²+3b²",
+   "beta": 0,
+   "D": 25,
+   "n_values": 37,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 37,
+   "form": "2a²+5b²",
+   "beta": 0,
+   "D": 34,
+   "n_values": 37,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 37,
+   "form": "ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 37,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 37,
+   "form": "(a+b)²",
+   "beta": 2,
+   "D": 0,
+   "n_values": 19,
+   "branch": "D=0,beta!=0",
+   "t": 1,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  },
+  {
+   "p": 41,
+   "form": "a²+ab+b²",
+   "beta": 1,
+   "D": 38,
+   "n_values": 41,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 41,
+   "form": "a²−ab+b²",
+   "beta": 40,
+   "D": 38,
+   "n_values": 41,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 41,
+   "form": "a²+ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 41,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 41,
+   "form": "2a²+ab+3b²",
+   "beta": 1,
+   "D": 18,
+   "n_values": 41,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 41,
+   "form": "a²+b²",
+   "beta": 0,
+   "D": 37,
+   "n_values": 41,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 41,
+   "form": "a²+3b²",
+   "beta": 0,
+   "D": 29,
+   "n_values": 41,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 41,
+   "form": "2a²+5b²",
+   "beta": 0,
+   "D": 1,
+   "n_values": 41,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 41,
+   "form": "ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 41,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 41,
+   "form": "(a+b)²",
+   "beta": 2,
+   "D": 0,
+   "n_values": 21,
+   "branch": "D=0,beta!=0",
+   "t": 1,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  },
+  {
+   "p": 43,
+   "form": "a²+ab+b²",
+   "beta": 1,
+   "D": 40,
+   "n_values": 43,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 43,
+   "form": "a²−ab+b²",
+   "beta": 42,
+   "D": 40,
+   "n_values": 43,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 43,
+   "form": "a²+ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 43,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 43,
+   "form": "2a²+ab+3b²",
+   "beta": 1,
+   "D": 20,
+   "n_values": 43,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 43,
+   "form": "a²+b²",
+   "beta": 0,
+   "D": 39,
+   "n_values": 43,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 43,
+   "form": "a²+3b²",
+   "beta": 0,
+   "D": 31,
+   "n_values": 43,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 43,
+   "form": "2a²+5b²",
+   "beta": 0,
+   "D": 3,
+   "n_values": 43,
+   "branch": "beta=0",
+   "explicit_ok": true
+  },
+  {
+   "p": 43,
+   "form": "ab",
+   "beta": 1,
+   "D": 1,
+   "n_values": 43,
+   "branch": "beta!=0,D!=0",
+   "surjective": true,
+   "tau_nullity": 1,
+   "constants_only": true
+  },
+  {
+   "p": 43,
+   "form": "(a+b)²",
+   "beta": 2,
+   "D": 0,
+   "n_values": 22,
+   "branch": "D=0,beta!=0",
+   "t": 1,
+   "explicit_ok": true,
+   "tau_nullity": 1,
+   "injective_h_excluded": true
+  }
+ ],
+ "seconds": 401.1
+}

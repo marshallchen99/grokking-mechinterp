@@ -1,0 +1,31 @@
+
+==== 2026-10-08 12:03:46 python3 research/scripts/train_batched.py jobs/E11_width_wd_sweep.json --only 0 --out research --device cuda
+step       0 | 6/6 active | test acc 0.023 0.026 0.020 0.020 0.025 0.020 | 1s
+step    5000 | 6/6 active | test acc 0.010 0.009 0.007 0.000 0.000 0.001 | 260s
+step   10000 | 6/6 active | test acc 0.006 0.007 0.003 0.019 0.006 0.010 | 498s
+step   15000 | 6/6 active | test acc 0.004 0.001 0.001 0.217 0.201 0.194 | 721s
+step   20000 | 6/6 active | test acc 0.003 0.000 0.001 0.704 0.752 0.694 | 945s
+step   25000 | 6/6 active | test acc 0.003 0.000 0.000 0.964 0.932 0.925 | 1169s
+step   30000 | 6/6 active | test acc 0.003 0.000 0.000 0.981 0.970 0.971 | 1394s
+GROKKED qf_1_0_1_p59_f0.8_mono_s0_mlp_quad100k_w512_wd0.1 at step 32400 (test acc 0.9914)
+step   35000 | 6/6 active | test acc 0.001 0.000 0.000 0.994 0.970 0.983 | 1619s
+DONE qf_1_0_1_p59_f0.8_mono_s0_mlp_quad100k_w512_wd0.1 at step 37400
+step   40000 | 5/6 active | test acc 0.000 0.001 0.000 0.989 0.974 0.989 | 1842s
+step   45000 | 5/6 active | test acc 0.000 0.001 0.000 0.989 0.981 0.989 | 2063s
+step   50000 | 5/6 active | test acc 0.001 0.001 0.000 0.989 0.975 0.989 | 2284s
+step   55000 | 5/6 active | test acc 0.001 0.001 0.000 0.989 0.975 0.989 | 2506s
+step   60000 | 5/6 active | test acc 0.001 0.000 0.000 0.989 0.970 0.989 | 2727s
+step   65000 | 5/6 active | test acc 0.001 0.000 0.000 0.989 0.964 0.983 | 2949s
+step   70000 | 5/6 active | test acc 0.003 0.000 0.000 0.989 0.964 0.983 | 3170s
+step   75000 | 5/6 active | test acc 0.000 0.000 0.000 0.989 0.964 0.983 | 3391s
+step   80000 | 5/6 active | test acc 0.000 0.000 0.000 0.989 0.964 0.983 | 3613s
+step   85000 | 5/6 active | test acc 0.000 0.000 0.000 0.989 0.958 0.983 | 3835s
+step   90000 | 5/6 active | test acc 0.000 0.000 0.000 0.989 0.958 0.983 | 4056s
+step   95000 | 5/6 active | test acc 0.000 0.000 0.000 0.989 0.952 0.983 | 4277s
+DONE qf_1_1_1_p59_f0.8_mono_s0_mlp_quad100k_w512_wd0.1 at step 100000
+DONE qf_1_1_1_p59_f0.8_mono_s1_mlp_quad100k_w512_wd0.1 at step 100000
+DONE qf_1_1_1_p59_f0.8_mono_s2_mlp_quad100k_w512_wd0.1 at step 100000
+DONE qf_1_0_1_p59_f0.8_mono_s1_mlp_quad100k_w512_wd0.1 at step 100000
+DONE qf_1_0_1_p59_f0.8_mono_s2_mlp_quad100k_w512_wd0.1 at step 100000
+step  100000 | 0/6 active | test acc 0.000 0.000 0.000 0.989 0.952 0.983 | 4517s
+GROUP DONE [{"tag": "qf_1_1_1_p59_f0.8_mono_s0_mlp_quad100k_w512_wd0.1", "grok_step": null, "final_step": 100000}, {"tag": "qf_1_1_1_p59_f0.8_mono_s1_mlp_quad100k_w512_wd0.1", "grok_step": null, "final_step": 100000}, {"tag": "qf_1_1_1_p59_f0.8_mono_s2_mlp_quad100k_w512_wd0.1", "grok_step": null, "final_step": 100000}, {"tag": "qf_1_0_1_p59_f0.8_mono_s0_mlp_quad100k_w512_wd0.1", "grok_step": 32400, "final_step": 37400}, {"tag": "qf_1_0_1_p59_f0.8_mono_s1_mlp_quad100k_w512_wd0.1", "grok_step": null, "final_step": 100000}, {"tag": "qf_1_0_1_p59_f0.8_mono_s2_mlp_quad100k_w512_wd0.1", "grok_step": null, "final_step": 100000}]

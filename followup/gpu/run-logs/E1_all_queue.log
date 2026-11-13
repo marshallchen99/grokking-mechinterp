@@ -1,0 +1,28 @@
+QUEUE qf_1_1_1_p97_furuta_aob200k  M=54
+QUEUE qf_1_1_1_p59_furuta_aob+ours300k  M=6
+QUEUE qf_1_1_1_p61_furuta_aob+ours300k  M=6
+QUEUE qf_1_1_1_p67_ours200k  M=14
+QUEUE qf_1_1_1_p71_ours200k  M=14
+QUEUE qf_1_1_1_p73_ours200k  M=14
+QUEUE qf_1_1_1_p79_ours200k  M=14
+QUEUE qf_1_1_1_p83_ours200k  M=14
+QUEUE qf_1_1_1_p89_ours200k  M=14
+QUEUE qf_1_1_1_p59_mlp_quad100k  M=24
+QUEUE qf_1_1_1_p61_mlp_quad100k  M=24
+QUEUE qf_1_1_1_p97_mlp_quad100k  M=24
+[      0s] START qf_1_1_1_p97_furuta_aob200k
+[      0s] START qf_1_1_1_p59_furuta_aob+ours300k
+[      0s] START qf_1_1_1_p61_furuta_aob+ours300k
+[      0s] START qf_1_1_1_p67_ours200k
+[      0s] START qf_1_1_1_p71_ours200k
+[      0s] START qf_1_1_1_p73_ours200k
+[  26219s] OK        qf_1_1_1_p67_ours200k  (26219s)
+[  26224s] START qf_1_1_1_p79_ours200k
+[  27254s] OK        qf_1_1_1_p71_ours200k  (27254s)
+[  27259s] START qf_1_1_1_p83_ours200k
+[  27809s] OK        qf_1_1_1_p73_ours200k  (27809s)
+[  27814s] START qf_1_1_1_p89_ours200k
+[  31924s] OK        qf_1_1_1_p59_furuta_aob+ours300k  (31924s)
+[  31929s] START qf_1_1_1_p59_mlp_quad100k
+[  31934s] OK        qf_1_1_1_p61_furuta_aob+ours300k  (31934s)
+[  31939s] START qf_1_1_1_p61_mlp_quad100k

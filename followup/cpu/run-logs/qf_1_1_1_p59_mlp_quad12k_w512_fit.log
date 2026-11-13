@@ -1,0 +1,29 @@
+
+==== 2026-10-10 01:00:52 python3 research/scripts/train_batched.py jobs/P1_all.json --only 13 --out runs_cpu --device cpu --threads 3
+step       0 | 3/3 active | test acc 0.019 0.014 0.020 | 0s
+Traceback (most recent call last):
+  File "research/scripts/train_batched.py", line 199, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "research/scripts/train_batched.py", line 133, in main
+    res = run_one(g, out, args.device, threads=args.threads)
+  File "research/scripts/train_batched.py", line 91, in run_one
+    return train_group(parse_form(str(g["form"])), int(g["p"]), specs, variants,
+                       int(steps or g["steps"]), out, device=device, device_info=info,
+    ...<4 lines>...
+                       mlp_width=g.get("width"), suffix=g.get("suffix", ""),
+                       overwrite=True, verbose=verbose, **extra)
+  File "research/src/normforms/batched_train.py", line 316, in train_group
+    print(f"GROKKED {tags[i]} at step {step} (test acc {rec['test_acc']:.4f})",
+                                                       ^^^^^^^^^^^^^^^^^^^^^
+TypeError: unsupported format string passed to NoneType.__format__
+
+==== 2026-10-10 09:51:51 python3 research/scripts/train_batched.py jobs/P1_recovery.json --only 1 --out runs_cpu --device cpu --threads 3
+step       0 | 3/3 active | test acc 0.019 0.014 0.020 | 0s
+GROKKED qf_1_0_1_p59_f1.0_all_s0_mlp_quad12k_w512_fit at step 200 (test acc n/a)
+GROKKED qf_1_1_1_p59_f1.0_all_s0_mlp_quad12k_w512_fit at step 200 (test acc n/a)
+GROKKED tab_perm111_s0_p59_f1.0_all_s0_mlp_quad12k_w512_fit at step 200 (test acc n/a)
+DONE qf_1_0_1_p59_f1.0_all_s0_mlp_quad12k_w512_fit at step 700
+DONE qf_1_1_1_p59_f1.0_all_s0_mlp_quad12k_w512_fit at step 700
+DONE tab_perm111_s0_p59_f1.0_all_s0_mlp_quad12k_w512_fit at step 700
+GROUP DONE [{"tag": "qf_1_0_1_p59_f1.0_all_s0_mlp_quad12k_w512_fit", "grok_step": 200, "final_step": 700}, {"tag": "qf_1_1_1_p59_f1.0_all_s0_mlp_quad12k_w512_fit", "grok_step": 200, "final_step": 700}, {"tag": "tab_perm111_s0_p59_f1.0_all_s0_mlp_quad12k_w512_fit", "grok_step": 200, "final_step": 700}]

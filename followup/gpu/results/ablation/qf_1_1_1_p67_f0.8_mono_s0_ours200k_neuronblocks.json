@@ -1,0 +1,37 @@
+{
+ "tag": "qf_1_1_1_p67_f0.8_mono_s0_ours200k",
+ "trained": {
+  "additive": {
+   "median": 0.1159,
+   "frac_ge_0.5": 0.0,
+   "n": 510
+  },
+  "square": {
+   "median": 0.1685,
+   "frac_ge_0.5": 0.0,
+   "n": 510
+  },
+  "dlog": {
+   "median": 0.1387,
+   "frac_ge_0.5": 0.0,
+   "n": 510
+  }
+ },
+ "init": {
+  "additive": {
+   "median": 0.1024,
+   "frac_ge_0.5": 0.0,
+   "n": 371
+  },
+  "square": {
+   "median": 0.0855,
+   "frac_ge_0.5": 0.0,
+   "n": 371
+  },
+  "dlog": {
+   "median": 0.1052,
+   "frac_ge_0.5": 0.0,
+   "n": 371
+  }
+ }
+}

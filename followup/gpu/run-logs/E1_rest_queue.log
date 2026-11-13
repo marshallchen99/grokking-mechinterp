@@ -1,0 +1,9 @@
+QUEUE qf_1_1_1_p79_ours200k  M=11
+QUEUE qf_1_1_1_p83_ours200k  M=14
+QUEUE qf_1_1_1_p89_ours200k  M=10
+QUEUE qf_1_1_1_p97_mlp_quad100k  M=24
+[      0s] START qf_1_1_1_p79_ours200k
+[      0s] START qf_1_1_1_p83_ours200k
+[      0s] START qf_1_1_1_p89_ours200k
+[      0s] START qf_1_1_1_p97_mlp_quad100k
+[   6709s] OK        qf_1_1_1_p97_mlp_quad100k  (6709s)

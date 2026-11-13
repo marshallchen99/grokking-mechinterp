@@ -1,0 +1,39 @@
+
+==== 2026-09-25 13:23:15 python3 research/scripts/train_batched.py jobs/E7_tables_cpu.json --only 2 --out runs_cpu --device cpu
+step       0 | 25/25 active | test acc 0.036 0.021 0.052 0.032 0.063 0.026 0.090 0.000 0.042 0.052 0.011 0.042 0.042 0.032 0.021 0.042 0.047 0.036 0.052 0.042 0.031 0.062 0.031 0.031 0.047 | 2s
+GROKKED tab_rsym8_s0_p31_f0.8_none_s0_ours20k at step 200 (test acc 1.0000)
+GROKKED tab_rsym8_s1_p31_f0.8_none_s1_ours20k at step 200 (test acc 1.0000)
+GROKKED tab_rsym8_s2_p31_f0.8_none_s2_ours20k at step 300 (test acc 0.9948)
+GROKKED tab_rsep_s0_p31_f0.8_value_s0_ours20k at step 2700 (test acc 1.0000)
+DONE tab_rsym8_s0_p31_f0.8_none_s0_ours20k at step 3200
+DONE tab_rsym8_s1_p31_f0.8_none_s1_ours20k at step 3200
+DONE tab_rsym8_s2_p31_f0.8_none_s2_ours20k at step 3300
+GROKKED tab_rsep_s2_p31_f0.8_value_s2_ours20k at step 4400 (test acc 0.9948)
+step    5000 | 22/25 active | test acc 1.000 0.562 1.000 0.127 0.254 0.125 0.042 0.042 0.000 0.000 0.021 0.021 0.042 0.000 0.000 0.000 0.734 0.807 0.792 0.927 0.833 0.854 1.000 1.000 0.995 | 1272s
+DONE tab_rsep_s0_p31_f0.8_value_s0_ours20k at step 5700
+GROKKED tab_rsep_s1_p31_f0.8_value_s1_ours20k at step 6800 (test acc 0.9948)
+DONE tab_rsep_s2_p31_f0.8_value_s2_ours20k at step 7400
+DONE tab_rsep_s1_p31_f0.8_value_s1_ours20k at step 9800
+step   10000 | 19/25 active | test acc 1.000 1.000 1.000 0.212 0.275 0.125 0.042 0.000 0.000 0.010 0.021 0.021 0.042 0.000 0.010 0.000 0.766 0.818 0.844 0.906 0.854 0.885 1.000 1.000 0.995 | 2630s
+step   15000 | 19/25 active | test acc 1.000 1.000 1.000 0.275 0.317 0.125 0.042 0.000 0.000 0.021 0.042 0.011 0.085 0.000 0.000 0.032 0.760 0.828 0.859 0.906 0.875 0.896 1.000 1.000 0.995 | 3990s
+DONE tab_rsepeven_s0_p31_f0.8_value_s0_ours20k at step 20000
+DONE tab_rsepeven_s1_p31_f0.8_value_s1_ours20k at step 20000
+DONE tab_rsepeven_s2_p31_f0.8_value_s2_ours20k at step 20000
+DONE tab_rsym8_s0_p31_f0.8_value_s0_ours20k at step 20000
+DONE tab_rsym8_s1_p31_f0.8_value_s1_ours20k at step 20000
+DONE tab_rsym8_s2_p31_f0.8_value_s2_ours20k at step 20000
+DONE tab_rsym4_s0_p31_f0.8_value_s0_ours20k at step 20000
+DONE tab_rsym4_s1_p31_f0.8_value_s1_ours20k at step 20000
+DONE tab_rsym4_s2_p31_f0.8_value_s2_ours20k at step 20000
+DONE qf_1_0_1_p31_f0.8_value_s0_ours20k at step 20000
+DONE qf_1_0_1_p31_f0.8_value_s1_ours20k at step 20000
+DONE qf_1_1_1_p31_f0.8_value_s0_ours20k at step 20000
+DONE qf_1_1_1_p31_f0.8_value_s1_ours20k at step 20000
+DONE tab_rsym4_s0_p31_f0.8_none_s0_ours20k at step 20000
+DONE tab_rsym4_s1_p31_f0.8_none_s1_ours20k at step 20000
+DONE tab_rsym4_s2_p31_f0.8_none_s2_ours20k at step 20000
+DONE tab_rsym4_s0_p31_f0.9_none_s0_ours20k at step 20000
+DONE tab_rsym4_s1_p31_f0.9_none_s1_ours20k at step 20000
+DONE tab_rsym4_s2_p31_f0.9_none_s2_ours20k at step 20000
+step   20000 | 0/25 active | test acc 1.000 1.000 1.000 0.317 0.339 0.083 0.042 0.000 0.000 0.021 0.021 0.011 0.085 0.000 0.000 0.021 0.776 0.849 0.938 0.906 0.854 0.875 1.000 1.000 0.995 | 5342s
+GROUP DONE [{"tag": "tab_rsep_s0_p31_f0.8_value_s0_ours20k", "grok_step": 2700, "final_step": 5700}, {"tag": "tab_rsep_s1_p31_f0.8_value_s1_ours20k", "grok_step": 6800, "final_step": 9800}, {"tag": "tab_rsep_s2_p31_f0.8_value_s2_ours20k", "grok_step": 4400, "final_step": 7400}, {"tag": "tab_rsepeven_s0_p31_f0.8_value_s0_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "tab_rsepeven_s1_p31_f0.8_value_s1_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "tab_rsepeven_s2_p31_f0.8_value_s2_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "tab_rsym8_s0_p31_f0.8_value_s0_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "tab_rsym8_s1_p31_f0.8_value_s1_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "tab_rsym8_s2_p31_f0.8_value_s2_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "tab_rsym4_s0_p31_f0.8_value_s0_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "tab_rsym4_s1_p31_f0.8_value_s1_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "tab_rsym4_s2_p31_f0.8_value_s2_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "qf_1_0_1_p31_f0.8_value_s0_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "qf_1_0_1_p31_f0.8_value_s1_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "qf_1_1_1_p31_f0.8_value_s0_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "qf_1_1_1_p31_f0.8_value_s1_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "tab_rsym4_s0_p31_f0.8_none_s0_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "tab_rsym4_s1_p31_f0.8_none_s1_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "tab_rsym4_s2_p31_f0.8_none_s2_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "tab_rsym4_s0_p31_f0.9_none_s0_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "tab_rsym4_s1_p31_f0.9_none_s1_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "tab_rsym4_s2_p31_f0.9_none_s2_ours20k", "grok_step": null, "final_step": 20000}, {"tag": "tab_rsym8_s0_p31_f0.8_none_s0_ours20k", "grok_step": 200, "final_step": 3200}, {"tag": "tab_rsym8_s1_p31_f0.8_none_s1_ours20k", "grok_step": 200, "final_step": 3200}, {"tag": "tab_rsym8_s2_p31_f0.8_none_s2_ours20k", "grok_step": 300, "final_step": 3300}]

@@ -1,0 +1,9 @@
+
+==== 2026-10-10 10:17:42 python3 research/scripts/train_batched.py jobs/P1_recovery.json --only 7 --out runs_cpu --device cpu --threads 3
+step       0 | 4/4 active | test acc 0.023 0.026 0.020 0.025 | 0s
+step    5000 | 4/4 active | test acc 0.004 0.003 0.149 0.136 | 651s
+DONE qf_1_1_1_p59_f0.8_mono_s0_mlp_quad8k_i1_lr0.0003 at step 8000
+DONE qf_1_1_1_p59_f0.8_mono_s1_mlp_quad8k_i1_lr0.0003 at step 8000
+DONE qf_1_0_1_p59_f0.8_mono_s0_mlp_quad8k_i1_lr0.0003 at step 8000
+DONE qf_1_0_1_p59_f0.8_mono_s1_mlp_quad8k_i1_lr0.0003 at step 8000
+GROUP DONE [{"tag": "qf_1_1_1_p59_f0.8_mono_s0_mlp_quad8k_i1_lr0.0003", "grok_step": null, "final_step": 8000}, {"tag": "qf_1_1_1_p59_f0.8_mono_s1_mlp_quad8k_i1_lr0.0003", "grok_step": null, "final_step": 8000}, {"tag": "qf_1_0_1_p59_f0.8_mono_s0_mlp_quad8k_i1_lr0.0003", "grok_step": null, "final_step": 8000}, {"tag": "qf_1_0_1_p59_f0.8_mono_s1_mlp_quad8k_i1_lr0.0003", "grok_step": null, "final_step": 8000}]

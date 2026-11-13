@@ -1,0 +1,29 @@
+
+==== 2026-09-25 16:57:01 python3 research/scripts/train_batched.py jobs/E9_transformer_cpu.json --only 0 --out runs_cpu --device cpu
+step       0 | 5/5 active | test acc 0.032 0.063 0.026 0.042 0.032 | 0s
+step    5000 | 5/5 active | test acc 0.127 0.275 0.125 0.042 0.000 | 247s
+step   10000 | 5/5 active | test acc 0.212 0.317 0.125 0.042 0.000 | 507s
+step   15000 | 5/5 active | test acc 0.275 0.296 0.167 0.042 0.000 | 781s
+step   20000 | 5/5 active | test acc 0.317 0.339 0.083 0.042 0.000 | 1059s
+step   25000 | 5/5 active | test acc 0.402 0.381 0.125 0.042 0.000 | 1333s
+step   30000 | 5/5 active | test acc 0.402 0.381 0.146 0.042 0.042 | 1613s
+step   35000 | 5/5 active | test acc 0.402 0.381 0.188 0.042 0.000 | 1893s
+step   40000 | 5/5 active | test acc 0.360 0.423 0.188 0.042 0.000 | 2176s
+step   45000 | 5/5 active | test acc 0.360 0.423 0.188 0.042 0.000 | 2461s
+step   50000 | 5/5 active | test acc 0.360 0.423 0.188 0.042 0.000 | 2747s
+step   55000 | 5/5 active | test acc 0.360 0.423 0.188 0.042 0.000 | 3037s
+step   60000 | 5/5 active | test acc 0.360 0.423 0.146 0.042 0.000 | 3363s
+step   65000 | 5/5 active | test acc 0.317 0.423 0.167 0.042 0.000 | 3842s
+step   70000 | 5/5 active | test acc 0.317 0.423 0.292 0.042 0.000 | 4346s
+step   75000 | 5/5 active | test acc 0.275 0.423 0.417 0.042 0.000 | 4844s
+step   80000 | 5/5 active | test acc 0.275 0.423 0.458 0.042 0.000 | 5337s
+step   85000 | 5/5 active | test acc 0.275 0.423 0.500 0.042 0.000 | 5750s
+step   90000 | 5/5 active | test acc 0.275 0.423 0.542 0.042 0.000 | 6316s
+step   95000 | 5/5 active | test acc 0.317 0.423 0.458 0.042 0.000 | 6881s
+DONE tab_rsepeven_s0_p31_f0.8_value_s0_ours100k at step 100000
+DONE tab_rsepeven_s1_p31_f0.8_value_s1_ours100k at step 100000
+DONE tab_rsepeven_s2_p31_f0.8_value_s2_ours100k at step 100000
+DONE qf_1_0_1_p31_f0.8_value_s0_ours100k at step 100000
+DONE qf_1_0_1_p31_f0.8_value_s1_ours100k at step 100000
+step  100000 | 0/5 active | test acc 0.275 0.423 0.458 0.042 0.000 | 7455s
+GROUP DONE [{"tag": "tab_rsepeven_s0_p31_f0.8_value_s0_ours100k", "grok_step": null, "final_step": 100000}, {"tag": "tab_rsepeven_s1_p31_f0.8_value_s1_ours100k", "grok_step": null, "final_step": 100000}, {"tag": "tab_rsepeven_s2_p31_f0.8_value_s2_ours100k", "grok_step": null, "final_step": 100000}, {"tag": "qf_1_0_1_p31_f0.8_value_s0_ours100k", "grok_step": null, "final_step": 100000}, {"tag": "qf_1_0_1_p31_f0.8_value_s1_ours100k", "grok_step": null, "final_step": 100000}]

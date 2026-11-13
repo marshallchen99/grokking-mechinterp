@@ -1,0 +1,66 @@
+
+==== 2026-10-09 19:00:35 python3 research/scripts/train_batched.py jobs/p79_crossterm_300k.json --only 2 --out research --device cuda --threads 6
+step       0 | 2/2 active | test acc 0.008 0.013 | 0s
+step    5000 | 2/2 active | test acc 0.010 0.014 | 109s
+step   10000 | 2/2 active | test acc 0.014 0.013 | 216s
+step   15000 | 2/2 active | test acc 0.014 0.013 | 325s
+step   20000 | 2/2 active | test acc 0.014 0.013 | 436s
+step   25000 | 2/2 active | test acc 0.012 0.013 | 629s
+step   30000 | 2/2 active | test acc 0.012 0.014 | 946s
+step   35000 | 2/2 active | test acc 0.013 0.014 | 1263s
+step   40000 | 2/2 active | test acc 0.014 0.014 | 1511s
+step   45000 | 2/2 active | test acc 0.014 0.013 | 1793s
+step   50000 | 2/2 active | test acc 0.014 0.013 | 2075s
+step   55000 | 2/2 active | test acc 0.014 0.013 | 2356s
+step   60000 | 2/2 active | test acc 0.012 0.013 | 2637s
+step   65000 | 2/2 active | test acc 0.013 0.013 | 2917s
+step   70000 | 2/2 active | test acc 0.012 0.013 | 3197s
+step   75000 | 2/2 active | test acc 0.014 0.016 | 3478s
+step   80000 | 2/2 active | test acc 0.015 0.014 | 3759s
+step   85000 | 2/2 active | test acc 0.016 0.014 | 4039s
+step   90000 | 2/2 active | test acc 0.014 0.014 | 4318s
+step   95000 | 2/2 active | test acc 0.015 0.016 | 4599s
+step  100000 | 2/2 active | test acc 0.015 0.016 | 4879s
+step  105000 | 2/2 active | test acc 0.014 0.014 | 5158s
+step  110000 | 2/2 active | test acc 0.014 0.014 | 5438s
+step  115000 | 2/2 active | test acc 0.014 0.014 | 5716s
+step  120000 | 2/2 active | test acc 0.015 0.014 | 5996s
+step  125000 | 2/2 active | test acc 0.017 0.014 | 6273s
+step  130000 | 2/2 active | test acc 0.016 0.014 | 6553s
+step  135000 | 2/2 active | test acc 0.014 0.013 | 6833s
+step  140000 | 2/2 active | test acc 0.015 0.013 | 7112s
+step  145000 | 2/2 active | test acc 0.014 0.013 | 7391s
+step  150000 | 2/2 active | test acc 0.014 0.013 | 7671s
+step  155000 | 2/2 active | test acc 0.014 0.013 | 7949s
+step  160000 | 2/2 active | test acc 0.013 0.011 | 8228s
+step  165000 | 2/2 active | test acc 0.013 0.011 | 8506s
+step  170000 | 2/2 active | test acc 0.013 0.011 | 8785s
+step  175000 | 2/2 active | test acc 0.014 0.013 | 9064s
+step  180000 | 2/2 active | test acc 0.015 0.013 | 9345s
+step  185000 | 2/2 active | test acc 0.016 0.013 | 9624s
+step  190000 | 2/2 active | test acc 0.015 0.013 | 9854s
+step  195000 | 2/2 active | test acc 0.014 0.013 | 10031s
+step  200000 | 2/2 active | test acc 0.014 0.013 | 10131s
+step  205000 | 2/2 active | test acc 0.014 0.013 | 10227s
+step  210000 | 2/2 active | test acc 0.015 0.013 | 10325s
+step  215000 | 2/2 active | test acc 0.014 0.013 | 10419s
+step  220000 | 2/2 active | test acc 0.016 0.013 | 10519s
+step  225000 | 2/2 active | test acc 0.016 0.014 | 10616s
+step  230000 | 2/2 active | test acc 0.015 0.014 | 10718s
+step  235000 | 2/2 active | test acc 0.014 0.014 | 10819s
+step  240000 | 2/2 active | test acc 0.014 0.014 | 10913s
+step  245000 | 2/2 active | test acc 0.014 0.014 | 11006s
+step  250000 | 2/2 active | test acc 0.014 0.014 | 11109s
+step  255000 | 2/2 active | test acc 0.014 0.014 | 11208s
+step  260000 | 2/2 active | test acc 0.015 0.014 | 11307s
+step  265000 | 2/2 active | test acc 0.016 0.014 | 11406s
+step  270000 | 2/2 active | test acc 0.016 0.014 | 11502s
+step  275000 | 2/2 active | test acc 0.015 0.014 | 11600s
+step  280000 | 2/2 active | test acc 0.014 0.014 | 11698s
+step  285000 | 2/2 active | test acc 0.014 0.014 | 11795s
+step  290000 | 2/2 active | test acc 0.014 0.014 | 11901s
+step  295000 | 2/2 active | test acc 0.014 0.014 | 12000s
+DONE qf_1_1_0_p79_f0.8_mono_s0_ours300k at step 300000
+DONE qf_1_1_0_p79_f0.8_mono_s1_ours300k at step 300000
+step  300000 | 0/2 active | test acc 0.014 0.014 | 12102s
+GROUP DONE [{"tag": "qf_1_1_0_p79_f0.8_mono_s0_ours300k", "grok_step": null, "final_step": 300000}, {"tag": "qf_1_1_0_p79_f0.8_mono_s1_ours300k", "grok_step": null, "final_step": 300000}]

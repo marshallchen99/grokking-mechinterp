@@ -1,0 +1,37 @@
+{
+ "tag": "qf_1_0_1_p59_f0.8_value_s2_ours200k",
+ "trained": {
+  "additive": {
+   "median": 0.1321,
+   "frac_ge_0.5": 0.0,
+   "n": 487
+  },
+  "square": {
+   "median": 0.6619,
+   "frac_ge_0.5": 0.7433,
+   "n": 487
+  },
+  "dlog": {
+   "median": 0.1641,
+   "frac_ge_0.5": 0.0,
+   "n": 487
+  }
+ },
+ "init": {
+  "additive": {
+   "median": 0.1147,
+   "frac_ge_0.5": 0.0,
+   "n": 384
+  },
+  "square": {
+   "median": 0.1086,
+   "frac_ge_0.5": 0.0,
+   "n": 384
+  },
+  "dlog": {
+   "median": 0.113,
+   "frac_ge_0.5": 0.0,
+   "n": 384
+  }
+ }
+}

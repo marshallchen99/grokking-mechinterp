@@ -1,0 +1,11 @@
+
+==== 2026-10-10 10:45:00 python3 research/scripts/train_batched.py jobs/P1_3_doshi_fallback.json --only 1 --out research --device cuda --threads 6
+step       0 | 3/3 active | test acc 0.020 0.025 0.020 | 0s
+step    5000 | 3/3 active | test acc 0.014 0.027 0.022 | 17s
+step   10000 | 3/3 active | test acc 0.013 0.016 0.011 | 35s
+step   15000 | 3/3 active | test acc 0.009 0.012 0.023 | 52s
+DONE qf_1_0_1_p59_f0.8_mono_s0_mlp_quad20k at step 20000
+DONE qf_1_0_1_p59_f0.8_mono_s1_mlp_quad20k at step 20000
+DONE qf_1_0_1_p59_f0.8_mono_s2_mlp_quad20k at step 20000
+step   20000 | 0/3 active | test acc 0.014 0.007 0.016 | 68s
+GROUP DONE [{"tag": "qf_1_0_1_p59_f0.8_mono_s0_mlp_quad20k", "grok_step": null, "final_step": 20000}, {"tag": "qf_1_0_1_p59_f0.8_mono_s1_mlp_quad20k", "grok_step": null, "final_step": 20000}, {"tag": "qf_1_0_1_p59_f0.8_mono_s2_mlp_quad20k", "grok_step": null, "final_step": 20000}]

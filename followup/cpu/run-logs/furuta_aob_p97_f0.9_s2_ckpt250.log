@@ -1,0 +1,9 @@
+seed 2: split 8469 train idx, hash 8c6225a931da9a82 vs GPU 8c6225a931da9a82 -> IDENTICAL
+step       0 | 1/1 active | test acc 0.013 | 0s
+step    5000 | 1/1 active | test acc 0.913 | 2062s
+step   10000 | 1/1 active | test acc 0.986 | 3912s
+GROKKED qf_1_1_1_p97_f0.9_none_s2_furuta_aob40k_ckpt250 at step 10800 (test acc 0.9904)
+step   15000 | 1/1 active | test acc 0.998 | 5551s
+step   20000 | 1/1 active | test acc 0.998 | 7077s
+DONE qf_1_1_1_p97_f0.9_none_s2_furuta_aob40k_ckpt250 at step 20800
+ALL DONE [{"tag": "qf_1_1_1_p97_f0.9_none_s2_furuta_aob40k_ckpt250", "grok_step": 10800, "final_step": 20800}] 7324s

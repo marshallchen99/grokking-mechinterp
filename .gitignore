@@ -11,3 +11,5 @@ venv/
 # run output: machine-specific, contains absolute paths
 logs/
 *.log
+# The follow-up records are published on purpose. Their logs have machine paths removed.
+!followup/**/*.log

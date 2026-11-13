@@ -1,0 +1,230 @@
+{
+ "qf_1_1_1_p59_f0.8_none_s0": {
+  "p": 59,
+  "group": "none",
+  "achieved_frac": 0.800057454754381,
+  "test": {
+   "n": 696,
+   "acc": 0.7816091775894165
+  },
+  "no_trained_partner": {
+   "n": 6,
+   "acc": 0.1666666716337204
+  },
+  "swap_trained": {
+   "n": 528,
+   "acc": 1.0
+  },
+  "only_swap_trained": {
+   "n": 27,
+   "acc": 1.0
+  },
+  "neg_trained": {
+   "n": 552,
+   "acc": 0.7789855003356934
+  },
+  "only_neg_trained": {
+   "n": 27,
+   "acc": 0.07407407462596893
+  },
+  "swap_neg_trained": {
+   "n": 545,
+   "acc": 0.7761467695236206
+  },
+  "only_swap_neg_trained": {
+   "n": 27,
+   "acc": 0.07407407462596893
+  },
+  "swap_only_prediction": 0.7586206793785095
+ },
+ "qf_1_1_1_p59_f0.8_none_s1": {
+  "p": 59,
+  "group": "none",
+  "achieved_frac": 0.800057454754381,
+  "test": {
+   "n": 696,
+   "acc": 0.7772988677024841
+  },
+  "no_trained_partner": {
+   "n": 10,
+   "acc": 0.0
+  },
+  "swap_trained": {
+   "n": 532,
+   "acc": 1.0
+  },
+  "only_swap_trained": {
+   "n": 25,
+   "acc": 1.0
+  },
+  "neg_trained": {
+   "n": 538,
+   "acc": 0.7713754773139954
+  },
+  "only_neg_trained": {
+   "n": 25,
+   "acc": 0.11999999731779099
+  },
+  "swap_neg_trained": {
+   "n": 543,
+   "acc": 0.7734806537628174
+  },
+  "only_swap_neg_trained": {
+   "n": 25,
+   "acc": 0.11999999731779099
+  },
+  "swap_only_prediction": 0.7643678188323975
+ },
+ "qf_1_1_1_p59_f0.8_none_s2": {
+  "p": 59,
+  "group": "none",
+  "achieved_frac": 0.800057454754381,
+  "test": {
+   "n": 696,
+   "acc": 0.7801724076271057
+  },
+  "no_trained_partner": {
+   "n": 18,
+   "acc": 0.1111111119389534
+  },
+  "swap_trained": {
+   "n": 539,
+   "acc": 1.0
+  },
+  "only_swap_trained": {
+   "n": 17,
+   "acc": 1.0
+  },
+  "neg_trained": {
+   "n": 546,
+   "acc": 0.7802197933197021
+  },
+  "only_neg_trained": {
+   "n": 17,
+   "acc": 0.0
+  },
+  "swap_neg_trained": {
+   "n": 560,
+   "acc": 0.7857142686843872
+  },
+  "only_swap_neg_trained": {
+   "n": 17,
+   "acc": 0.0
+  },
+  "swap_only_prediction": 0.7744252681732178
+ },
+ "qf_1_1_1_p61_f0.8_none_s0": {
+  "p": 61,
+  "group": "none",
+  "achieved_frac": 0.8000537489922064,
+  "test": {
+   "n": 744,
+   "acc": 0.7782257795333862
+  },
+  "no_trained_partner": {
+   "n": 6,
+   "acc": 0.0
+  },
+  "swap_trained": {
+   "n": 567,
+   "acc": 1.0
+  },
+  "only_swap_trained": {
+   "n": 28,
+   "acc": 1.0
+  },
+  "neg_trained": {
+   "n": 596,
+   "acc": 0.7734899520874023
+  },
+  "only_neg_trained": {
+   "n": 28,
+   "acc": 0.1428571492433548
+  },
+  "swap_neg_trained": {
+   "n": 585,
+   "acc": 0.7692307829856873
+  },
+  "only_swap_neg_trained": {
+   "n": 28,
+   "acc": 0.1428571492433548
+  },
+  "swap_only_prediction": 0.7620967626571655
+ },
+ "qf_1_1_1_p61_f0.8_none_s1": {
+  "p": 61,
+  "group": "none",
+  "achieved_frac": 0.8000537489922064,
+  "test": {
+   "n": 744,
+   "acc": 0.8091397881507874
+  },
+  "no_trained_partner": {
+   "n": 22,
+   "acc": 0.0
+  },
+  "swap_trained": {
+   "n": 594,
+   "acc": 1.0
+  },
+  "only_swap_trained": {
+   "n": 24,
+   "acc": 1.0
+  },
+  "neg_trained": {
+   "n": 570,
+   "acc": 0.8298245668411255
+  },
+  "only_neg_trained": {
+   "n": 24,
+   "acc": 0.0416666679084301
+  },
+  "swap_neg_trained": {
+   "n": 578,
+   "acc": 0.8321799039840698
+  },
+  "only_swap_neg_trained": {
+   "n": 24,
+   "acc": 0.0416666679084301
+  },
+  "swap_only_prediction": 0.7983871102333069
+ },
+ "qf_1_1_1_p61_f0.8_none_s2": {
+  "p": 61,
+  "group": "none",
+  "achieved_frac": 0.8000537489922064,
+  "test": {
+   "n": 744,
+   "acc": 0.7930107712745667
+  },
+  "no_trained_partner": {
+   "n": 12,
+   "acc": 0.0
+  },
+  "swap_trained": {
+   "n": 572,
+   "acc": 1.0
+  },
+  "only_swap_trained": {
+   "n": 14,
+   "acc": 1.0
+  },
+  "neg_trained": {
+   "n": 600,
+   "acc": 0.7833333611488342
+  },
+  "only_neg_trained": {
+   "n": 14,
+   "acc": 0.1428571492433548
+  },
+  "swap_neg_trained": {
+   "n": 579,
+   "acc": 0.7754749655723572
+  },
+  "only_swap_neg_trained": {
+   "n": 14,
+   "acc": 0.1428571492433548
+  },
+  "swap_only_prediction": 0.7688171863555908
+ }
+}

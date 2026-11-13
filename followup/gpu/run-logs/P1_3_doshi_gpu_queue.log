@@ -1,0 +1,14 @@
+QUEUE qf_1_1_1_p59_mlpdoshi_quad200k_doshi  M=3
+QUEUE qf_1_0_1_p59_mlpdoshi_quad200k_doshi  M=3
+QUEUE qf_1_1_1_p59_mlpdoshi_quad200k_doshi_f50  M=3
+QUEUE qf_1_0_1_p59_mlpdoshi_quad200k_doshi_f50  M=3
+[      0s] START qf_1_1_1_p59_mlpdoshi_quad200k_doshi
+[      0s] START qf_1_0_1_p59_mlpdoshi_quad200k_doshi
+[      0s] START qf_1_1_1_p59_mlpdoshi_quad200k_doshi_f50
+[      0s] START qf_1_0_1_p59_mlpdoshi_quad200k_doshi_f50
+[   2105s] OK        qf_1_1_1_p59_mlpdoshi_quad200k_doshi_f50  (2105s)
+[   2105s] OK        qf_1_0_1_p59_mlpdoshi_quad200k_doshi_f50  (2105s)
+[   2380s] OK        qf_1_1_1_p59_mlpdoshi_quad200k_doshi  (2380s)
+[   2380s] OK        qf_1_0_1_p59_mlpdoshi_quad200k_doshi  (2380s)
+
+4 ran, 0 skipped, 0 failed

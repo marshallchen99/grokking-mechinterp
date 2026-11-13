@@ -1,0 +1,4 @@
+
+==== 2026-10-09 19:08:41 python3 research/scripts/train_batched.py jobs/P1_1_depth_transformer.json --only 2 --out research --device cuda --threads 6
+step       0 | 9/9 active | test acc 0.013 0.016 0.020 0.023 0.005 0.015 0.018 0.022 0.015 | 1s
+step    5000 | 9/9 active | test acc 0.003 0.003 0.008 0.003 0.009 0.012 0.000 0.000 0.000 | 620s

@@ -1,0 +1,101 @@
+[
+ {
+  "form": "1,1,1",
+  "p": 59,
+  "group": "mono",
+  "frac": 0.8,
+  "seed": 0,
+  "kernel_dim_3token": 6,
+  "gauge_dim": 2,
+  "n_train": 2785,
+  "n_values": 59
+ },
+ {
+  "form": "1,1,1",
+  "p": 59,
+  "group": "mono",
+  "frac": 0.8,
+  "seed": 1,
+  "kernel_dim_3token": 6,
+  "gauge_dim": 2,
+  "n_train": 2785,
+  "n_values": 59
+ },
+ {
+  "form": "1,1,1",
+  "p": 59,
+  "group": "mono",
+  "frac": 0.8,
+  "seed": 2,
+  "kernel_dim_3token": 6,
+  "gauge_dim": 2,
+  "n_train": 2785,
+  "n_values": 59
+ },
+ {
+  "form": "1,-1,1",
+  "p": 59,
+  "group": "mono",
+  "frac": 0.8,
+  "seed": 0,
+  "kernel_dim_3token": 5,
+  "gauge_dim": 2,
+  "n_train": 2785,
+  "n_values": 59
+ },
+ {
+  "form": "1,-1,1",
+  "p": 59,
+  "group": "mono",
+  "frac": 0.8,
+  "seed": 1,
+  "kernel_dim_3token": 5,
+  "gauge_dim": 2,
+  "n_train": 2785,
+  "n_values": 59
+ },
+ {
+  "form": "1,-1,1",
+  "p": 59,
+  "group": "mono",
+  "frac": 0.8,
+  "seed": 2,
+  "kernel_dim_3token": 5,
+  "gauge_dim": 2,
+  "n_train": 2785,
+  "n_values": 59
+ },
+ {
+  "form": "1,0,1",
+  "p": 59,
+  "group": "mono",
+  "frac": 0.8,
+  "seed": 0,
+  "kernel_dim_3token": 5,
+  "gauge_dim": 2,
+  "n_train": 2785,
+  "n_values": 59
+ },
+ {
+  "form": "1,0,1",
+  "p": 59,
+  "group": "mono",
+  "frac": 0.8,
+  "seed": 1,
+  "kernel_dim_3token": 6,
+  "gauge_dim": 2,
+  "n_train": 2788,
+  "n_values": 59
+ },
+ {
+  "form": "1,0,1",
+  "p": 59,
+  "group": "mono",
+  "frac": 0.8,
+  "seed": 2,
+  "kernel_dim_3token": 5,
+  "gauge_dim": 2,
+  "n_train": 2785,
+  "n_values": 59
+ }
+]

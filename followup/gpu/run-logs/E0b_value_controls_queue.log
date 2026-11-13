@@ -1,0 +1,9 @@
+E0-long p59/p61 done at 05:06:32
+QUEUE qf_1_1_1_p61_furuta_aob+ours200k  M=42
+QUEUE qf_1_1_1_p59_furuta_aob+ours200k  M=42
+[      0s] START qf_1_1_1_p61_furuta_aob+ours200k
+[      0s] START qf_1_1_1_p59_furuta_aob+ours200k
+[  15213s] OK        qf_1_1_1_p59_furuta_aob+ours200k  (15213s)
+[  15383s] OK        qf_1_1_1_p61_furuta_aob+ours200k  (15383s)
+
+2 ran, 0 skipped, 0 failed

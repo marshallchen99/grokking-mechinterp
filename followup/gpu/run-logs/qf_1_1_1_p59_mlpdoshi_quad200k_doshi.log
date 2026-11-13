@@ -1,0 +1,47 @@
+
+==== 2026-10-10 10:03:42 python3 research/scripts/train_batched.py jobs/P1_3_doshi_gpu.json --only 0 --out research --device cuda --threads 6
+step       0 | 3/3 active | test acc 0.011 0.016 0.013 | 0s
+step    5000 | 3/3 active | test acc 0.014 0.014 0.022 | 66s
+step   10000 | 3/3 active | test acc 0.013 0.022 0.020 | 131s
+step   15000 | 3/3 active | test acc 0.019 0.019 0.016 | 195s
+step   20000 | 3/3 active | test acc 0.020 0.007 0.020 | 260s
+step   25000 | 3/3 active | test acc 0.013 0.019 0.023 | 325s
+step   30000 | 3/3 active | test acc 0.019 0.019 0.022 | 390s
+step   35000 | 3/3 active | test acc 0.016 0.011 0.016 | 455s
+step   40000 | 3/3 active | test acc 0.017 0.014 0.020 | 520s
+step   45000 | 3/3 active | test acc 0.030 0.030 0.023 | 585s
+step   50000 | 3/3 active | test acc 0.017 0.011 0.014 | 650s
+step   55000 | 3/3 active | test acc 0.014 0.019 0.022 | 715s
+step   60000 | 3/3 active | test acc 0.024 0.014 0.017 | 779s
+step   65000 | 3/3 active | test acc 0.026 0.016 0.010 | 844s
+step   70000 | 3/3 active | test acc 0.016 0.019 0.010 | 909s
+step   75000 | 3/3 active | test acc 0.010 0.011 0.022 | 974s
+step   80000 | 3/3 active | test acc 0.010 0.013 0.016 | 1038s
+step   85000 | 3/3 active | test acc 0.010 0.032 0.020 | 1103s
+step   90000 | 3/3 active | test acc 0.014 0.011 0.011 | 1168s
+step   95000 | 3/3 active | test acc 0.016 0.016 0.023 | 1233s
+step  100000 | 3/3 active | test acc 0.010 0.023 0.016 | 1297s
+step  105000 | 3/3 active | test acc 0.019 0.016 0.026 | 1362s
+step  110000 | 3/3 active | test acc 0.019 0.013 0.017 | 1428s
+step  115000 | 3/3 active | test acc 0.022 0.016 0.009 | 1492s
+step  120000 | 3/3 active | test acc 0.017 0.017 0.024 | 1557s
+step  125000 | 3/3 active | test acc 0.024 0.023 0.020 | 1622s
+step  130000 | 3/3 active | test acc 0.013 0.017 0.024 | 1687s
+step  135000 | 3/3 active | test acc 0.016 0.019 0.023 | 1752s
+step  140000 | 3/3 active | test acc 0.022 0.014 0.019 | 1816s
+step  145000 | 3/3 active | test acc 0.024 0.006 0.017 | 1881s
+step  150000 | 3/3 active | test acc 0.019 0.016 0.014 | 1946s
+step  155000 | 3/3 active | test acc 0.013 0.024 0.027 | 2011s
+step  160000 | 3/3 active | test acc 0.011 0.020 0.022 | 2076s
+step  165000 | 3/3 active | test acc 0.014 0.020 0.024 | 2121s
+step  170000 | 3/3 active | test acc 0.017 0.022 0.009 | 2157s
+step  175000 | 3/3 active | test acc 0.013 0.023 0.011 | 2193s
+step  180000 | 3/3 active | test acc 0.014 0.011 0.010 | 2229s
+step  185000 | 3/3 active | test acc 0.020 0.014 0.020 | 2265s
+step  190000 | 3/3 active | test acc 0.022 0.022 0.017 | 2301s
+step  195000 | 3/3 active | test acc 0.022 0.017 0.022 | 2338s
+DONE qf_1_1_1_p59_f0.8_mono_s0_mlpdoshi_quad200k_doshi at step 200000
+DONE qf_1_1_1_p59_f0.8_mono_s1_mlpdoshi_quad200k_doshi at step 200000
+DONE qf_1_1_1_p59_f0.8_mono_s2_mlpdoshi_quad200k_doshi at step 200000
+step  200000 | 0/3 active | test acc 0.016 0.013 0.019 | 2374s
+GROUP DONE [{"tag": "qf_1_1_1_p59_f0.8_mono_s0_mlpdoshi_quad200k_doshi", "grok_step": null, "final_step": 200000}, {"tag": "qf_1_1_1_p59_f0.8_mono_s1_mlpdoshi_quad200k_doshi", "grok_step": null, "final_step": 200000}, {"tag": "qf_1_1_1_p59_f0.8_mono_s2_mlpdoshi_quad200k_doshi", "grok_step": null, "final_step": 200000}]

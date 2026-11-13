@@ -1,0 +1,270 @@
+[
+ {
+  "task": "tab_upm_s0",
+  "p": 59,
+  "n_values": 59,
+  "certificate_Zp": "mod 59: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "tab_upm_s1",
+  "p": 59,
+  "n_values": 59,
+  "certificate_Zp": "mod 59: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "tab_upm_s2",
+  "p": 59,
+  "n_values": 59,
+  "certificate_Zp": "mod 59: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "tab_u2b_s0",
+  "p": 59,
+  "n_values": 59,
+  "certificate_Zp": "mod 59: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "tab_u2b_s1",
+  "p": 59,
+  "n_values": 59,
+  "certificate_Zp": "mod 59: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "tab_u2b_s2",
+  "p": 59,
+  "n_values": 59,
+  "certificate_Zp": "mod 59: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "tab_cubic_s0",
+  "p": 59,
+  "n_values": 59,
+  "certificate_Zp": "mod 59: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 2,
+  "mono_group": [
+   "mono_k_1_1",
+   "mono_w_1_1"
+  ]
+ },
+ {
+  "task": "tab_rsep_s0",
+  "p": 59,
+  "n_values": 59,
+  "certificate_Zp": "mod 59: nullity 2",
+  "not_separable_Zp": false,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "tab_perm111_s0",
+  "p": 59,
+  "n_values": 59,
+  "certificate_Zp": "mod 59: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "qf_1_1_1",
+  "p": 59,
+  "n_values": 59,
+  "certificate_Zp": "mod 59: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 4,
+  "mono_group": [
+   "mono_k_1_1",
+   "mono_k_58_58",
+   "mono_w_1_1",
+   "mono_w_58_58"
+  ]
+ },
+ {
+  "task": "qf_1_0_1",
+  "p": 59,
+  "n_values": 59,
+  "certificate_Zp": "mod 59: nullity 2",
+  "not_separable_Zp": false,
+  "mono_group_size": 8,
+  "mono_group": [
+   "mono_k_1_1",
+   "mono_k_1_58",
+   "mono_k_58_1",
+   "mono_k_58_58",
+   "mono_w_1_1",
+   "mono_w_1_58",
+   "mono_w_58_1",
+   "mono_w_58_58"
+  ]
+ },
+ {
+  "task": "tab_upm_s0",
+  "p": 61,
+  "n_values": 61,
+  "certificate_Zp": "mod 61: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "tab_upm_s1",
+  "p": 61,
+  "n_values": 61,
+  "certificate_Zp": "mod 61: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "tab_upm_s2",
+  "p": 61,
+  "n_values": 61,
+  "certificate_Zp": "mod 61: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "tab_u2b_s0",
+  "p": 61,
+  "n_values": 61,
+  "certificate_Zp": "mod 61: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "tab_u2b_s1",
+  "p": 61,
+  "n_values": 61,
+  "certificate_Zp": "mod 61: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "tab_u2b_s2",
+  "p": 61,
+  "n_values": 61,
+  "certificate_Zp": "mod 61: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "tab_cubic_s0",
+  "p": 61,
+  "n_values": 61,
+  "certificate_Zp": "mod 61: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 6,
+  "mono_group": [
+   "mono_k_1_1",
+   "mono_k_13_47",
+   "mono_k_47_13",
+   "mono_w_1_1",
+   "mono_w_13_47",
+   "mono_w_47_13"
+  ]
+ },
+ {
+  "task": "tab_rsep_s0",
+  "p": 61,
+  "n_values": 61,
+  "certificate_Zp": "mod 61: nullity 2",
+  "not_separable_Zp": false,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "tab_perm111_s0",
+  "p": 61,
+  "n_values": 61,
+  "certificate_Zp": "mod 61: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 1,
+  "mono_group": [
+   "mono_k_1_1"
+  ]
+ },
+ {
+  "task": "qf_1_1_1",
+  "p": 61,
+  "n_values": 61,
+  "certificate_Zp": "mod 61: constants only -> IMPOSSIBLE",
+  "not_separable_Zp": true,
+  "mono_group_size": 4,
+  "mono_group": [
+   "mono_k_1_1",
+   "mono_k_60_60",
+   "mono_w_1_1",
+   "mono_w_60_60"
+  ]
+ },
+ {
+  "task": "qf_1_0_1",
+  "p": 61,
+  "n_values": 61,
+  "certificate_Zp": "mod 61: nullity 2",
+  "not_separable_Zp": false,
+  "mono_group_size": 8,
+  "mono_group": [
+   "mono_k_1_1",
+   "mono_k_1_60",
+   "mono_k_60_1",
+   "mono_k_60_60",
+   "mono_w_1_1",
+   "mono_w_1_60",
+   "mono_w_60_1",
+   "mono_w_60_60"
+  ]
+ }
+]

@@ -1,0 +1,200 @@
+[
+ {
+  "tag": "qf_1_0_3_p59_f0.8_tphi_s0_mlp_quad15k",
+  "step": 4400,
+  "n_maps": 7,
+  "acc_with_partner": 1.0,
+  "n_with_partner": 692,
+  "acc_no_partner": 1.0,
+  "n_no_partner": 4,
+  "acc_all": 1.0,
+  "n_test": 696
+ },
+ {
+  "tag": "qf_1_0_3_p59_f0.8_tphi_s1_mlp_quad15k",
+  "step": 4400,
+  "n_maps": 7,
+  "acc_with_partner": 1.0,
+  "n_with_partner": 684,
+  "acc_no_partner": 1.0,
+  "n_no_partner": 12,
+  "acc_all": 1.0,
+  "n_test": 696
+ },
+ {
+  "tag": "qf_1_0_3_p59_f0.8_tphi_s2_mlp_quad15k",
+  "step": 4500,
+  "n_maps": 7,
+  "acc_with_partner": 1.0,
+  "n_with_partner": 696,
+  "acc_no_partner": null,
+  "n_no_partner": 0,
+  "acc_all": 1.0,
+  "n_test": 696
+ },
+ {
+  "tag": "qf_1_0_3_p61_f0.8_tphi_s0_mlp_quad15k",
+  "step": 4500,
+  "n_maps": 7,
+  "acc_with_partner": 1.0,
+  "n_with_partner": 730,
+  "acc_no_partner": 1.0,
+  "n_no_partner": 12,
+  "acc_all": 1.0,
+  "n_test": 742
+ },
+ {
+  "tag": "qf_1_0_3_p61_f0.8_tphi_s1_mlp_quad15k",
+  "step": 4500,
+  "n_maps": 7,
+  "acc_with_partner": 1.0,
+  "n_with_partner": 736,
+  "acc_no_partner": 1.0,
+  "n_no_partner": 8,
+  "acc_all": 1.0,
+  "n_test": 744
+ },
+ {
+  "tag": "qf_1_0_3_p61_f0.8_tphi_s2_mlp_quad15k",
+  "step": 4400,
+  "n_maps": 7,
+  "acc_with_partner": 1.0,
+  "n_with_partner": 732,
+  "acc_no_partner": 1.0,
+  "n_no_partner": 9,
+  "acc_all": 1.0,
+  "n_test": 741
+ },
+ {
+  "tag": "qf_1_0_3_p97_f0.8_tphi_s0_mlp_quad15k",
+  "step": 4200,
+  "n_maps": 7,
+  "acc_with_partner": 1.0,
+  "n_with_partner": 1852,
+  "acc_no_partner": 1.0,
+  "n_no_partner": 28,
+  "acc_all": 1.0,
+  "n_test": 1880
+ },
+ {
+  "tag": "qf_1_0_3_p97_f0.8_tphi_s1_mlp_quad15k",
+  "step": 4200,
+  "n_maps": 7,
+  "acc_with_partner": 1.0,
+  "n_with_partner": 1840,
+  "acc_no_partner": 1.0,
+  "n_no_partner": 41,
+  "acc_all": 1.0,
+  "n_test": 1881
+ },
+ {
+  "tag": "qf_1_0_3_p97_f0.8_tphi_s2_mlp_quad15k",
+  "step": 4200,
+  "n_maps": 7,
+  "acc_with_partner": 1.0,
+  "n_with_partner": 1852,
+  "acc_no_partner": 1.0,
+  "n_no_partner": 29,
+  "acc_all": 1.0,
+  "n_test": 1881
+ },
+ {
+  "tag": "qf_1_1_1_p59_f0.8_tphiinv_s0_mlp_quad15k",
+  "step": 15000,
+  "n_maps": 3,
+  "acc_with_partner": 0.3287401497364044,
+  "n_with_partner": 508,
+  "acc_no_partner": 0.0,
+  "n_no_partner": 184,
+  "acc_all": 0.24132947623729706,
+  "n_test": 692
+ },
+ {
+  "tag": "qf_1_1_1_p59_f0.8_tphiinv_s1_mlp_quad15k",
+  "step": 15000,
+  "n_maps": 3,
+  "acc_with_partner": 0.33768656849861145,
+  "n_with_partner": 536,
+  "acc_no_partner": 0.0,
+  "n_no_partner": 157,
+  "acc_all": 0.2611832618713379,
+  "n_test": 693
+ },
+ {
+  "tag": "qf_1_1_1_p59_f0.8_tphiinv_s2_mlp_quad15k",
+  "step": 15000,
+  "n_maps": 3,
+  "acc_with_partner": 0.23722627758979797,
+  "n_with_partner": 548,
+  "acc_no_partner": 0.0,
+  "n_no_partner": 144,
+  "acc_all": 0.18786127865314484,
+  "n_test": 692
+ },
+ {
+  "tag": "qf_1_1_1_p61_f0.8_tphiinv_s0_mlp_quad15k",
+  "step": 15000,
+  "n_maps": 3,
+  "acc_with_partner": 0.36753731966018677,
+  "n_with_partner": 536,
+  "acc_no_partner": 0.0,
+  "n_no_partner": 201,
+  "acc_all": 0.2672998607158661,
+  "n_test": 737
+ },
+ {
+  "tag": "qf_1_1_1_p61_f0.8_tphiinv_s1_mlp_quad15k",
+  "step": 15000,
+  "n_maps": 3,
+  "acc_with_partner": 0.31690141558647156,
+  "n_with_partner": 568,
+  "acc_no_partner": 0.0,
+  "n_no_partner": 172,
+  "acc_all": 0.2432432472705841,
+  "n_test": 740
+ },
+ {
+  "tag": "qf_1_1_1_p61_f0.8_tphiinv_s2_mlp_quad15k",
+  "step": 15000,
+  "n_maps": 3,
+  "acc_with_partner": 0.35634326934814453,
+  "n_with_partner": 536,
+  "acc_no_partner": 0.0,
+  "n_no_partner": 208,
+  "acc_all": 0.2567204236984253,
+  "n_test": 744
+ },
+ {
+  "tag": "qf_1_1_1_p97_f0.8_tphiinv_s0_mlp_quad15k",
+  "step": 15000,
+  "n_maps": 3,
+  "acc_with_partner": 0.1839887648820877,
+  "n_with_partner": 1424,
+  "acc_no_partner": 0.0,
+  "n_no_partner": 456,
+  "acc_all": 0.13936170935630798,
+  "n_test": 1880
+ },
+ {
+  "tag": "qf_1_1_1_p97_f0.8_tphiinv_s1_mlp_quad15k",
+  "step": 15000,
+  "n_maps": 3,
+  "acc_with_partner": 0.1584022045135498,
+  "n_with_partner": 1452,
+  "acc_no_partner": 0.0,
+  "n_no_partner": 428,
+  "acc_all": 0.12234042584896088,
+  "n_test": 1880
+ },
+ {
+  "tag": "qf_1_1_1_p97_f0.8_tphiinv_s2_mlp_quad15k",
+  "step": 15000,
+  "n_maps": 3,
+  "acc_with_partner": 0.20396600663661957,
+  "n_with_partner": 1412,
+  "acc_no_partner": 0.0,
+  "n_no_partner": 464,
+  "acc_all": 0.15351812541484833,
+  "n_test": 1876
+ }
+]
